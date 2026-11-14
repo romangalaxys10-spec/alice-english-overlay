@@ -96,9 +96,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         viewMenu.addItem(zoomInEquals)
         viewMenu.addItem(withTitle: "Zoom Out", action: #selector(zoomOut), keyEquivalent: "-")
         viewMenu.addItem(NSMenuItem.separator())
+        viewMenu.addItem(withTitle: "Toggle Terminal & Harness", action: #selector(toggleWorkbench), keyEquivalent: "j")
         viewMenu.addItem(withTitle: "Toggle Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f")
 
-        // 5. History Menu
+        // 5. Harness & Agent Menu (ZCode & DeepSeek DSH)
+        let harnessMenuItem = NSMenuItem()
+        let harnessMenu = NSMenu(title: "Harness")
+        harnessMenuItem.submenu = harnessMenu
+        mainMenu.addItem(harnessMenuItem)
+
+        let termItem = NSMenuItem(title: "Toggle Terminal Drawer", action: #selector(openTerminalTab), keyEquivalent: "t")
+        termItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(termItem)
+
+        let vibeItem = NSMenuItem(title: "Open Vibe Coder & Harness", action: #selector(openVibeTab), keyEquivalent: "k")
+        vibeItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(vibeItem)
+
+        let skillsItem = NSMenuItem(title: "Open Agent Skills Studio", action: #selector(openSkillsTab), keyEquivalent: "s")
+        skillsItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(skillsItem)
+
+        let gitItem = NSMenuItem(title: "GitHub Real-Time Sync", action: #selector(openGitSyncTab), keyEquivalent: "g")
+        gitItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(gitItem)
+
+        harnessMenu.addItem(NSMenuItem.separator())
+        let finderItem = NSMenuItem(title: "Open Workspace in Finder", action: #selector(openWorkspaceFinder), keyEquivalent: "o")
+        finderItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(finderItem)
+
+        // 6. History Menu
         let historyMenuItem = NSMenuItem()
         let historyMenu = NSMenu(title: "History")
         historyMenuItem.submenu = historyMenu
@@ -212,5 +240,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func resetZoom() {
         MainWindowController.shared.resetZoom()
+    }
+
+    @objc private func toggleWorkbench() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench();", completionHandler: nil)
+    }
+
+    @objc private func openTerminalTab() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('terminal');", completionHandler: nil)
+    }
+
+    @objc private func openVibeTab() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('vibe');", completionHandler: nil)
+    }
+
+    @objc private func openSkillsTab() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('skills');", completionHandler: nil)
+    }
+
+    @objc private func openGitSyncTab() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('git');", completionHandler: nil)
+    }
+
+    @objc private func openWorkspaceFinder() {
+        let url = URL(fileURLWithPath: HarnessService.shared.workspacePath)
+        NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 }

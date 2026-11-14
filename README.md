@@ -11,11 +11,16 @@ This project bridges that gap by providing a real-time multilingual interface, a
 ## Key Features
 
 - **Native macOS Desktop Application**: Built with Swift and WebKit. Launches instantly with under 600 KB total app bundle footprint, using a fraction of the memory of Electron wrappers.
-- **Chrome / Chromium Browser Extension**: Fully compliant with Manifest V3. Runs seamlessly on Chrome, Brave, Arc, Edge, and Opera.
+- **In-App Terminal & Harness Workbench (ZCode & DeepSeek DSH Core)**: Integrated local shell terminal and agent harness drawer (toggle with `Cmd + J` or `Cmd + Ctrl + T`). Execute shell commands, inspect local project trees, and test code right inside Alice.
+- **Vibe Coding & Autonomous Self-Healing Loop**: Alice writes code, executes tests in your local terminal, reads output, and auto-corrects bugs on failure. Includes one-click `Run in Terminal` and `Save to Disk` buttons directly on code blocks.
+- **Curated Agent Skills Studio**: Built-in prompts for AST Code Sentinel, DeepSeek Superagent Harness, Computer Use & Desktop Actions, and Adversarial Test Writer.
+- **Real-Time GitHub Synchronization**: Synchronize workspace changes directly to GitHub with a single click or automated task triggers.
+- **Fault-Tolerant Auto-Fallback Engine**: Automatic watchdog that monitors Alice's status. If Expert mode throttles, stalls, or faces high load, it smoothly falls back to Auto mode and auto-resubmits queries without losing context.
+- **Chrome / Chromium Browser Extension**: Fully compliant with Manifest V3. Runs smoothly on Chrome, Brave, Arc, Edge, and Opera.
 - **Multi-Language Support**: Choose your preferred response language across 13 options:
   - English, Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, Turkish, Ukrainian, and Russian Original.
   - Automatically forces Alice to reply strictly in your chosen language.
-- **Custom Instructions & Persona Presets**: Store your persistent system instructions (e.g., concise code formatting, specific persona, or domain guidelines) injected directly into Alice chats.
+- **Custom Instructions & Persona Presets**: Store your persistent system instructions (concise code formatting, specific persona, or domain guidelines) injected directly into Alice chats.
 - **Autonomous Brainstorm & Role-Play Studio**:
   - Launch autonomous multi-round brainstorming sessions directly from the mode bar.
   - 6 distinct personas:
@@ -32,6 +37,8 @@ This project bridges that gap by providing a real-time multilingual interface, a
 - **Floating Intelligence Mode Bar**: Quick switching between Alice modes:
   - **Auto**: Balanced everyday intelligence.
   - **Expert**: Deep reasoning and complex problem analysis.
+  - **Code**: ZCode and DeepSeek vibe coding harness.
+  - **Terminal**: In-app local terminal drawer.
   - **Brainstorm**: Autonomous multi-round role-play and ideation studio.
   - **Draw**: Image generation and creative visuals.
   - **Deals**: Product pricing and shopping search.
@@ -40,6 +47,32 @@ This project bridges that gap by providing a real-time multilingual interface, a
 - **Ad & Upsell Blocker**: Cleans up promotional banners, mobile app install prompts, and login popups, keeping the focus entirely on your conversation.
 - **Context Carry**: Optionally summarizes your previous discussion and carries context into fresh chats.
 - **macOS Window Presets**: Smooth animated resizing shortcuts for split-screen workflows.
+
+---
+
+## In-App Terminal and Harness Workbench
+
+Inspired by open source AI coding workbenches like **ZCode** and the **DeepSeek Superagent Prototype**, Alice includes a local execution harness for software development.
+
+### Capabilities
+
+1. **Integrated Monospace Terminal**: Run bash, zsh, git, node, python, or cargo commands directly inside the app with full environment variables (`/usr/local/bin`, `/opt/homebrew/bin`, `~/.cargo/bin`).
+2. **Vibe Coding Runner**: Code blocks in Alice replies display an inline `▶ Run in Terminal` button and a `💾 Save to Disk` button, allowing instant verification without context switching.
+3. **Self-Healing Loop**: When autonomous loop is enabled, terminal errors and stack traces are automatically sent back to Alice to analyze the root cause and generate a verified fix.
+4. **Desktop Automation & Computer Use**: The native Swift bridge supports opening local files and directories in Finder, launching URLs, reading file contents, and copying snippets to the system clipboard.
+5. **Real-Time Git Sync**: Stage, commit, and push project updates directly to GitHub from the in-app drawer.
+6. **Auto-Fallback Engine**: If Expert mode stalls or encounters server load warnings, the harness automatically falls back to Auto mode and retries the prompt.
+
+### Keyboard Shortcuts
+
+| Shortcut | Description |
+| :--- | :--- |
+| `Cmd + J` | Toggle In-App Terminal & Harness Drawer |
+| `Cmd + Ctrl + T` | Open Terminal tab |
+| `Cmd + Ctrl + K` | Open Vibe Coder & Harness tab |
+| `Cmd + Ctrl + S` | Open Agent Skills Studio |
+| `Cmd + Ctrl + G` | Open GitHub Real-Time Sync tab |
+| `Cmd + Ctrl + O` | Reveal active workspace in Finder |
 
 ---
 

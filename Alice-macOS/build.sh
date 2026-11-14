@@ -16,6 +16,7 @@ mkdir -p "${BUILD_DIR}"
 # 1. Compile Swift sources
 SOURCES=(
   "${SCRIPT_DIR}/Sources/TranslationService.swift"
+  "${SCRIPT_DIR}/Sources/HarnessService.swift"
   "${SCRIPT_DIR}/Sources/PreferencesWindowController.swift"
   "${SCRIPT_DIR}/Sources/WebViewController.swift"
   "${SCRIPT_DIR}/Sources/MainWindowController.swift"

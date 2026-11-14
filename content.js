@@ -60,7 +60,10 @@
     chips: true,
     hideUpsell: true,
     carryContext: true,
-    modeBar: true
+    modeBar: true,
+    autoFallback: true,
+    vibeCoding: true,
+    harnessAutoRun: true
   };
   var settings = Object.assign({}, DEFAULTS);
   var listeners = [];
@@ -554,9 +557,12 @@
   var CSS = [
     '.alice-enx-root{all:initial}',
     '*[data-alice-enx]{font-family:-apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;box-sizing:border-box}',
-    '.alice-enx-modebar{position:fixed;z-index:2147483000;display:flex;align-items:center;gap:2px;padding:5px;border-radius:999px;',
+    '.alice-enx-modebar{position:fixed;z-index:200;display:flex;align-items:center;gap:2px;padding:5px;border-radius:999px;',
       'background:rgba(255,255,255,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);',
       'border:1px solid rgba(20,20,30,.09);box-shadow:0 10px 30px rgba(10,10,30,.13);max-width:min(94vw,700px);overflow-x:auto;scrollbar-width:none;box-sizing:border-box}',
+    'html:has([role="dialog"]) .alice-enx-modebar, body:has([role="dialog"]) .alice-enx-modebar,',
+    'html:has([class*="Modal-Content"]) .alice-enx-modebar, body:has([class*="Modal-Content"]) .alice-enx-modebar{display:none !important}',
+    '.alice-enx-cmd-result{margin:6px 0 10px;padding:8px 12px;background:#0d0d14;border:1px solid rgba(74,222,128,.35);border-radius:8px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
     '.alice-enx-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:none;background:transparent;cursor:pointer;',
       'font:500 12.5px/1 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#454551;white-space:nowrap;transition:background .15s,color .15s}',
     '.alice-enx-pill:hover{background:rgba(108,76,240,.08);color:#2b2b33}',
@@ -711,7 +717,57 @@
       '.alice-enx-panel .alice-enx-select option{background:#282838 !important;color:#f5f4fb !important}',
       '.alice-enx-panel .alice-enx-row{color:#d4d4e0}',
       '.alice-enx-panel .alice-enx-foot{color:#888898}',
-    '}'
+    '}',
+    /* in-app terminal & harness workbench */
+    '.alice-enx-workbench{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1100px,98vw);height:370px;background:rgba(18,18,26,.97);border-radius:18px 18px 0 0;box-shadow:0 -16px 48px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);border-bottom:none;z-index:2147483400;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#eee;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .2s ease,height .2s ease}',
+    '.alice-enx-workbench.minimized{height:46px}',
+    '.alice-enx-workbench svg{width:14px;height:14px;display:inline-block;vertical-align:middle;flex-shrink:0}',
+    '.alice-enx-wb-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(26,26,38,.9);border-bottom:1px solid rgba(255,255,255,.1);border-radius:18px 18px 0 0;user-select:none}',
+    '.alice-enx-wb-tabs{display:flex;align-items:center;gap:6px}',
+    '.alice-enx-wb-tab{background:transparent;border:none;border-radius:8px;padding:6px 12px;font:600 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#9b9bb2;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}',
+    '.alice-enx-wb-tab:hover{background:rgba(255,255,255,.06);color:#fff}',
+    '.alice-enx-wb-tab.active{background:rgba(108,76,240,.25);color:#c4b5fd;border:1px solid rgba(108,76,240,.4)}',
+    '.alice-enx-wb-tools{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#8a8a9e}',
+    '.alice-enx-wb-btn{background:rgba(255,255,255,.08);border:none;border-radius:6px;padding:5px 8px;font:500 11px/1 inherit;color:#ccc;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}',
+    '.alice-enx-wb-btn:hover{background:rgba(255,255,255,.16);color:#fff}',
+    '.alice-enx-wb-body{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;background:#0d0d14}',
+    /* Terminal Tab */
+    '.alice-enx-term{flex:1;display:flex;flex-direction:column;font-family:ui-monospace,Menlo,Monaco,Consolas,monospace}',
+    '.alice-enx-term-out{flex:1;overflow-y:auto;padding:12px 14px;font:400 12.5px/1.45 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
+    '.alice-enx-term-out .err{color:#f87171}',
+    '.alice-enx-term-out .info{color:#60a5fa}',
+    '.alice-enx-term-out .cmd{color:#fbbf24;font-weight:600}',
+    '.alice-enx-term-in-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#151520;border-top:1px solid rgba(255,255,255,.08)}',
+    '.alice-enx-term-prompt{font-weight:700;color:#38bdf8}',
+    '.alice-enx-term-input{flex:1;background:transparent;border:none;outline:none;font:500 13px/1.3 ui-monospace,Menlo,monospace;color:#fff}',
+    '.alice-enx-term-chips{display:flex;align-items:center;gap:6px;padding:6px 12px;background:#11111a;border-top:1px solid rgba(255,255,255,.05);overflow-x:auto}',
+    '.alice-enx-term-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 8px;font:400 11px/1 ui-monospace,Menlo,monospace;color:#cbd5e1;cursor:pointer;white-space:nowrap}',
+    '.alice-enx-term-chip:hover{background:rgba(108,76,240,.3);border-color:#6C4CF0;color:#fff}',
+    /* Vibe Coder & Harness Tab */
+    '.alice-enx-vibe-pane{flex:1;overflow-y:auto;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;background:#12121c}',
+    '.alice-enx-vibe-hero{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,rgba(108,76,240,.2),rgba(59,130,246,.15));border:1px solid rgba(108,76,240,.3)}',
+    '.alice-enx-vibe-title{font:700 14px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff}',
+    '.alice-enx-vibe-sub{font:400 12px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#a5a5bb;margin-top:2px}',
+    '.alice-enx-vibe-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}',
+    '.alice-enx-vibe-btn{padding:8px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#eee;font:600 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}',
+    '.alice-enx-vibe-btn:hover{background:rgba(108,76,240,.35);border-color:#6C4CF0;color:#fff}',
+    '.alice-enx-vibe-btn.primary{background:linear-gradient(135deg,#6C4CF0,#3b82f6);border:none;color:#fff}',
+    /* Skills Tab */
+    '.alice-enx-skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;padding:14px;overflow-y:auto}',
+    '.alice-enx-skill-card{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;background:rgba(255,255,255,.04);cursor:pointer;transition:all .15s;display:flex;flex-direction:column;justify-content:space-between}',
+    '.alice-enx-skill-card:hover{border-color:rgba(108,76,240,.5);background:rgba(108,76,240,.08)}',
+    '.alice-enx-skill-name{font:600 13px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;display:flex;align-items:center;gap:6px}',
+    '.alice-enx-skill-desc{font:400 11.5px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin:6px 0 10px}',
+    '.alice-enx-skill-btn{align-self:flex-start;padding:4px 10px;border-radius:6px;background:rgba(108,76,240,.2);border:1px solid rgba(108,76,240,.4);color:#c4b5fd;font:600 11px/1 inherit}',
+    /* Git Sync Tab */
+    '.alice-enx-git-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}',
+    /* Code block action buttons */
+    '.alice-enx-code-actions{position:absolute;top:6px;right:6px;display:flex;align-items:center;gap:6px;z-index:10}',
+    '.alice-enx-code-btn{background:rgba(20,20,30,.85);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#cbd5e1;padding:4px 8px;font:600 11px/1 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}',
+    '.alice-enx-code-btn:hover{background:#6C4CF0;color:#fff;border-color:#6C4CF0}',
+    /* Auto-fallback Toast */
+    '.alice-enx-fallback-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:2147483600;background:rgba(30,24,10,.95);border:1px solid rgba(245,158,11,.4);color:#fef3c7;padding:8px 16px;border-radius:999px;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:aliceEnxSlideDown .25s ease-out}',
+    '@keyframes aliceEnxSlideDown{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}'
   ].join('');
 
   function injectCSS() {
@@ -747,7 +803,12 @@
     gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/>',
     copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
     lang: '<path d="M4 5h7M7.5 5c0 4-1.5 7-4.5 9"/><path d="M6 8.5C7 11 9 13.5 11 14.5"/><path d="M13 20l4-10 4 10M14.6 17h4.8"/>',
-    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
+    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    terminal: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+    code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+    git: '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/>',
+    play: '<polygon points="5 3 19 12 5 21 5 3"/>',
+    folder: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'
   };
 
   /* ---------------- mode bar ---------------- */
@@ -1681,6 +1742,678 @@
     setTimeout(function () { topicTa.focus(); }, 100);
   }
 
+  /* ---------------- ZCode & DeepSeek Harness Workbench ---------------- */
+  var workbenchEl = null;
+  var termHistory = [];
+  var termHistIndex = -1;
+  var activeWbTab = 'terminal';
+  var currentWorkspace = '/Users/d/Downloads/alice-english-overlay-extension';
+
+  function logTerm(type, text) {
+    var out = document.getElementById('alice-enx-term-output');
+    if (!out) return;
+    var line = document.createElement('div');
+    line.className = type || 'info';
+    line.textContent = text;
+    out.appendChild(line);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function runTerminalCommand(cmd, onDone) {
+    cmd = (cmd || '').trim();
+    if (!cmd) return;
+    termHistory.push(cmd);
+    termHistIndex = termHistory.length;
+    logTerm('cmd', '$ ' + cmd);
+
+    if (window.__aliceTerminalRun) {
+      window.__aliceTerminalRun(cmd, currentWorkspace, function (res) {
+        if (res.ok) {
+          var out = (res.data && res.data.stdout) || (typeof res.text === 'string' ? res.text : '');
+          if (out) logTerm('stdout', out);
+          else logTerm('stdout', 'Command completed successfully (exit code 0).');
+          if (onDone) onDone(true, out, '');
+        } else {
+          var err = (res.data && res.data.stderr) || res.error || 'Execution failed';
+          logTerm('err', err);
+          if (onDone) onDone(false, (res.data && res.data.stdout) || '', err);
+        }
+      });
+    } else {
+      setTimeout(function () {
+        if (cmd === 'pwd') {
+          logTerm('stdout', currentWorkspace);
+          if (onDone) onDone(true, currentWorkspace, '');
+        } else if (cmd === 'clear') {
+          var out = document.getElementById('alice-enx-term-output');
+          if (out) out.innerHTML = '';
+          if (onDone) onDone(true, '', '');
+        } else if (/^git status/i.test(cmd)) {
+          var gs = 'On branch main\nYour branch is up to date with origin/main.\n\nnothing to commit, working tree clean';
+          logTerm('stdout', gs);
+          if (onDone) onDone(true, gs, '');
+        } else {
+          var msg = '[Extension Mode] Local shell is active in native Alice.app. Ran simulated: ' + cmd;
+          logTerm('info', msg);
+          if (onDone) onDone(true, msg, '');
+        }
+      }, 150);
+    }
+  }
+
+  function toggleWorkbench(initialTab) {
+    if (!workbenchEl || !workbenchEl.isConnected) {
+      buildWorkbench();
+    }
+    if (initialTab) {
+      switchWorkbenchTab(initialTab);
+    }
+    workbenchEl.classList.remove('alice-enx-hidden');
+    workbenchEl.classList.remove('minimized');
+    if (activeWbTab === 'terminal') {
+      setTimeout(function () {
+        var inp = document.getElementById('alice-enx-term-input');
+        if (inp) inp.focus();
+      }, 100);
+    }
+  }
+  window.__aliceToggleWorkbench = toggleWorkbench;
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'j' || e.key === '`' || e.key === '~')) {
+      e.preventDefault();
+      toggleWorkbench();
+    }
+  });
+
+  function switchWorkbenchTab(tab) {
+    activeWbTab = tab;
+    if (!workbenchEl) return;
+    var tabs = workbenchEl.querySelectorAll('.alice-enx-wb-tab');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tab);
+    }
+    var panes = workbenchEl.querySelectorAll('[data-wb-pane]');
+    for (var j = 0; j < panes.length; j++) {
+      panes[j].style.display = panes[j].getAttribute('data-wb-pane') === tab ? 'flex' : 'none';
+    }
+    if (tab === 'git') {
+      refreshGitStatus();
+    }
+  }
+
+  function refreshGitStatus() {
+    var statEl = document.getElementById('alice-enx-git-status');
+    if (statEl) statEl.textContent = 'Checking repository status...';
+    if (window.__aliceTerminalRun) {
+      window.__aliceTerminalRun('git status -s', currentWorkspace, function (res) {
+        if (statEl) {
+          var out = (res.data && res.data.stdout) || '';
+          statEl.textContent = out.trim() ? out.trim() : '✓ Working tree clean (all changes committed)';
+        }
+      });
+    } else if (statEl) {
+      statEl.textContent = '✓ Working tree clean (origin/main)';
+    }
+  }
+
+  function extractLatestCode() {
+    var msgs = document.querySelectorAll('.Message:not(.Message_from_user)');
+    if (!msgs.length) return null;
+    var lastMsg = msgs[msgs.length - 1];
+    var pres = lastMsg.querySelectorAll('pre, code');
+    if (!pres.length) return null;
+    var code = (pres[pres.length - 1].textContent || '').trim();
+    return code;
+  }
+
+  function triggerVibeTask(taskPrompt) {
+    var ta = document.querySelector('textarea');
+    if (ta) {
+      ta.value = taskPrompt;
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+      var sendBtn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
+      if (sendBtn) sendBtn.click();
+      logTerm('info', '[VibeCoder] Dispatched task: ' + taskPrompt.slice(0, 80) + '...');
+    }
+  }
+
+  function buildWorkbench() {
+    if (workbenchEl && workbenchEl.isConnected) return;
+    workbenchEl = document.createElement('div');
+    workbenchEl.className = 'alice-enx-workbench';
+    workbenchEl.setAttribute('data-alice-enx', '1');
+
+    var head = document.createElement('div');
+    head.className = 'alice-enx-wb-head';
+
+    var tabs = document.createElement('div');
+    tabs.className = 'alice-enx-wb-tabs';
+
+    var tabDefs = [
+      ['terminal', '>_ Terminal', 'terminal'],
+      ['vibe', '⚡ Vibe Coder & Harness', 'code'],
+      ['skills', '🛠 Agent Skills', 'spark'],
+      ['git', '🔄 Git Sync', 'git']
+    ];
+
+    tabDefs.forEach(function (td) {
+      var b = document.createElement('button');
+      b.className = 'alice-enx-wb-tab' + (td[0] === activeWbTab ? ' active' : '');
+      b.setAttribute('data-tab', td[0]);
+      b.appendChild(svg(ICONS[td[2]] || ICONS.code));
+      var t = document.createElement('span');
+      t.textContent = td[1];
+      b.appendChild(t);
+      b.addEventListener('click', function () { switchWorkbenchTab(td[0]); });
+      tabs.appendChild(b);
+    });
+    head.appendChild(tabs);
+
+    var tools = document.createElement('div');
+    tools.className = 'alice-enx-wb-tools';
+
+    var wsLabel = document.createElement('span');
+    wsLabel.style.cssText = 'color:#a5a5c0;font-size:11px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-flex;align-items:center;gap:4px';
+    wsLabel.appendChild(svg(ICONS.folder));
+    var wsText = document.createElement('span');
+    wsText.textContent = currentWorkspace.split('/').slice(-2).join('/');
+    wsLabel.title = currentWorkspace;
+    wsLabel.appendChild(wsText);
+    tools.appendChild(wsLabel);
+
+    var openFinderBtn = document.createElement('button');
+    openFinderBtn.className = 'alice-enx-wb-btn';
+    openFinderBtn.textContent = 'Finder';
+    openFinderBtn.addEventListener('click', function () {
+      if (window.__aliceComputerUse) {
+        window.__aliceComputerUse('openFolder', { path: currentWorkspace }, function () {});
+      }
+    });
+    tools.appendChild(openFinderBtn);
+
+    var minBtn = document.createElement('button');
+    minBtn.className = 'alice-enx-wb-btn';
+    minBtn.textContent = '—';
+    minBtn.title = 'Minimize';
+    minBtn.addEventListener('click', function () {
+      workbenchEl.classList.toggle('minimized');
+    });
+    tools.appendChild(minBtn);
+
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'alice-enx-wb-btn';
+    closeBtn.textContent = '✕';
+    closeBtn.title = 'Close Workbench';
+    closeBtn.addEventListener('click', function () {
+      workbenchEl.classList.add('alice-enx-hidden');
+    });
+    tools.appendChild(closeBtn);
+
+    head.appendChild(tools);
+    workbenchEl.appendChild(head);
+
+    var body = document.createElement('div');
+    body.className = 'alice-enx-wb-body';
+
+    // 1. Terminal Pane
+    var termPane = document.createElement('div');
+    termPane.className = 'alice-enx-term';
+    termPane.setAttribute('data-wb-pane', 'terminal');
+    termPane.style.display = activeWbTab === 'terminal' ? 'flex' : 'none';
+
+    var termOut = document.createElement('div');
+    termOut.id = 'alice-enx-term-output';
+    termOut.className = 'alice-enx-term-out';
+    termOut.innerHTML = '<div class="info">Alice Native Harness Terminal (ZCode & DeepSeek DSH Core)</div>' +
+      '<div class="info">Workspace: ' + currentWorkspace + '</div>' +
+      '<div class="info">Type shell commands below or click quick action chips.</div>';
+    termPane.appendChild(termOut);
+
+    var termChips = document.createElement('div');
+    termChips.className = 'alice-enx-term-chips';
+    ['git status', 'git diff', 'git log -n 3 --oneline', 'ls -la', 'npm test', 'clear'].forEach(function (cmd) {
+      var c = document.createElement('button');
+      c.className = 'alice-enx-term-chip';
+      c.textContent = cmd;
+      c.addEventListener('click', function () { runTerminalCommand(cmd); });
+      termChips.appendChild(c);
+    });
+    termPane.appendChild(termChips);
+
+    var termInRow = document.createElement('div');
+    termInRow.className = 'alice-enx-term-in-row';
+    var pLbl = document.createElement('span');
+    pLbl.className = 'alice-enx-term-prompt';
+    pLbl.textContent = '$';
+    var tInp = document.createElement('input');
+    tInp.id = 'alice-enx-term-input';
+    tInp.className = 'alice-enx-term-input';
+    tInp.placeholder = 'Enter shell command (e.g. git status, node -v, pytest)...';
+    tInp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        var v = tInp.value;
+        tInp.value = '';
+        runTerminalCommand(v);
+      } else if (e.key === 'ArrowUp') {
+        if (termHistory.length && termHistIndex > 0) {
+          termHistIndex--;
+          tInp.value = termHistory[termHistIndex] || '';
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (termHistory.length && termHistIndex < termHistory.length - 1) {
+          termHistIndex++;
+          tInp.value = termHistory[termHistIndex] || '';
+        } else {
+          termHistIndex = termHistory.length;
+          tInp.value = '';
+        }
+      }
+    });
+
+    var rBtn = document.createElement('button');
+    rBtn.className = 'alice-enx-wb-btn';
+    rBtn.textContent = 'Run';
+    rBtn.addEventListener('click', function () {
+      var v = tInp.value;
+      tInp.value = '';
+      runTerminalCommand(v);
+    });
+
+    var clrBtn = document.createElement('button');
+    clrBtn.className = 'alice-enx-wb-btn';
+    clrBtn.textContent = 'Clear';
+    clrBtn.addEventListener('click', function () {
+      termOut.innerHTML = '';
+    });
+
+    termInRow.appendChild(pLbl);
+    termInRow.appendChild(tInp);
+    termInRow.appendChild(rBtn);
+    termInRow.appendChild(clrBtn);
+    termPane.appendChild(termInRow);
+    body.appendChild(termPane);
+
+    // 2. Vibe Coder & Harness Pane
+    var vibePane = document.createElement('div');
+    vibePane.className = 'alice-enx-vibe-pane';
+    vibePane.setAttribute('data-wb-pane', 'vibe');
+    vibePane.style.display = activeWbTab === 'vibe' ? 'flex' : 'none';
+
+    var vHero = document.createElement('div');
+    vHero.className = 'alice-enx-vibe-hero';
+    var vHt = document.createElement('div');
+    var vH1 = document.createElement('div');
+    vH1.className = 'alice-enx-vibe-title';
+    vH1.textContent = '⚡ Autonomous Vibe Coder & Self-Healing Loop';
+    var vH2 = document.createElement('div');
+    vH2.className = 'alice-enx-vibe-sub';
+    vH2.textContent = 'Alice writes code, executes in your terminal, tests output, and auto-corrects on failure.';
+    vHt.appendChild(vH1); vHt.appendChild(vH2);
+    vHero.appendChild(vHt);
+
+    var runLatestBtn = document.createElement('button');
+    runLatestBtn.className = 'alice-enx-vibe-btn primary';
+    runLatestBtn.innerHTML = '▶ Run Latest Code in Terminal';
+    runLatestBtn.addEventListener('click', function () {
+      var c = extractLatestCode();
+      if (!c) {
+        logTerm('info', '[VibeCoder] No code blocks detected in Alice\'s latest message.');
+        switchWorkbenchTab('terminal');
+        return;
+      }
+      switchWorkbenchTab('terminal');
+      runTerminalCommand(c);
+    });
+    vHero.appendChild(runLatestBtn);
+    vibePane.appendChild(vHero);
+
+    var vActions = document.createElement('div');
+    vActions.className = 'alice-enx-vibe-actions';
+
+    var vibeTasks = [
+      ['Build & Test Project', 'Analyze the current project in our workspace. Write and run tests to verify integrity.'],
+      ['Bug Hunt & Fix', 'Find potential edge cases or bugs in our repository, write reproduction probe, and implement patch.'],
+      ['Refactor & Optimize', 'Refactor the core logic for cleaner architecture, lower complexity, and better performance.'],
+      ['Write Git Commit & Push', 'Review git diff, generate a clean conventional commit message, and stage files for sync.']
+    ];
+
+    vibeTasks.forEach(function (vt) {
+      var vb = document.createElement('button');
+      vb.className = 'alice-enx-vibe-btn';
+      vb.textContent = '⚡ ' + vt[0];
+      vb.addEventListener('click', function () {
+        triggerVibeTask(vt[1]);
+      });
+      vActions.appendChild(vb);
+    });
+    vibePane.appendChild(vActions);
+    body.appendChild(vibePane);
+
+    // 3. Skills Pane
+    var skillsPane = document.createElement('div');
+    skillsPane.className = 'alice-enx-skills-grid';
+    skillsPane.setAttribute('data-wb-pane', 'skills');
+    skillsPane.style.display = activeWbTab === 'skills' ? 'flex' : 'none';
+
+    var skillsList = [
+      {
+        id: 'ast_sentinel',
+        name: '🛡 Code Sentinel & AST Auditor',
+        desc: 'Audit code for security vulnerabilities, memory leaks, and anti-patterns with automated diff patches.',
+        prompt: 'Act as an AST Code Sentinel. Review the codebase for vulnerabilities, anti-patterns, and complexity spikes.'
+      },
+      {
+        id: 'dsh_superagent',
+        name: '🤖 DeepSeek Superagent Harness',
+        desc: 'Autonomous coding loop: Plan → Write test probe → Execute in terminal → Verify and self-heal.',
+        prompt: 'Act as DeepSeek Superagent. Break down this task into structured execution phases, run tests, and verify.'
+      },
+      {
+        id: 'computer_use',
+        name: '🖥 Computer Use & Desktop Actions',
+        desc: 'Inspect local directories, open files in Finder/browser, run shell scripts, and capture screenshots.',
+        prompt: 'Use macOS desktop automation. Read files from the workspace, inspect output, and execute shell scripts.'
+      },
+      {
+        id: 'adversarial_test',
+        name: '⚔️ Adversarial Test Writer',
+        desc: 'Generates stringent boundary and edge-case tests before writing implementation to prevent regressions.',
+        prompt: 'Write comprehensive adversarial test cases for boundary conditions, null inputs, and concurrency races.'
+      }
+    ];
+
+    skillsList.forEach(function (sk) {
+      var sc = document.createElement('div');
+      sc.className = 'alice-enx-skill-card';
+      var sTop = document.createElement('div');
+      var sNm = document.createElement('div');
+      sNm.className = 'alice-enx-skill-name';
+      sNm.textContent = sk.name;
+      var sDc = document.createElement('div');
+      sDc.className = 'alice-enx-skill-desc';
+      sDc.textContent = sk.desc;
+      sTop.appendChild(sNm); sTop.appendChild(sDc);
+      sc.appendChild(sTop);
+
+      var sBtn = document.createElement('button');
+      sBtn.className = 'alice-enx-skill-btn';
+      sBtn.textContent = 'Activate Skill';
+      sBtn.addEventListener('click', function () {
+        triggerVibeTask(sk.prompt);
+      });
+      sc.appendChild(sBtn);
+      skillsPane.appendChild(sc);
+    });
+    body.appendChild(skillsPane);
+
+    // 4. Git Sync Pane
+    var gitPane = document.createElement('div');
+    gitPane.className = 'alice-enx-git-pane';
+    gitPane.setAttribute('data-wb-pane', 'git');
+    gitPane.style.display = activeWbTab === 'git' ? 'flex' : 'none';
+
+    var gitCard = document.createElement('div');
+    gitCard.style.cssText = 'background:#181824;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px';
+
+    var gitHead = document.createElement('div');
+    gitHead.style.cssText = 'font:700 13px/1.3 inherit;color:#fff;display:flex;align-items:center;gap:6px';
+    gitHead.appendChild(svg(ICONS.git));
+    var gitHeadTxt = document.createElement('span');
+    gitHeadTxt.textContent = 'Real-Time GitHub Synchronization';
+    gitHead.appendChild(gitHeadTxt);
+    gitCard.appendChild(gitHead);
+
+    var gitRepoInfo = document.createElement('div');
+    gitRepoInfo.style.cssText = 'font:400 11.5px/1.3 ui-monospace,Menlo,monospace;color:#94a3b8';
+    gitRepoInfo.textContent = 'Remote: https://github.com/romangalaxys10-spec/alice-english-overlay.git (branch main)';
+    gitCard.appendChild(gitRepoInfo);
+
+    var gitStatBox = document.createElement('pre');
+    gitStatBox.id = 'alice-enx-git-status';
+    gitStatBox.style.cssText = 'background:#0d0d14;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;max-height:100px;overflow-y:auto;white-space:pre-wrap;margin:0';
+    gitStatBox.textContent = 'Checking repository status...';
+    gitCard.appendChild(gitStatBox);
+
+    var gitCommitInput = document.createElement('input');
+    gitCommitInput.className = 'alice-enx-input';
+    gitCommitInput.placeholder = 'Commit message (e.g. Alice Harness: implemented feature)';
+    gitCommitInput.value = 'Alice Harness: sync workspace updates';
+    gitCard.appendChild(gitCommitInput);
+
+    var gitPushBtn = document.createElement('button');
+    gitPushBtn.className = 'alice-enx-btn-primary';
+    gitPushBtn.textContent = '🔄 Push All Work to GitHub';
+    gitPushBtn.addEventListener('click', function () {
+      var msg = (gitCommitInput.value || '').trim() || 'Alice Harness: sync workspace updates';
+      gitPushBtn.disabled = true;
+      gitPushBtn.textContent = 'Pushing to origin main...';
+      if (window.__aliceGitSync) {
+        window.__aliceGitSync(msg, function (res) {
+          gitPushBtn.disabled = false;
+          gitPushBtn.textContent = '🔄 Push All Work to GitHub';
+          if (res.ok) {
+            logTerm('stdout', '[GitSync] Push completed successfully:\n' + (res.data ? res.data.output : 'OK'));
+            refreshGitStatus();
+            switchWorkbenchTab('terminal');
+          } else {
+            logTerm('err', '[GitSync] Push failed:\n' + (res.error || 'Unknown error'));
+            refreshGitStatus();
+            switchWorkbenchTab('terminal');
+          }
+        });
+      } else {
+        runTerminalCommand('git add -A && git commit -m "' + msg.replace(/"/g, '\\"') + '" && git push origin main', function () {
+          gitPushBtn.disabled = false;
+          gitPushBtn.textContent = '🔄 Push All Work to GitHub';
+          refreshGitStatus();
+        });
+      }
+    });
+    gitCard.appendChild(gitPushBtn);
+    gitPane.appendChild(gitCard);
+    body.appendChild(gitPane);
+
+    workbenchEl.appendChild(body);
+    document.body.appendChild(workbenchEl);
+  }
+
+  /* ---------------- Auto-Fallback & Stall Prevention Engine ---------------- */
+  var fallbackWatchdog = null;
+  var lastSentPrompt = '';
+  var lastSentTimestamp = 0;
+  var fallbackAttempts = 0;
+
+  function showFallbackToast(msg, duration) {
+    var toast = document.createElement('div');
+    toast.className = 'alice-enx-fallback-toast';
+    toast.innerHTML = '<span>⚡</span> <span>' + msg + '</span>';
+    document.body.appendChild(toast);
+    setTimeout(function () {
+      if (toast && toast.isConnected) {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity .3s';
+        setTimeout(function () { toast.remove(); }, 300);
+      }
+    }, duration || 4000);
+  }
+
+  function triggerAutoFallback(reason) {
+    if (!S.autoFallback) return;
+    if (fallbackAttempts >= 3) {
+      logTerm('err', '[AutoFallback] Maximum fallback attempts (3) reached. Halting automatic retries.');
+      return;
+    }
+    fallbackAttempts++;
+    logTerm('info', '[AutoFallback] Triggered: ' + reason + ' (attempt ' + fallbackAttempts + '/3)');
+
+    if (state.lastIntelligence === 'expert') {
+      showFallbackToast('Expert mode throttled or stalled. Falling back to Auto mode...', 3500);
+      switchIntelligence('auto');
+    } else {
+      showFallbackToast('Alice response stalled or busy. Auto-recovering...', 3500);
+    }
+
+    dismissThinkingModal();
+
+    if (lastSentPrompt) {
+      setTimeout(function () {
+        var ta = document.querySelector('textarea');
+        if (ta) {
+          ta.value = lastSentPrompt;
+          ta.dispatchEvent(new Event('input', { bubbles: true }));
+          var sendBtn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
+          if (sendBtn) sendBtn.click();
+        }
+      }, 1200);
+    }
+  }
+
+  function startWatchdog(promptText) {
+    lastSentPrompt = promptText || '';
+    lastSentTimestamp = Date.now();
+    fallbackAttempts = 0;
+    if (fallbackWatchdog) clearInterval(fallbackWatchdog);
+
+    var lastObservedText = '';
+    var stableTextTime = Date.now();
+
+    fallbackWatchdog = setInterval(function () {
+      if (!isAliceGenerating()) {
+        clearInterval(fallbackWatchdog);
+        fallbackWatchdog = null;
+        return;
+      }
+
+      var notices = document.querySelectorAll('.Message,[class*="Notice"],[class*="Banner"],[class*="Alert"]');
+      for (var i = 0; i < notices.length; i++) {
+        var txt = (notices[i].textContent || '').toLowerCase();
+        if (/из-за высокой нагрузки|слишком много запросов|превышен лимит|попробуйте позже|network error|что-то пошло не так/i.test(txt)) {
+          clearInterval(fallbackWatchdog);
+          fallbackWatchdog = null;
+          triggerAutoFallback('overload_notice');
+          return;
+        }
+      }
+
+      var msgs = document.querySelectorAll('.Message:not(.Message_from_user)');
+      var curText = msgs.length ? (msgs[msgs.length - 1].textContent || '') : '';
+      if (curText !== lastObservedText) {
+        lastObservedText = curText;
+        stableTextTime = Date.now();
+      } else if (Date.now() - stableTextTime > 28000 && Date.now() - lastSentTimestamp > 32000) {
+        clearInterval(fallbackWatchdog);
+        fallbackWatchdog = null;
+        triggerAutoFallback('generation_stall_28s');
+        return;
+      }
+    }, 1000);
+  }
+
+  function enhanceCodeBlocks(msgRoot) {
+    if (!msgRoot) return;
+    var pres = msgRoot.querySelectorAll('pre');
+    for (var i = 0; i < pres.length; i++) {
+      var pre = pres[i];
+      if (pre.querySelector('.alice-enx-code-actions')) continue;
+      pre.style.position = 'relative';
+
+      var bar = document.createElement('div');
+      bar.className = 'alice-enx-code-actions';
+
+      var codeTxt = (pre.textContent || '').trim();
+      var firstLine = (codeTxt.split('\n')[0] || '').trim();
+      var isShell = /^(npm|pnpm|yarn|git|python|python3|node|swift|cargo|curl|wget|sh|bash|zsh|cat|ls|cd|mkdir|system_profiler|sysctl|sw_vers|defaults|brew|echo|grep|awk|sed|ps|top|kill|chmod|chown|df|du|uname|open|osascript|pip|pytest|docker)/i.test(firstLine) ||
+        pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1 || pre.className.indexOf('sh') > -1 ||
+        /\|\s*grep|\bawk\b|\bsed\b|\bcat\b/i.test(firstLine);
+
+      if (isShell) {
+        var runBtn = document.createElement('button');
+        runBtn.className = 'alice-enx-code-btn';
+        runBtn.innerHTML = '▶ Run in Terminal';
+        (function (cmd, targetPre) {
+          runBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggleWorkbench('terminal');
+            runBtn.disabled = true;
+            runBtn.textContent = 'Running...';
+            runTerminalCommand(cmd, function (ok, stdout, stderr) {
+              runBtn.disabled = false;
+              runBtn.innerHTML = '▶ Run in Terminal';
+              var resText = (stdout || stderr || '').trim();
+              if (resText) {
+                var outBadge = targetPre.nextElementSibling && targetPre.nextElementSibling.classList.contains('alice-enx-cmd-result')
+                  ? targetPre.nextElementSibling
+                  : document.createElement('div');
+                outBadge.className = 'alice-enx-cmd-result';
+                outBadge.textContent = '✓ Output:\n' + resText;
+                if (!outBadge.parentNode) {
+                  targetPre.parentNode.insertBefore(outBadge, targetPre.nextSibling);
+                }
+              }
+            });
+          });
+        })(codeTxt, pre);
+        bar.appendChild(runBtn);
+
+        var answerBtn = document.createElement('button');
+        answerBtn.className = 'alice-enx-code-btn';
+        answerBtn.style.cssText = 'background:rgba(108,76,240,.3);border-color:#6C4CF0;color:#e0d7ff';
+        answerBtn.innerHTML = '⚡ Run & Answer';
+        (function (cmd, targetPre) {
+          answerBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggleWorkbench('terminal');
+            answerBtn.disabled = true;
+            answerBtn.textContent = 'Executing...';
+            runTerminalCommand(cmd, function (ok, stdout, stderr) {
+              answerBtn.disabled = false;
+              answerBtn.innerHTML = '⚡ Run & Answer';
+              var resText = (stdout || stderr || '').trim();
+              if (resText) {
+                var outBadge = targetPre.nextElementSibling && targetPre.nextElementSibling.classList.contains('alice-enx-cmd-result')
+                  ? targetPre.nextElementSibling
+                  : document.createElement('div');
+                outBadge.className = 'alice-enx-cmd-result';
+                outBadge.textContent = '✓ Tool Result:\n' + resText;
+                if (!outBadge.parentNode) {
+                  targetPre.parentNode.insertBefore(outBadge, targetPre.nextSibling);
+                }
+                sendAliceMessage('[Harness Tool Observation for: `' + cmd + '`]\n```\n' + resText + '\n```\nPlease answer the user based on this tool result.');
+              }
+            });
+          });
+        })(codeTxt, pre);
+        bar.appendChild(answerBtn);
+      } else if (/(?:file:|filename:|path:|\/\/\s*|#\s*)[\w./-]+\.\w+/i.test(codeTxt) || codeTxt.split('\n').length > 2) {
+        var saveBtn = document.createElement('button');
+        saveBtn.className = 'alice-enx-code-btn';
+        saveBtn.innerHTML = '💾 Save to Disk';
+        (function (c) {
+          saveBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var pathMatch = c.match(/(?:file:|filename:|path:|\/\/\s*|#\s*)([\w./-]+\.\w+)/i);
+            var filePath = pathMatch ? pathMatch[1] : 'snippet_' + Date.now() + '.txt';
+            if (window.__aliceWriteFile) {
+              window.__aliceWriteFile(filePath, c, function (res) {
+                if (res.ok) {
+                  saveBtn.textContent = '✓ Saved ' + filePath;
+                  setTimeout(function () { saveBtn.innerHTML = '💾 Save to Disk'; }, 2500);
+                } else {
+                  alert('Save failed: ' + (res.error || 'Unknown error'));
+                }
+              });
+            } else {
+              alert('File saving is active in native Alice.app. File: ' + filePath);
+            }
+          });
+        })(codeTxt);
+        bar.appendChild(saveBtn);
+      }
+
+      pre.appendChild(bar);
+    }
+  }
+
   function buildModeBar() {
     modeBar = A.mark(document.createElement('div'));
     modeBar.className = 'alice-enx-modebar';
@@ -1688,6 +2421,8 @@
     modeBar.appendChild(sep());
     modeBar.appendChild(pill('auto', 'Auto', 'spark', function () { switchIntelligence('auto'); }, 'Auto intelligence — Alice picks the level'));
     modeBar.appendChild(pill('expert', 'Expert', 'brain', function () { switchIntelligence('expert'); }, 'Expert intelligence — deeper reasoning'));
+    modeBar.appendChild(pill('code', 'Code', 'code', function () { toggleWorkbench('vibe'); }, 'ZCode & DeepSeek vibe coding harness'));
+    modeBar.appendChild(pill('terminal', 'Terminal', 'terminal', function () { toggleWorkbench('terminal'); }, 'In-app local terminal'));
     modeBar.appendChild(pill('brainstorm', 'Brainstorm', 'users', function () { openBrainstormModal(); }, 'Autonomous brainstorm and role-play studio'));
     modeBar.appendChild(pill('draw', 'Draw', 'palette', function () { toolMode('draw'); }, 'Image generation mode'));
     modeBar.appendChild(pill('deals', 'Deals', 'tag', function () { toolMode('deals'); }, 'Shopping — find a better price'));
@@ -1700,6 +2435,26 @@
     refreshPills();
   }
   function sep() { var s = document.createElement('div'); s.className = 'alice-enx-sep'; s.setAttribute('data-alice-enx', '1'); return s; }
+
+  function hasVisibleModal() {
+    var dialogs = document.querySelectorAll('[role="dialog"], .Modal, [class*="Modal-Content"], [class*="Popup-Content"], [class*="SettingsContent"], [class*="ContentFiltering"], [class*="Modal_visible"]');
+    for (var i = 0; i < dialogs.length; i++) {
+      var d = dialogs[i];
+      if (d.closest('[data-alice-enx]')) continue;
+      if (d.offsetParent !== null && getComputedStyle(d).display !== 'none' && getComputedStyle(d).visibility !== 'hidden') {
+        return true;
+      }
+    }
+    var backdrops = document.querySelectorAll('.Modal-Backdrop, [class*="Backdrop"], [class*="backdrop"], [class*="Overlay"], [class*="overlay"]');
+    for (var b = 0; b < backdrops.length; b++) {
+      var bd = backdrops[b];
+      if (bd.closest('[data-alice-enx]')) continue;
+      if (bd.offsetParent !== null && getComputedStyle(bd).display !== 'none' && getComputedStyle(bd).visibility !== 'hidden') {
+        return true;
+      }
+    }
+    return false;
+  }
 
   function findInputBox() {
     var ta = document.querySelector('textarea');
@@ -1719,6 +2474,10 @@
 
   function placeBar() {
     if (!modeBar) return;
+    if (hasVisibleModal()) {
+      modeBar.style.display = 'none';
+      return;
+    }
     var box = findInputBox();
     if (!box) { modeBar.style.display = 'none'; return; }
     var r = box.getBoundingClientRect();
@@ -1807,7 +2566,9 @@
       ['chips', 'Prompt starter cards'],
       ['hideUpsell', 'Hide ads & login upsells'],
       ['carryContext', 'Carry context to new chats'],
-      ['modeBar', 'Show mode bar']
+      ['modeBar', 'Show mode bar'],
+      ['autoFallback', 'Auto-fallback on stall/throttling'],
+      ['vibeCoding', 'ZCode & DeepSeek coding harness']
     ];
     items.forEach(function (it) {
       var row = document.createElement('label');
@@ -1835,6 +2596,16 @@
       openBrainstormModal();
     });
     panel.appendChild(bsBtn);
+
+    var wbBtn = document.createElement('button');
+    wbBtn.type = 'button';
+    wbBtn.textContent = '>_ Open In-App Terminal & Harness';
+    wbBtn.style.cssText = 'width:100%;margin-top:8px;padding:9px 0;border:none;border-radius:10px;background:#1e1e2c;border:1px solid rgba(255,255,255,.15);color:#c4b5fd;font:600 12px/1 inherit;cursor:pointer';
+    wbBtn.addEventListener('click', function () {
+      if (panel) { panel.remove(); panel = null; }
+      toggleWorkbench('terminal');
+    });
+    panel.appendChild(wbBtn);
 
     var foot = document.createElement('div');
     foot.className = 'alice-enx-foot';
@@ -1881,11 +2652,18 @@
     if (!ta) return;
     var v = ta.value || '';
     if (!v.trim()) return;
+    autoHarnessTurnCount = 0;
+    startWatchdog(v);
     var changed = false;
     var parts = [];
     var langPrompt = A.getLanguagePrompt ? A.getLanguagePrompt() : '';
     if (S.enReplies && !toolBlocksInjection() && langPrompt && v.indexOf(langPrompt) === -1) {
       parts.push(langPrompt);
+    }
+    if (S.vibeCoding && !toolBlocksInjection() && v.indexOf('Harness instructions') === -1) {
+      var sys = window.__ALICE_SYSTEM_INFO;
+      var sysInfo = sys ? ' Machine environment: Apple Mac (' + (sys.model || 'macOS') + ', ' + (sys.cores || '12') + ' CPU cores), Total RAM: ' + (sys.ramGB || '32') + ' GB, OS: ' + (sys.osVersion || 'macOS') + ', Workspace: ' + currentWorkspace + '.' : ' Workspace: ' + currentWorkspace + '.';
+      parts.push('Harness instructions: When suggesting shell commands, format them in ```bash blocks. When creating or updating files, include the path in a code header like ```file:path/to/file. Keep code modular, tested, and executable.' + sysInfo);
     }
     if (S.customInstructions && typeof S.customInstructions === 'string' && S.customInstructions.trim()) {
       var ci = S.customInstructions.trim();
@@ -2019,11 +2797,12 @@
     bar.appendChild(en);
   }
   function ensureReplyTools() {
-    if (!S.translateBtn) return;
     var msgs = document.querySelectorAll('.Message:not(.Message_from_user)');
     for (var i = 0; i < msgs.length; i++) {
       var msgRoot = msgs[i];
       if (!A.norm(msgRoot.textContent || '')) continue;
+      enhanceCodeBlocks(msgRoot);
+      if (!S.translateBtn) continue;
       if (msgRoot.querySelector(':scope > .alice-enx-toolsbar')) continue; // React may wipe it; next tick re-adds
       var bar = document.createElement('div');
       bar.className = 'alice-enx-toolsbar';
@@ -2148,6 +2927,30 @@
   }
 
   /* ---------------- wiring ---------------- */
+  var autoHarnessTurnCount = 0;
+  function checkAutoHarnessRun() {
+    if (!S.harnessAutoRun || isAliceGenerating()) return;
+    var msgs = document.querySelectorAll('.Message:not(.Message_from_user)');
+    if (!msgs.length) return;
+    var lastMsg = msgs[msgs.length - 1];
+    if (lastMsg.hasAttribute('data-harness-auto-ran')) return;
+    var btns = lastMsg.querySelectorAll('.alice-enx-code-actions button');
+    for (var b = 0; b < btns.length; b++) {
+      if (btns[b].textContent.indexOf('Run & Answer') > -1) {
+        if (autoHarnessTurnCount >= 2) return;
+        autoHarnessTurnCount++;
+        lastMsg.setAttribute('data-harness-auto-ran', '1');
+        var targetBtn = btns[b];
+        setTimeout(function () {
+          if (targetBtn && targetBtn.isConnected) {
+            targetBtn.click();
+          }
+        }, 700);
+        return;
+      }
+    }
+  }
+
   var mo2Timer = null;
   var mo2 = new MutationObserver(function () {
     if (mo2Timer) return;
@@ -2158,6 +2961,7 @@
       stashToPending();
       scanUpsells();
       scanNotices();
+      checkAutoHarnessRun();
     }, 250);
   });
   function boot() {

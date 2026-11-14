@@ -144,18 +144,72 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let translated):
-                        if let encoded = try? JSONSerialization.data(withJSONObject: [translated], options: []),
-                           let str = String(data: encoded, encoding: .utf8),
-                           let jsonLiteral = str.dropFirst().dropLast().description as String? {
-                            self?.webView.evaluateJavaScript("window.__aliceNativeCallback('\(reqId)', true, \(jsonLiteral), null);", completionHandler: nil)
-                        } else {
-                            self?.webView.evaluateJavaScript("window.__aliceNativeCallback('\(reqId)', true, \(String(reflecting: translated)), null);", completionHandler: nil)
-                        }
+                        self?.sendCallback(id: reqId, ok: true, data: translated, error: nil)
                     case .failure(let err):
-                        self?.webView.evaluateJavaScript("window.__aliceNativeCallback('\(reqId)', false, null, \(String(reflecting: err.localizedDescription)));", completionHandler: nil)
+                        self?.sendCallback(id: reqId, ok: false, data: nil, error: err.localizedDescription)
                     }
                 }
             }
+        } else if type == "terminalRun",
+                  let reqId = body["id"] as? String,
+                  let command = body["command"] as? String {
+            let cwd = body["cwd"] as? String
+            HarnessService.shared.executeCommand(command: command, cwd: cwd) { [weak self] ok, stdout, stderr, exitCode in
+                let res: [String: Any] = [
+                    "ok": ok,
+                    "stdout": stdout,
+                    "stderr": stderr,
+                    "exitCode": exitCode
+                ]
+                self?.sendCallback(id: reqId, ok: ok, data: res, error: ok ? nil : (stderr.isEmpty ? "Exit code \(exitCode)" : stderr))
+            }
+        } else if type == "readFile",
+                  let reqId = body["id"] as? String,
+                  let path = body["path"] as? String {
+            HarnessService.shared.readFile(path: path) { [weak self] ok, content, err in
+                self?.sendCallback(id: reqId, ok: ok, data: ["content": content], error: err)
+            }
+        } else if type == "writeFile",
+                  let reqId = body["id"] as? String,
+                  let path = body["path"] as? String,
+                  let content = body["content"] as? String {
+            HarnessService.shared.writeFile(path: path, content: content) { [weak self] ok, bytes, err in
+                self?.sendCallback(id: reqId, ok: ok, data: ["bytes": bytes], error: err)
+            }
+        } else if type == "gitSync",
+                  let reqId = body["id"] as? String {
+            let commitMsg = body["message"] as? String
+            HarnessService.shared.gitSync(commitMsg: commitMsg) { [weak self] ok, output in
+                self?.sendCallback(id: reqId, ok: ok, data: ["output": output], error: ok ? nil : output)
+            }
+        } else if type == "computerUse",
+                  let reqId = body["id"] as? String,
+                  let action = body["action"] as? String {
+            let params = body["params"] as? [String: Any] ?? [:]
+            HarnessService.shared.computerUse(action: action, params: params) { [weak self] ok, data, err in
+                self?.sendCallback(id: reqId, ok: ok, data: data, error: err)
+            }
+        }
+    }
+
+    private func sendCallback(id: String, ok: Bool, data: Any?, error: String?) {
+        DispatchQueue.main.async { [weak self] in
+            var jsonLiteral = "null"
+            if let data = data {
+                if let str = data as? String {
+                    jsonLiteral = String(reflecting: str)
+                } else if JSONSerialization.isValidJSONObject(data),
+                          let encoded = try? JSONSerialization.data(withJSONObject: data, options: []),
+                          let str = String(data: encoded, encoding: .utf8) {
+                    jsonLiteral = str
+                } else if let num = data as? NSNumber {
+                    jsonLiteral = num.stringValue
+                } else if let b = data as? Bool {
+                    jsonLiteral = b ? "true" : "false"
+                }
+            }
+            let errLiteral = error != nil ? String(reflecting: error!) : "null"
+            self?.webView.evaluateJavaScript("window.__aliceNativeCallback('\(id)', \(ok), \(jsonLiteral), \(errLiteral));", completionHandler: nil)
         }
     }
 

@@ -21,23 +21,72 @@
     }
   } catch (e) {}
 
-  // Pending translation callbacks
+  // Pending native callbacks
   var callbacks = {};
 
-  window.__aliceNativeCallback = function (id, ok, text, error) {
+  window.__aliceNativeCallback = function (id, ok, data, error) {
     var cb = callbacks[id];
     if (cb) {
       delete callbacks[id];
       try {
         if (ok) {
-          cb({ ok: true, text: text });
+          cb({ ok: true, data: data, text: typeof data === 'string' ? data : (data && data.text) });
         } else {
-          cb({ ok: false, error: error || 'Translation failed' });
+          cb({ ok: false, error: error || 'Action failed', data: data });
         }
       } catch (err) {
         console.error('[AliceNativeBridge] Callback error:', err);
       }
     }
+  };
+
+  function sendNative(type, payload, callback) {
+    var reqId = type + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+    if (typeof callback === 'function') {
+      callbacks[reqId] = callback;
+    }
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.aliceBridge) {
+      var msg = Object.assign({ type: type, id: reqId }, payload || {});
+      window.webkit.messageHandlers.aliceBridge.postMessage(msg);
+    } else if (typeof callback === 'function') {
+      callback({ ok: false, error: 'Native bridge unavailable in this environment' });
+    }
+  }
+
+  window.__aliceTerminalRun = function (command, cwd, callback) {
+    sendNative('terminalRun', { command: command, cwd: cwd }, callback);
+  };
+  window.__aliceReadFile = function (path, callback) {
+    sendNative('readFile', { path: path }, callback);
+  };
+  window.__aliceWriteFile = function (path, content, callback) {
+    sendNative('writeFile', { path: path, content: content }, callback);
+  };
+  window.__aliceGitSync = function (message, callback) {
+    sendNative('gitSync', { message: message }, callback);
+  };
+  window.__aliceComputerUse = function (action, params, callback) {
+    sendNative('computerUse', { action: action, params: params }, callback);
+  };
+
+  window.__aliceGetSystemInfo = function (callback) {
+    sendNative('computerUse', { action: 'getSystemInfo' }, callback);
+  };
+  window.__ALICE_SYSTEM_INFO = null;
+  window.__aliceGetSystemInfo(function (res) {
+    if (res && res.ok && res.data) {
+      window.__ALICE_SYSTEM_INFO = res.data;
+    }
+  });
+
+  window.__aliceHarness = {
+    isAvailable: true,
+    run: window.__aliceTerminalRun,
+    read: window.__aliceReadFile,
+    write: window.__aliceWriteFile,
+    gitSync: window.__aliceGitSync,
+    computer: window.__aliceComputerUse,
+    getSystemInfo: window.__aliceGetSystemInfo
   };
 
   // Polyfill Chrome Extension runtime API for content.js
