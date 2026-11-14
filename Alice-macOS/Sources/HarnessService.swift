@@ -32,6 +32,9 @@ final class HarnessService {
             let home = env["HOME"] ?? "/Users/d"
             let customPaths = "/opt/homebrew/bin:/usr/local/bin:\(home)/.local/bin:\(home)/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin"
             env["PATH"] = customPaths + (env["PATH"].map { ":" + $0 } ?? "")
+            env["LANG"] = "en_US.UTF-8"
+            env["LC_ALL"] = "en_US.UTF-8"
+            env["TERM"] = "xterm-256color"
             process.environment = env
 
             let outPipe = Pipe()
@@ -124,6 +127,60 @@ final class HarnessService {
                     completion(true, "Copied to clipboard", nil)
                 } else {
                     completion(false, nil, "Missing text parameter")
+                }
+            case "readClipboard":
+                let text = NSPasteboard.general.string(forType: .string) ?? ""
+                completion(true, text, nil)
+            case "openApp":
+                if let name = params["name"] as? String {
+                    if let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: name) {
+                        NSWorkspace.shared.openApplication(at: appURL, configuration: NSWorkspace.OpenConfiguration()) { _, err in
+                            let ok = err == nil
+                            completion(ok, ok ? "Launched \(name)" : nil, err?.localizedDescription)
+                        }
+                    } else {
+                        self.executeCommand(command: "open -a \"\(name)\"", cwd: nil) { ok, stdout, stderr, _ in
+                            completion(ok, ok ? "Launched \(name)" : nil, ok ? nil : stderr)
+                        }
+                    }
+                } else {
+                    completion(false, nil, "Missing name parameter")
+                }
+            case "runAppleScript":
+                if let scriptText = params["script"] as? String {
+                    var errorDict: NSDictionary?
+                    let script = NSAppleScript(source: scriptText)
+                    let resultDesc = script?.executeAndReturnError(&errorDict)
+                    if let err = errorDict {
+                        let errMsg = (err[NSAppleScript.errorMessage] as? String) ?? "AppleScript error"
+                        completion(false, nil, errMsg)
+                    } else {
+                        completion(true, resultDesc?.stringValue ?? "Executed AppleScript successfully", nil)
+                    }
+                } else {
+                    completion(false, nil, "Missing script parameter")
+                }
+            case "notify":
+                let title = (params["title"] as? String) ?? "Alice Agent"
+                let message = (params["message"] as? String) ?? ""
+                let escapedTitle = title.replacingOccurrences(of: "\"", with: "\\\"")
+                let escapedMsg = message.replacingOccurrences(of: "\"", with: "\\\"")
+                let appleScript = "display notification \"\(escapedMsg)\" with title \"\(escapedTitle)\""
+                self.executeCommand(command: "osascript -e '\(appleScript)'", cwd: nil) { ok, stdout, stderr, _ in
+                    completion(ok, "Notification displayed", ok ? nil : stderr)
+                }
+            case "screencapture":
+                let outPath = (params["path"] as? String) ?? (self.workspacePath + "/screenshot_" + String(Int(Date().timeIntervalSince1970)) + ".png")
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
+                process.arguments = ["-x", outPath]
+                do {
+                    try process.run()
+                    process.waitUntilExit()
+                    let ok = process.terminationStatus == 0
+                    completion(ok, ["path": outPath], ok ? nil : "screencapture failed")
+                } catch {
+                    completion(false, nil, error.localizedDescription)
                 }
             case "openUrl":
                 if let str = params["url"] as? String, let url = URL(string: str) {

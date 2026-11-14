@@ -52,16 +52,17 @@ This project bridges that gap by providing a real-time multilingual interface, a
 
 ## In-App Terminal and Harness Workbench
 
-Inspired by open source AI coding workbenches like **ZCode** and the **DeepSeek Superagent Prototype**, Alice includes a local execution harness for software development.
+Inspired by open source AI coding workbenches like ZCode and the DeepSeek Superagent Prototype, Alice includes a local execution harness for software development.
 
 ### Capabilities
 
-1. **Integrated Monospace Terminal**: Run bash, zsh, git, node, python, or cargo commands directly inside the app with full environment variables (`/usr/local/bin`, `/opt/homebrew/bin`, `~/.cargo/bin`).
-2. **Vibe Coding Runner**: Code blocks in Alice replies display an inline `▶ Run in Terminal` button and a `💾 Save to Disk` button, allowing instant verification without context switching.
-3. **Self-Healing Loop**: When autonomous loop is enabled, terminal errors and stack traces are automatically sent back to Alice to analyze the root cause and generate a verified fix.
-4. **Desktop Automation & Computer Use**: The native Swift bridge supports opening local files and directories in Finder, launching URLs, reading file contents, and copying snippets to the system clipboard.
-5. **Real-Time Git Sync**: Stage, commit, and push project updates directly to GitHub from the in-app drawer.
-6. **Auto-Fallback Engine**: If Expert mode stalls or encounters server load warnings, the harness automatically falls back to Auto mode and retries the prompt.
+1. Integrated Monospace Terminal: Run bash, zsh, git, node, python, or cargo commands directly inside the app with full environment variables (`/usr/local/bin`, `/opt/homebrew/bin`, `~/.cargo/bin`).
+2. Autonomous Agent Loop: When Alice outputs shell commands or file operations, the harness executes them on macOS and feeds live stdout or stderr back to Alice so she verifies facts and tests code before delivering final answers.
+3. Vibe Coding Runner: Code blocks in Alice replies display inline execution badges with expandable output logs and manual buttons (`▶ Run in Terminal`, `⚡ Run & Answer`, `💾 Save to Disk`).
+4. Desktop Automation and Computer Use: The native Swift bridge supports opening local files and directories in Finder, launching applications, running AppleScript, capturing screenshots, displaying native desktop notifications, reading and copying to clipboard, and querying system hardware.
+5. Real-Time Git Sync: Stage, commit, and push project updates directly to GitHub from the in-app drawer.
+6. Slash Commands: Type `/sh <command>` to run directly in terminal, `/specs` or `/ram` to query hardware, `/git` for repository status, or `/open` to view the workspace in Finder.
+7. Auto-Fallback Engine: If Expert mode stalls or encounters server load warnings, the harness automatically falls back to Auto mode and retries the prompt.
 
 ### Keyboard Shortcuts
 

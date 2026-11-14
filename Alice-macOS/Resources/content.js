@@ -563,6 +563,26 @@
     'html:has([role="dialog"]) .alice-enx-modebar, body:has([role="dialog"]) .alice-enx-modebar,',
     'html:has([class*="Modal-Content"]) .alice-enx-modebar, body:has([class*="Modal-Content"]) .alice-enx-modebar{display:none !important}',
     '.alice-enx-cmd-result{margin:6px 0 10px;padding:8px 12px;background:#0d0d14;border:1px solid rgba(74,222,128,.35);border-radius:8px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
+    '.alice-enx-auto-harness-card{margin:8px 0 12px;padding:10px 14px;border-radius:10px;background:#13131c;border:1px solid rgba(108,76,240,.35);font-family:ui-monospace,Menlo,monospace;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:all .2s}',
+    '.alice-enx-auto-harness-card.executing{border-color:rgba(108,76,240,.75);background:linear-gradient(180deg,#181628,#12111d)}',
+    '.alice-enx-auto-harness-card.success{border-color:rgba(74,222,128,.4);background:#0e1713}',
+    '.alice-enx-auto-harness-card.error{border-color:rgba(239,68,68,.4);background:#1a0f12}',
+    '.alice-enx-auto-harness-card.stopped{border-color:rgba(156,163,175,.3);background:#16161d}',
+    '.alice-enx-auto-harness-hdr{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#e2e8f0}',
+    '.alice-enx-auto-harness-card.success .alice-enx-auto-harness-hdr{color:#4ade80}',
+    '.alice-enx-auto-harness-card.error .alice-enx-auto-harness-hdr{color:#f87171}',
+    '.alice-enx-auto-harness-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-auto-harness-stop, .alice-enx-auto-harness-toggle{padding:3px 8px;border-radius:5px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#cbd5e1;font:500 11px/1.2 -apple-system,sans-serif;cursor:pointer}',
+    '.alice-enx-auto-harness-stop:hover{background:rgba(239,68,68,.25);color:#fca5a5;border-color:rgba(239,68,68,.4)}',
+    '.alice-enx-auto-harness-toggle:hover{background:rgba(255,255,255,.15);color:#fff}',
+    '.alice-enx-auto-harness-cmd{margin-top:6px;font-size:11.5px;color:#94a3b8;word-break:break-all}',
+    '.alice-enx-auto-harness-cmd code{color:#c4b5fd}',
+    '.alice-enx-auto-harness-out{margin-top:8px;padding:8px 10px;background:#09090e;border-radius:6px;border:1px solid rgba(255,255,255,.07);font-size:11.5px;line-height:1.45;color:#e2e8f0;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow-y:auto}',
+    '.alice-enx-auto-harness-out.err{color:#fca5a5;border-color:rgba(239,68,68,.2)}',
+    '.alice-enx-pulse{width:8px;height:8px;border-radius:50%;background:#a855f7;box-shadow:0 0 8px #a855f7;animation:alicePulse 1.2s infinite ease-in-out;display:inline-block;flex-shrink:0}',
+    '@keyframes alicePulse{0%,100%{transform:scale(0.85);opacity:0.6}50%{transform:scale(1.25);opacity:1}}',
+    '.alice-enx-check{color:#4ade80;font-weight:700}',
+    '.alice-enx-err-icon{color:#ef4444;font-weight:700}',
     '.alice-enx-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:none;background:transparent;cursor:pointer;',
       'font:500 12.5px/1 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#454551;white-space:nowrap;transition:background .15s,color .15s}',
     '.alice-enx-pill:hover{background:rgba(108,76,240,.08);color:#2b2b33}',
@@ -2309,6 +2329,49 @@
     }, 1000);
   }
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function extractCleanCode(pre) {
+    if (!pre) return '';
+    var clone = pre.cloneNode(true);
+    var toRemove = clone.querySelectorAll('.alice-enx-code-actions, .alice-enx-cmd-result, .alice-enx-auto-harness-card, [data-alice-enx]');
+    for (var i = 0; i < toRemove.length; i++) toRemove[i].remove();
+    var btns = clone.querySelectorAll('button, [role="button"], [class*="Header"], [class*="header"]');
+    for (var b = 0; b < btns.length; b++) btns[b].remove();
+    var codeEl = clone.querySelector('code');
+    var raw = (codeEl ? codeEl.textContent : clone.textContent) || '';
+    var lines = raw.split('\n');
+    if (lines.length > 1 && /^(bash|sh|zsh|shell|python|python3|javascript|js|json|swift)$/i.test(lines[0].trim())) {
+      lines.shift();
+    }
+    var cleaned = [];
+    for (var l = 0; l < lines.length; l++) {
+      var line = lines[l];
+      if (/^(переносить|свернуть|копировать|copy|collapse|wrap)$/i.test(line.trim())) continue;
+      cleaned.push(line);
+    }
+    return cleaned.join('\n').trim();
+  }
+
+  function isShellCommand(codeTxt) {
+    if (!codeTxt) return false;
+    var lines = codeTxt.split('\n');
+    var firstLine = (lines[0] || '').trim();
+    if (/^(npm|pnpm|yarn|git|python|python3|node|swift|cargo|curl|wget|sh|bash|zsh|cat|ls|cd|mkdir|system_profiler|sysctl|sw_vers|defaults|brew|echo|grep|awk|sed|ps|top|kill|chmod|chown|df|du|uname|open|osascript|pip|pytest|docker|tree|find|which|whoami|date|env|export|source|killall|pbcopy|pbpaste|screencapture|pmset)/i.test(firstLine)) return true;
+    if (/\|\s*(grep|awk|sed|cat|wc|sort|uniq|head|tail|pbcopy)\b/i.test(firstLine)) return true;
+    if (/^(if|for|while|case)\s+.*(?:then|do|in)\b/i.test(firstLine)) return true;
+    if (lines.length > 1 && /^(npm|git|brew|python3|node|cat|echo|curl|system_profiler)/i.test((lines[1] || '').trim())) return true;
+    return false;
+  }
+
   function enhanceCodeBlocks(msgRoot) {
     if (!msgRoot) return;
     var pres = msgRoot.querySelectorAll('pre');
@@ -2320,11 +2383,9 @@
       var bar = document.createElement('div');
       bar.className = 'alice-enx-code-actions';
 
-      var codeTxt = (pre.textContent || '').trim();
-      var firstLine = (codeTxt.split('\n')[0] || '').trim();
-      var isShell = /^(npm|pnpm|yarn|git|python|python3|node|swift|cargo|curl|wget|sh|bash|zsh|cat|ls|cd|mkdir|system_profiler|sysctl|sw_vers|defaults|brew|echo|grep|awk|sed|ps|top|kill|chmod|chown|df|du|uname|open|osascript|pip|pytest|docker)/i.test(firstLine) ||
-        pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1 || pre.className.indexOf('sh') > -1 ||
-        /\|\s*grep|\bawk\b|\bsed\b|\bcat\b/i.test(firstLine);
+      var codeTxt = extractCleanCode(pre);
+      var isShell = isShellCommand(codeTxt) ||
+        pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1 || pre.className.indexOf('sh') > -1;
 
       if (isShell) {
         var runBtn = document.createElement('button');
@@ -2423,6 +2484,18 @@
     modeBar.appendChild(pill('expert', 'Expert', 'brain', function () { switchIntelligence('expert'); }, 'Expert intelligence — deeper reasoning'));
     modeBar.appendChild(pill('code', 'Code', 'code', function () { toggleWorkbench('vibe'); }, 'ZCode & DeepSeek vibe coding harness'));
     modeBar.appendChild(pill('terminal', 'Terminal', 'terminal', function () { toggleWorkbench('terminal'); }, 'In-app local terminal'));
+    var agentBtn = pill('agent', S.harnessAutoRun ? 'Agent: ON' : 'Agent: OFF', 'spark', function () {
+      var nextVal = !S.harnessAutoRun;
+      A.applySettings({ harnessAutoRun: nextVal });
+      agentBtn.innerHTML = '';
+      agentBtn.appendChild(svg(ICONS.spark));
+      var t = document.createElement('span');
+      t.textContent = nextVal ? 'Agent: ON' : 'Agent: OFF';
+      agentBtn.appendChild(t);
+      agentBtn.classList.toggle('alice-enx-active', nextVal);
+    }, 'Toggle autonomous computer & terminal agent loop');
+    if (S.harnessAutoRun) agentBtn.classList.add('alice-enx-active');
+    modeBar.appendChild(agentBtn);
     modeBar.appendChild(pill('brainstorm', 'Brainstorm', 'users', function () { openBrainstormModal(); }, 'Autonomous brainstorm and role-play studio'));
     modeBar.appendChild(pill('draw', 'Draw', 'palette', function () { toolMode('draw'); }, 'Image generation mode'));
     modeBar.appendChild(pill('deals', 'Deals', 'tag', function () { toolMode('deals'); }, 'Shopping — find a better price'));
@@ -2568,7 +2641,8 @@
       ['carryContext', 'Carry context to new chats'],
       ['modeBar', 'Show mode bar'],
       ['autoFallback', 'Auto-fallback on stall/throttling'],
-      ['vibeCoding', 'ZCode & DeepSeek coding harness']
+      ['vibeCoding', 'ZCode & DeepSeek coding harness'],
+      ['harnessAutoRun', 'Autonomous terminal & computer agent (Auto-Run)']
     ];
     items.forEach(function (it) {
       var row = document.createElement('label');
@@ -2652,7 +2726,35 @@
     if (!ta) return;
     var v = ta.value || '';
     if (!v.trim()) return;
+
+    // Direct slash commands
+    if (/^\/open\b/i.test(v)) {
+      if (window.__aliceComputerUse) window.__aliceComputerUse('openFolder', {}, function () {});
+      ta.value = '';
+      return false;
+    }
+    if (/^\/git\b/i.test(v)) {
+      toggleWorkbench('git');
+      ta.value = '';
+      return false;
+    }
+    if (/^\/(ram|specs|sysinfo)\b/i.test(v)) {
+      v = 'Query my Mac hardware specifications (RAM, CPU cores, machine model, macOS version) using your autonomous terminal harness.';
+    } else if (/^\/sh\s+(.+)/i.test(v)) {
+      var cmdMatch = v.match(/^\/sh\s+(.+)/i);
+      var rawCmd = cmdMatch ? cmdMatch[1].trim() : '';
+      if (rawCmd) {
+        toggleWorkbench('terminal');
+        ta.value = '';
+        runTerminalCommand(rawCmd, function (ok, out, err, code) {
+          sendAliceMessage('[User ran terminal command: `' + rawCmd + '` (exit ' + (code || 0) + ')]:\n```\n' + (out || err || '(no output)') + '\n```');
+        });
+        return false;
+      }
+    }
+
     autoHarnessTurnCount = 0;
+    autoHarnessHalted = false;
     startWatchdog(v);
     var changed = false;
     var parts = [];
@@ -2660,10 +2762,22 @@
     if (S.enReplies && !toolBlocksInjection() && langPrompt && v.indexOf(langPrompt) === -1) {
       parts.push(langPrompt);
     }
-    if (S.vibeCoding && !toolBlocksInjection() && v.indexOf('Harness instructions') === -1) {
+    var isObservation = v.indexOf('[Harness Tool Observation') > -1 || v.indexOf('[Harness Tool Error') > -1;
+    if (S.vibeCoding && !toolBlocksInjection() && !isObservation && v.indexOf('[Autonomous Agent & Tooling Power]') === -1) {
       var sys = window.__ALICE_SYSTEM_INFO;
-      var sysInfo = sys ? ' Machine environment: Apple Mac (' + (sys.model || 'macOS') + ', ' + (sys.cores || '12') + ' CPU cores), Total RAM: ' + (sys.ramGB || '32') + ' GB, OS: ' + (sys.osVersion || 'macOS') + ', Workspace: ' + currentWorkspace + '.' : ' Workspace: ' + currentWorkspace + '.';
-      parts.push('Harness instructions: When suggesting shell commands, format them in ```bash blocks. When creating or updating files, include the path in a code header like ```file:path/to/file. Keep code modular, tested, and executable.' + sysInfo);
+      var sysSpec = sys
+        ? 'Apple Silicon Mac (' + (sys.model || 'Mac14,5') + ', ' + (sys.cores || '12') + ' CPU cores, ' + (sys.ramGB || '32') + ' GB unified RAM, OS: ' + (sys.osVersion || 'macOS') + ')'
+        : 'Apple Silicon Mac (12 CPU cores, 32 GB RAM, macOS)';
+      var agentPrompt = '[Autonomous Agent & Tooling Power]\n' +
+        'You are an autonomous AI coding and system agent running locally in Alice.app on macOS.\n' +
+        'Host: ' + sysSpec + ' | Workspace: ' + currentWorkspace + '\n' +
+        'Capabilities: Full zsh shell terminal, file system read/write, macOS computer use (Finder, clipboard, apps, notifications), git repo sync.\n\n' +
+        'Autonomous Tool Execution Protocol:\n' +
+        '1. When the user asks for hardware specs, files, system diagnostics, git info, running code, or terminal commands: DO NOT instruct the user to run commands manually. Execute directly by outputting a single executable ```bash code block.\n' +
+        '2. The native Alice harness runs the command on this Mac and supplies the real live output as an observation before you complete your response.\n' +
+        '3. To create or edit files, use ```file:path/to/filename. To reveal in Finder use `open .`, to copy to clipboard pipe into `pbcopy`.\n' +
+        '4. Base your answers strictly on observed output, not hypothetical values.';
+      parts.push(agentPrompt);
     }
     if (S.customInstructions && typeof S.customInstructions === 'string' && S.customInstructions.trim()) {
       var ci = S.customInstructions.trim();
@@ -2701,6 +2815,8 @@
 
   /* ---------------- prompt chips ---------------- */
   var STARTERS = [
+    ['⚡ Check Mac specs', 'Check my exact Mac hardware specs (RAM, CPU, model, macOS) using your terminal harness.'],
+    ['🛠 Run code & test', 'Create a small Python script to benchmark CPU arithmetic and run it with your harness.'],
     ['Explain something simply', 'Explain how neural networks learn, in simple words'],
     ['Plan my week', 'Help me plan my week: 5 focus tasks, realistic timing'],
     ['Draft an email', 'Draft a short polite email asking my landlord to fix the heating'],
@@ -2926,26 +3042,122 @@
     setTimeout(function () { if (noticeEl && noticeEl.isConnected) noticeEl.remove(); }, 20000);
   }
 
-  /* ---------------- wiring ---------------- */
+  /* ---------------- Autonomous Harness Agent Loop ---------------- */
   var autoHarnessTurnCount = 0;
+  var autoHarnessHalted = false;
+
+  function executeAutoTool(cmd, isFile, filePath, fileContent, targetPre, msgRoot) {
+    if (autoHarnessHalted || autoHarnessTurnCount >= 8) return;
+    autoHarnessTurnCount++;
+    msgRoot.setAttribute('data-harness-auto-ran', '1');
+
+    var card = document.createElement('div');
+    card.className = 'alice-enx-auto-harness-card executing';
+    card.setAttribute('data-alice-enx', '1');
+    card.innerHTML =
+      '<div class="alice-enx-auto-harness-hdr">' +
+        '<span class="alice-enx-pulse"></span>' +
+        '<span class="alice-enx-auto-harness-lbl">⚡ Autonomous Harness: Executing on Mac...</span>' +
+        '<button class="alice-enx-auto-harness-stop" type="button">Stop Loop</button>' +
+      '</div>' +
+      '<div class="alice-enx-auto-harness-cmd"><code>$ ' + escapeHtml(cmd ? cmd.slice(0, 160) : ('write ' + filePath)) + '</code></div>';
+
+    var stopBtn = card.querySelector('.alice-enx-auto-harness-stop');
+    stopBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      autoHarnessHalted = true;
+      card.className = 'alice-enx-auto-harness-card stopped';
+      card.querySelector('.alice-enx-auto-harness-lbl').textContent = '⏹ Autonomous Loop Stopped by User';
+      stopBtn.remove();
+    });
+
+    if (targetPre && targetPre.parentNode) {
+      targetPre.parentNode.insertBefore(card, targetPre.nextSibling);
+    } else {
+      msgRoot.appendChild(card);
+    }
+
+    var startTime = Date.now();
+
+    if (isFile && filePath) {
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(filePath, fileContent, function (res) {
+          var elapsed = Date.now() - startTime;
+          if (autoHarnessHalted) return;
+          if (res.ok) {
+            card.className = 'alice-enx-auto-harness-card success';
+            card.innerHTML =
+              '<div class="alice-enx-auto-harness-hdr">' +
+                '<span class="alice-enx-check">✓</span>' +
+                '<span class="alice-enx-auto-harness-lbl">File Created: ' + escapeHtml(filePath) + ' (' + (res.data ? res.data.bytes : fileContent.length) + ' bytes in ' + elapsed + 'ms)</span>' +
+              '</div>';
+            sendAliceMessage('[Harness Tool Observation (File System)]:\nSuccessfully created and wrote file: `' + filePath + '`.\nPlease continue with the next step or confirm completion to the user.');
+          } else {
+            card.className = 'alice-enx-auto-harness-card error';
+            card.innerHTML =
+              '<div class="alice-enx-auto-harness-hdr">' +
+                '<span class="alice-enx-err-icon">✗</span>' +
+                '<span class="alice-enx-auto-harness-lbl">File Write Failed: ' + escapeHtml(res.error || 'Unknown error') + '</span>' +
+              '</div>';
+            sendAliceMessage('[Harness Tool Error]: Failed to write file `' + filePath + '`: ' + (res.error || 'Permission error'));
+          }
+        });
+      }
+      return;
+    }
+
+    runTerminalCommand(cmd, function (ok, stdout, stderr, exitCode) {
+      var elapsed = Date.now() - startTime;
+      if (autoHarnessHalted) return;
+      var outText = (stdout || stderr || '').trim();
+      var code = (typeof exitCode === 'number') ? exitCode : (ok ? 0 : 1);
+
+      card.className = 'alice-enx-auto-harness-card ' + (code === 0 ? 'success' : 'error');
+      card.innerHTML =
+        '<div class="alice-enx-auto-harness-hdr">' +
+          '<span class="' + (code === 0 ? 'alice-enx-check' : 'alice-enx-err-icon') + '">' + (code === 0 ? '✓' : '✗') + '</span>' +
+          '<span class="alice-enx-auto-harness-lbl">' + (code === 0 ? 'Tool Executed' : 'Execution Returned Error') + ' (exit ' + code + ' in ' + elapsed + 'ms)</span>' +
+          '<button class="alice-enx-auto-harness-toggle" type="button">Toggle Output</button>' +
+        '</div>' +
+        '<pre class="alice-enx-auto-harness-out' + (code === 0 ? '' : ' err') + '">' + escapeHtml(outText || '(command produced no output)') + '</pre>';
+
+      var toggleBtn = card.querySelector('.alice-enx-auto-harness-toggle');
+      var outPre = card.querySelector('.alice-enx-auto-harness-out');
+      toggleBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        outPre.style.display = outPre.style.display === 'none' ? 'block' : 'none';
+      });
+
+      var obsText = '[Harness Tool Observation for: `' + cmd + '` (exit code ' + code + ')]:\n```\n' + (outText || '(no output, process completed successfully)') + '\n```\nPlease synthesize the final factual answer for the user based on this live output.';
+      sendAliceMessage(obsText);
+    });
+  }
+
   function checkAutoHarnessRun() {
-    if (!S.harnessAutoRun || isAliceGenerating()) return;
+    if (!S.harnessAutoRun || isAliceGenerating() || autoHarnessHalted) return;
     var msgs = document.querySelectorAll('.Message:not(.Message_from_user)');
     if (!msgs.length) return;
     var lastMsg = msgs[msgs.length - 1];
     if (lastMsg.hasAttribute('data-harness-auto-ran')) return;
-    var btns = lastMsg.querySelectorAll('.alice-enx-code-actions button');
-    for (var b = 0; b < btns.length; b++) {
-      if (btns[b].textContent.indexOf('Run & Answer') > -1) {
-        if (autoHarnessTurnCount >= 2) return;
-        autoHarnessTurnCount++;
-        lastMsg.setAttribute('data-harness-auto-ran', '1');
-        var targetBtn = btns[b];
-        setTimeout(function () {
-          if (targetBtn && targetBtn.isConnected) {
-            targetBtn.click();
-          }
-        }, 700);
+
+    var pres = lastMsg.querySelectorAll('pre');
+    for (var p = 0; p < pres.length; p++) {
+      var pre = pres[p];
+      var clean = extractCleanCode(pre);
+      if (!clean) continue;
+
+      var fileMatch = clean.match(/^(?:file:|filename:|path:)\s*([^\n\r]+)/i);
+      if (fileMatch) {
+        var filePath = fileMatch[1].trim();
+        var lines = clean.split('\n');
+        lines.shift();
+        var fileContent = lines.join('\n');
+        executeAutoTool(null, true, filePath, fileContent, pre, lastMsg);
+        return;
+      }
+
+      if (isShellCommand(clean) || pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1) {
+        executeAutoTool(clean, false, null, null, pre, lastMsg);
         return;
       }
     }

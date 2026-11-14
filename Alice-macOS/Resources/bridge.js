@@ -86,7 +86,12 @@
     write: window.__aliceWriteFile,
     gitSync: window.__aliceGitSync,
     computer: window.__aliceComputerUse,
-    getSystemInfo: window.__aliceGetSystemInfo
+    getSystemInfo: window.__aliceGetSystemInfo,
+    runAppleScript: function (script, cb) { window.__aliceComputerUse('runAppleScript', { script: script }, cb); },
+    openApp: function (name, cb) { window.__aliceComputerUse('openApp', { name: name }, cb); },
+    screencapture: function (path, cb) { window.__aliceComputerUse('screencapture', { path: path }, cb); },
+    notify: function (title, msg, cb) { window.__aliceComputerUse('notify', { title: title, message: msg }, cb); },
+    readClipboard: function (cb) { window.__aliceComputerUse('readClipboard', {}, cb); }
   };
 
   // Polyfill Chrome Extension runtime API for content.js
