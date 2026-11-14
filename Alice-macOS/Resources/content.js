@@ -40,6 +40,17 @@
   function getLanguagePrompt() {
     return getLanguageConfig().prompt;
   }
+  var EN_MARKER = 'Answer strictly in English only.';
+  function stripMarkers(text) {
+    if (!text) return '';
+    var out = String(text);
+    Object.keys(LANGUAGES).forEach(function (k) {
+      if (LANGUAGES[k].prompt) {
+        out = out.split(LANGUAGES[k].prompt).join('');
+      }
+    });
+    return out.trim();
+  }
 
   var DEFAULTS = {
     targetLang: 'en',
@@ -524,7 +535,7 @@
   A.settings = settings; A.applySettings = applySettings; A.onSettings = onSettings;
   A.norm = norm; A.translateText = translateText; A.translateDocument = translateDocument;
   A.startObserver = startObserver; A.sweep = sweep;
-  A.mt = mt; A.EN_MARKER = EN_MARKER; A.setNativeValue = setNativeValue;
+  A.mt = mt; A.EN_MARKER = EN_MARKER; A.stripMarkers = stripMarkers; A.setNativeValue = setNativeValue;
   A.mark = function (el) { if (el) el.setAttribute('data-alice-enx', '1'); return el; };
   window.__ALICE_ENX = A;
 })();
