@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Swift build artifacts
+Alice-macOS/build/
+Alice.app/
+*.dSYM/
+*.o
+*.swiftdoc
+*.swiftmodule
+
+# Local logs and temporary files
+*.log
+*.tmp
