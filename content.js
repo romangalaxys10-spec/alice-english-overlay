@@ -632,56 +632,85 @@
     'html.alice-enx-hide-upsell [data-testid="chat-list-login-button"],',
     'html.alice-enx-hide-upsell .ChatListLoginPanel,',
     'html.alice-enx-hide-upsell .AdvCard,html.alice-enx-hide-upsell .AdvSnippet,',
-    'html.alice-enx-hide-upsell .alice-enx-upsell{display:none !important}',
+    'html.alice-enx-hide-upsell .alice-enx-upsell,.alice-enx-upsell{display:none !important}',
     'html.alice-enx-suggests-off .MainPageSuggests-Item{display:none !important}',
     '.alice-enx-hidden{display:none !important}',
     /* brainstorm modal & HUD */
     '.alice-enx-modal-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,20,.58);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:2147483500;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}',
-    '.alice-enx-modal{width:min(580px,96vw);max-height:90vh;overflow-y:auto;background:rgba(255,255,255,.98);border-radius:20px;box-shadow:0 24px 64px rgba(10,10,30,.28);border:1px solid rgba(20,20,30,.1);padding:24px 26px;box-sizing:border-box}',
+    '.alice-enx-modal{width:min(600px,96vw);max-height:90vh;overflow-y:auto;background:rgba(255,255,255,.98);border-radius:20px;box-shadow:0 24px 64px rgba(10,10,30,.28);border:1px solid rgba(20,20,30,.1);padding:24px 26px;box-sizing:border-box;color:#222}',
     '.alice-enx-modal h2{margin:0 0 6px;font:700 18px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28;display:flex;align-items:center;gap:8px}',
     '.alice-enx-modal p.alice-enx-modal-sub{margin:0 0 16px;font:400 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#747482}',
     '.alice-enx-field{margin-bottom:14px}',
     '.alice-enx-field label{display:block;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#3e3e4a;margin-bottom:6px}',
-    '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(20,20,30,.15);padding:9px 12px;font:400 13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#222;background:#fff;transition:border-color .15s}',
-    '.alice-enx-input:focus, .alice-enx-textarea:focus, .alice-enx-select:focus{border-color:#6C4CF0;outline:none;box-shadow:0 0 0 3px rgba(108,76,240,.12)}',
+    '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(20,20,30,.18);padding:8px 12px;font:400 13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28 !important;background:#fff !important;-webkit-text-fill-color:#1e1e28 !important;transition:border-color .15s}',
+    '.alice-enx-input:focus, .alice-enx-textarea:focus, .alice-enx-select:focus{border-color:#6C4CF0 !important;outline:none;box-shadow:0 0 0 3px rgba(108,76,240,.12)}',
+    '.alice-enx-select option{background:#fff !important;color:#1e1e28 !important}',
     '.alice-enx-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}',
-    '@media (max-width:520px){.alice-enx-role-grid{grid-template-columns:1fr}}',
-    '.alice-enx-role-card{border:1.5px solid rgba(20,20,30,.1);border-radius:12px;padding:10px 12px;cursor:pointer;background:#fff;transition:all .15s;text-align:left}',
+    '@media (max-width:540px){.alice-enx-role-grid{grid-template-columns:1fr}}',
+    '.alice-enx-role-card{position:relative;border:1.5px solid rgba(20,20,30,.12);border-radius:12px;padding:10px 12px 10px 32px;cursor:pointer;background:#fff;transition:all .15s;text-align:left;user-select:none}',
+    '.alice-enx-role-card::before{content:"";position:absolute;left:10px;top:12px;width:15px;height:15px;border-radius:4px;border:1.5px solid rgba(20,20,30,.25);background:#fff;transition:all .15s;box-sizing:border-box}',
     '.alice-enx-role-card:hover{border-color:rgba(108,76,240,.4);background:rgba(108,76,240,.02)}',
-    '.alice-enx-role-card.active{border-color:#6C4CF0;background:rgba(108,76,240,.07);box-shadow:0 4px 12px rgba(108,76,240,.12)}',
+    '.alice-enx-role-card.active{border-color:#6C4CF0;background:rgba(108,76,240,.08);box-shadow:0 4px 12px rgba(108,76,240,.12)}',
+    '.alice-enx-role-card.active::before{content:"✓";background:#6C4CF0;border-color:#6C4CF0;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:12px;text-align:center}',
     '.alice-enx-role-title{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#222;display:flex;align-items:center;gap:6px}',
     '.alice-enx-role-desc{font:400 11px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#787886;margin-top:4px}',
-    '.alice-enx-modal-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:18px}',
+    '.alice-enx-rpills{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}',
+    '.alice-enx-rpill{border:1px solid rgba(20,20,30,.15);border-radius:8px;padding:6px 12px;background:#fff;font:500 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#444;cursor:pointer;transition:all .15s}',
+    '.alice-enx-rpill:hover{border-color:rgba(108,76,240,.4);color:#6C4CF0}',
+    '.alice-enx-rpill.active{border-color:#6C4CF0;background:rgba(108,76,240,.12);color:#6C4CF0;font-weight:600}',
+    '.alice-enx-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid rgba(20,20,30,.08)}',
     '.alice-enx-btn-primary{border:none;border-radius:10px;background:#6C4CF0;color:#fff;font:600 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:10px 18px;cursor:pointer;transition:background .15s}',
     '.alice-enx-btn-primary:hover{background:#583ac9}',
     '.alice-enx-btn-secondary{border:1px solid rgba(20,20,30,.15);border-radius:10px;background:transparent;color:#555;font:500 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:9px 16px;cursor:pointer}',
     '.alice-enx-btn-secondary:hover{background:rgba(20,20,30,.04)}',
     /* brainstorm HUD */
-    '.alice-enx-bhud{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483200;display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;background:rgba(26,24,42,.94);color:#ede9fe;border:1px solid rgba(139,109,255,.35);box-shadow:0 12px 34px rgba(10,10,30,.4);font:500 12.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);max-width:min(94vw,680px);box-sizing:border-box}',
-    '.alice-enx-bhud-title{font-weight:700;color:#c0b2ff;display:flex;align-items:center;gap:5px}',
+    '.alice-enx-bhud{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483200;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(26,24,42,.95);color:#ede9fe;border:1px solid rgba(139,109,255,.35);box-shadow:0 12px 34px rgba(10,10,30,.4);font:500 12px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);max-width:min(96vw,760px);box-sizing:border-box}',
+    '.alice-enx-bhud-title{font-weight:700;color:#c0b2ff;display:flex;align-items:center;gap:5px;white-space:nowrap}',
     '.alice-enx-bhud-status{font-weight:400;color:#d8d2f6;font-size:11.5px;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-    '.alice-enx-bhud-btn{border:none;border-radius:999px;cursor:pointer;padding:5px 11px;font:600 11.5px/1 inherit;transition:all .15s;display:inline-flex;align-items:center;gap:4px}',
+    '.alice-enx-bhud-btn{border:none;border-radius:999px;cursor:pointer;padding:5px 10px;font:600 11px/1 inherit;transition:all .15s;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}',
     '.alice-enx-bhud-conclude{background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff}',
     '.alice-enx-bhud-conclude:hover{opacity:.9}',
     '.alice-enx-bhud-stop{background:rgba(240,68,68,.18);color:#fca5a5;border:1px solid rgba(240,68,68,.3)}',
     '.alice-enx-bhud-stop:hover{background:rgba(240,68,68,.3)}',
+    '.alice-enx-bhud-toggle{background:rgba(255,255,255,.12);color:#ddd}',
+    '.alice-enx-bhud-toggle.on{background:rgba(16,185,129,.22);color:#6ee7b7;border:1px solid rgba(16,185,129,.35)}',
     '.alice-enx-bhud-pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981}',
     '.alice-enx-bhud-pulse.busy{background:#f59e0b;box-shadow:0 0 8px #f59e0b;animation:aliceEnxPulse 1.2s infinite}',
     '@keyframes aliceEnxPulse{0%,100%{opacity:1}50%{opacity:.35}}',
+    /* settings panel */
+    '.alice-enx-panel{position:fixed;z-index:2147483100;min-width:280px;max-width:340px;max-height:85vh;overflow-y:auto;padding:16px;border-radius:18px;background:rgba(255,255,255,.98);box-shadow:0 18px 48px rgba(10,10,30,.25);border:1px solid rgba(20,20,30,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-sizing:border-box;color:#222}',
+    '.alice-enx-panel h3{font:700 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between}',
+    '.alice-enx-panel label{display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551;margin-bottom:4px}',
+    '.alice-enx-panel .alice-enx-select, .alice-enx-panel .alice-enx-textarea{width:100%;box-sizing:border-box;border-radius:8px;border:1px solid rgba(20,20,30,.18);padding:7px 10px;font:500 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;background:#fff !important;color:#1e1e28 !important;-webkit-text-fill-color:#1e1e28 !important}',
+    '.alice-enx-panel .alice-enx-select option{background:#fff !important;color:#1e1e28 !important}',
+    '.alice-enx-panel .alice-enx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px;cursor:pointer;font:400 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551}',
+    '.alice-enx-panel .alice-enx-foot{margin-top:10px;font:400 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#a0a0aa;text-align:center}',
     /* dark mode */
     '@media (prefers-color-scheme:dark){',
-      '.alice-enx-modal{background:rgba(28,28,36,.97);border-color:rgba(255,255,255,.12);color:#e8e8f0;box-shadow:0 24px 64px rgba(0,0,0,.6)}',
+      '.alice-enx-modal{background:rgba(28,28,38,.98);border-color:rgba(255,255,255,.14);color:#ede9fe;box-shadow:0 24px 64px rgba(0,0,0,.6)}',
       '.alice-enx-modal h2{color:#f0effa}',
       '.alice-enx-modal p.alice-enx-modal-sub{color:#9e9ea8}',
       '.alice-enx-field label{color:#c4c4d0}',
-      '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{background:rgba(40,40,52,.8);border-color:rgba(255,255,255,.14);color:#f0f0f5}',
-      '.alice-enx-role-card{background:rgba(36,36,46,.75);border-color:rgba(255,255,255,.1)}',
+      '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{background:rgba(42,42,56,.95) !important;border-color:rgba(255,255,255,.18) !important;color:#f0f0f5 !important;-webkit-text-fill-color:#f0f0f5 !important}',
+      '.alice-enx-select option{background:#282838 !important;color:#f0f0f5 !important}',
+      '.alice-enx-role-card{background:rgba(36,36,48,.8);border-color:rgba(255,255,255,.12)}',
+      '.alice-enx-role-card::before{background:rgba(26,26,36,.9);border-color:rgba(255,255,255,.3)}',
       '.alice-enx-role-card:hover{background:rgba(139,109,255,.12);border-color:rgba(139,109,255,.4)}',
-      '.alice-enx-role-card.active{background:rgba(139,109,255,.18);border-color:#8b6ff0}',
+      '.alice-enx-role-card.active{background:rgba(139,109,255,.2);border-color:#8b6ff0}',
+      '.alice-enx-role-card.active::before{background:#8b6ff0;border-color:#8b6ff0;color:#fff}',
       '.alice-enx-role-title{color:#e8e8f2}',
       '.alice-enx-role-desc{color:#a4a4b2}',
+      '.alice-enx-rpill{background:rgba(36,36,48,.8);border-color:rgba(255,255,255,.15);color:#ccc}',
+      '.alice-enx-rpill.active{background:rgba(139,109,255,.25);border-color:#8b6ff0;color:#c0b2ff}',
       '.alice-enx-btn-secondary{border-color:rgba(255,255,255,.16);color:#ccc}',
       '.alice-enx-btn-secondary:hover{background:rgba(255,255,255,.06)}',
+      '.alice-enx-panel{background:rgba(28,28,38,.98);border-color:rgba(255,255,255,.16);box-shadow:0 20px 54px rgba(0,0,0,.65);color:#ede9fe}',
+      '.alice-enx-panel h3{color:#f0effa}',
+      '.alice-enx-panel label{color:#c4c4d2}',
+      '.alice-enx-panel .alice-enx-select, .alice-enx-panel .alice-enx-textarea{background:rgba(42,42,56,.95) !important;border-color:rgba(255,255,255,.18) !important;color:#f5f4fb !important;-webkit-text-fill-color:#f5f4fb !important}',
+      '.alice-enx-panel .alice-enx-select option{background:#282838 !important;color:#f5f4fb !important}',
+      '.alice-enx-panel .alice-enx-row{color:#d4d4e0}',
+      '.alice-enx-panel .alice-enx-foot{color:#888898}',
     '}'
   ].join('');
 
@@ -1038,31 +1067,149 @@
   var bState = {
     active: false,
     topic: '',
-    roleKey: 'ideation',
+    roleKeys: ['ideation'],
     customRole: '',
-    maxRounds: 4,
+    maxRounds: 5,
     currentRound: 0,
+    autoContinue: true,
     stopped: false,
     pollTimer: null
   };
 
-  function sendAliceMessage(text) {
-    var ta = document.querySelector('textarea');
-    if (!ta) return false;
-    A.setNativeValue(ta, text);
-    ta.focus();
-    setTimeout(function () {
-      var btn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
-      if (btn) {
-        btn.click();
-      } else {
-        ta.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
+  function buildKickoffPrompt(topic, roleKeys, customDesc) {
+    if (roleKeys.length === 1) {
+      var r = BRAINSTORM_ROLES[roleKeys[0]] || BRAINSTORM_ROLES.ideation;
+      return r.kickoff(topic, customDesc);
+    }
+    var names = roleKeys.map(function (k) {
+      var r = BRAINSTORM_ROLES[k];
+      return r ? (r.name + ' (' + r.desc + ')') : k;
+    }).join('\n- ');
+    var customSnippet = (roleKeys.indexOf('custom') > -1 && customDesc) ? ('\nCustom persona instructions:\n' + customDesc.trim() + '\n') : '';
+    return 'We are conducting an autonomous multi-expert panel brainstorm with the following selected personas:\n- ' + names + '\n' +
+      customSnippet +
+      '\nTOPIC TO EXPLORE:\n"' + topic + '"\n\n' +
+      'ROUND 1: OPENING PANEL STATEMENTS.\n' +
+      'Each designated expert must speak in their distinct persona and provide their opening analysis, unique angle, and boldest recommendation on this topic. Highlight where your perspectives diverge.';
+  }
+
+  function buildRoundPrompt(round, maxRounds, roleKeys) {
+    if (round >= maxRounds) {
+      if (roleKeys.length === 1) {
+        var r = BRAINSTORM_ROLES[roleKeys[0]] || BRAINSTORM_ROLES.ideation;
+        return r.concludePrompt;
       }
-    }, 120);
+      return 'FINAL PANEL CONSENSUS & EXECUTIVE BLUEPRINT.\n' +
+        'All panel experts collaborate to deliver a unified, finalized conclusion of our brainstorming session.\n' +
+        'Provide: 1) Executive Summary, 2) Consolidated Solution Architecture, 3) Dissenting Views and How They Were Reconciled, 4) Top 5 Ranked Action Items, 5) Immediate Next Steps to execute today.';
+    }
+    if (roleKeys.length === 1) {
+      var role = BRAINSTORM_ROLES[roleKeys[0]] || BRAINSTORM_ROLES.ideation;
+      var idx = round - 2;
+      if (role.roundPrompts && role.roundPrompts[idx]) return role.roundPrompts[idx];
+      return 'ROUND ' + round + ': Continue the brainstorm and expand on the previous insights.';
+    }
+    if (round === 2) {
+      return 'ROUND 2: CROSS-EXAMINATION & ADVERSARIAL DEBATE.\n' +
+        'The experts must directly challenge, interrogate, and stress-test each other\'s proposals from Round 1. ' +
+        'Expose flaws, question hidden assumptions, debate unit economics and real-world implementation barriers.';
+    }
+    if (round === 3) {
+      return 'ROUND 3: UNORTHODOX LATERAL PIVOTS & EDGE CASES.\n' +
+        'The panel introduces breakthrough lateral ideas and counter-intuitive solutions to overcome the objections raised in Round 2. ' +
+        'What radical non-traditional approaches shatter standard industry assumptions?';
+    }
+    return 'ROUND ' + round + ': CONVERGENCE & STRATEGIC ROADMAP.\n' +
+      'The panel begins synthesizing divergent perspectives into a cohesive framework. ' +
+      'Detail the phased execution roadmap, key milestones, and necessary capabilities.';
+  }
+
+  function dismissThinkingModal() {
+    var found = false;
+    // 1. Check all buttons for wait / keep waiting
+    var allBtns = document.querySelectorAll('button, [role="button"]');
+    for (var b = 0; b < allBtns.length; b++) {
+      var bTxt = (allBtns[b].textContent || '').trim();
+      if (/Дождаться ответа|Wait for answer|Wait for response/i.test(bTxt)) {
+        found = true;
+        try { allBtns[b].click(); } catch (e) {}
+        var topContainer = allBtns[b].closest('[role="dialog"], [class*="Modal"], [class*="modal"], [class*="Popup"], [class*="popup"], [class*="Overlay"], [class*="overlay"]') || allBtns[b].parentElement;
+        if (topContainer) {
+          topContainer.style.setProperty('display', 'none', 'important');
+          if (topContainer.parentElement && (topContainer.parentElement.classList.contains('Modal-Backdrop') || getComputedStyle(topContainer.parentElement).position === 'fixed')) {
+            topContainer.parentElement.style.setProperty('display', 'none', 'important');
+          }
+        }
+        return true;
+      }
+    }
+
+    // 2. Scan dialogs or popups containing thinking text
+    var allModals = document.querySelectorAll('[role="dialog"], [class*="Modal"], [class*="modal"], [class*="Popup"], [class*="popup"], [class*="Backdrop"], [class*="backdrop"]');
+    for (var i = 0; i < allModals.length; i++) {
+      var m = allModals[i];
+      var text = (m.textContent || '');
+      if (text.indexOf('Алиса ещё думает') > -1 || text.indexOf('Alice is still thinking') > -1) {
+        found = true;
+        m.style.setProperty('display', 'none', 'important');
+        if (m.parentElement && (m.parentElement.classList.contains('Modal-Backdrop') || m.parentElement.getAttribute('role') === 'presentation' || getComputedStyle(m.parentElement).position === 'fixed')) {
+          m.parentElement.style.setProperty('display', 'none', 'important');
+        }
+        var btns = m.querySelectorAll('button, [role="button"]');
+        for (var j = 0; j < btns.length; j++) {
+          var jTxt = (btns[j].textContent || '').trim();
+          if (/Дождаться ответа|Wait for answer|Wait for response/i.test(jTxt)) {
+            try { btns[j].click(); } catch (e) {}
+            return true;
+          }
+        }
+        if (btns.length >= 3) {
+          try { btns[2].click(); } catch (e) {}
+          return true;
+        }
+        return true;
+      }
+    }
+    return found;
+  }
+  setInterval(dismissThinkingModal, 300);
+
+  function sendAliceMessage(text, onDone) {
+    function trySend() {
+      if (dismissThinkingModal() || isAliceGenerating()) {
+        updateBrainstormHUDStatus('Waiting for Alice to finish prior response...');
+        setTimeout(trySend, 1200);
+        return;
+      }
+      var ta = document.querySelector('textarea');
+      if (!ta) {
+        setTimeout(trySend, 800);
+        return;
+      }
+      A.setNativeValue(ta, text);
+      ta.focus();
+      setTimeout(function () {
+        var btn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
+        if (btn) {
+          btn.click();
+        } else {
+          ta.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
+        }
+        setTimeout(function () {
+          if (dismissThinkingModal()) {
+            setTimeout(trySend, 1500);
+          } else if (onDone) {
+            onDone();
+          }
+        }, 400);
+      }, 150);
+    }
+    trySend();
     return true;
   }
 
   function isAliceGenerating() {
+    if (dismissThinkingModal()) return true;
     var stopBtn = document.querySelector('button[aria-label="Остановить"], button[aria-label="Stop"], [data-testid="button-stop"]');
     if (stopBtn && stopBtn.offsetParent !== null) return true;
     var sendBtn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
@@ -1071,6 +1218,8 @@
       if (/остановить|stop/.test(aria)) return true;
       if (sendBtn.disabled) return true;
     }
+    var loaders = document.querySelectorAll('.Message_status_loading, [class*="typing"], [class*="Cursor"], [class*="cursor"], [class*="Thinking"], [class*="Progress"]');
+    if (loaders.length > 0) return true;
     return false;
   }
 
@@ -1088,6 +1237,7 @@
         return;
       }
 
+      dismissThinkingModal();
       var busy = isAliceGenerating();
       var msgs = document.querySelectorAll('.Message:not(.Message_from_user), [data-testid="alice-chat-message"]');
       var lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
@@ -1111,7 +1261,8 @@
 
       if (curText && curText === lastText && curText.length > 20) {
         stableCount++;
-        if (stableCount >= 2) {
+        // Require 4 consecutive checks (~3.2s of stability) with zero busy signals
+        if (stableCount >= 4) {
           clearInterval(bState.pollTimer);
           bState.pollTimer = null;
           onDone();
@@ -1126,7 +1277,6 @@
 
   function advanceBrainstormRound() {
     if (bState.stopped) return;
-    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
     bState.currentRound++;
 
     if (bState.currentRound > bState.maxRounds) {
@@ -1134,41 +1284,36 @@
       return;
     }
 
-    updateBrainstormHUDStatus('Round ' + bState.currentRound + '/' + bState.maxRounds + ': Sending prompt...');
-    var roundIdx = bState.currentRound - 2;
-    var promptText = '';
-    if (bState.currentRound === bState.maxRounds) {
-      promptText = role.concludePrompt;
-    } else if (role.roundPrompts && role.roundPrompts[roundIdx]) {
-      promptText = role.roundPrompts[roundIdx];
-    } else {
-      promptText = 'ROUND ' + bState.currentRound + ': Continue the brainstorm and expand on the previous insights.';
-    }
+    var roundTotal = bState.maxRounds >= 999 ? '∞' : bState.maxRounds;
+    updateBrainstormHUDStatus('Round ' + bState.currentRound + '/' + roundTotal + ': Sending prompt...');
+    var promptText = buildRoundPrompt(bState.currentRound, bState.maxRounds, bState.roleKeys);
 
     sendAliceMessage(promptText);
-    updateBrainstormHUDStatus('Round ' + bState.currentRound + '/' + bState.maxRounds + ': Alice is thinking...');
+    updateBrainstormHUDStatus('Round ' + bState.currentRound + '/' + roundTotal + ': Alice is thinking...');
 
     waitForAliceResponse(function () {
       if (bState.stopped) return;
       if (bState.currentRound >= bState.maxRounds) {
         bState.active = false;
         updateBrainstormHUDStatus('Session concluded with results!', true);
-      } else {
+      } else if (bState.autoContinue) {
         updateBrainstormHUDStatus('Round ' + bState.currentRound + ' completed. Next round in 2s...');
         setTimeout(function () {
           if (!bState.stopped && bState.active) {
             advanceBrainstormRound();
           }
         }, 2200);
+      } else {
+        updateBrainstormHUDStatus('Round ' + bState.currentRound + ' completed. Ready for next round.', false, true);
       }
     });
   }
 
   function concludeBrainstormNow() {
     if (bState.stopped) return;
-    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
     updateBrainstormHUDStatus('Synthesizing final conclusion...');
-    sendAliceMessage(role.concludePrompt);
+    var promptText = buildRoundPrompt(bState.maxRounds, bState.maxRounds, bState.roleKeys);
+    sendAliceMessage(promptText);
     waitForAliceResponse(function () {
       bState.active = false;
       updateBrainstormHUDStatus('Session concluded with results!', true);
@@ -1192,10 +1337,13 @@
     pulse.className = 'alice-enx-bhud-pulse busy';
     bhudEl.appendChild(pulse);
 
-    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
+    var roleLabel = bState.roleKeys.length > 1
+      ? ('⚡ Panel (' + bState.roleKeys.length + ')')
+      : ('⚡ ' + (BRAINSTORM_ROLES[bState.roleKeys[0]] ? BRAINSTORM_ROLES[bState.roleKeys[0]].name : 'Ideation'));
+
     var title = document.createElement('span');
     title.className = 'alice-enx-bhud-title';
-    title.textContent = '⚡ ' + role.name;
+    title.textContent = roleLabel;
     bhudEl.appendChild(title);
 
     var sepEl = document.createElement('span');
@@ -1208,6 +1356,18 @@
     status.setAttribute('data-enx-bstatus', '1');
     status.textContent = 'Starting Round 1...';
     bhudEl.appendChild(status);
+
+    var autoBtn = document.createElement('button');
+    autoBtn.className = 'alice-enx-bhud-btn alice-enx-bhud-toggle' + (bState.autoContinue ? ' on' : '');
+    autoBtn.setAttribute('data-enx-bauto', '1');
+    autoBtn.textContent = bState.autoContinue ? '⚡ Auto: ON' : '⏸ Auto: OFF';
+    autoBtn.title = 'Toggle Auto Continue between rounds';
+    autoBtn.addEventListener('click', function () {
+      bState.autoContinue = !bState.autoContinue;
+      autoBtn.className = 'alice-enx-bhud-btn alice-enx-bhud-toggle' + (bState.autoContinue ? ' on' : '');
+      autoBtn.textContent = bState.autoContinue ? '⚡ Auto: ON' : '⏸ Auto: OFF';
+    });
+    bhudEl.appendChild(autoBtn);
 
     var nextBtn = document.createElement('button');
     nextBtn.className = 'alice-enx-bhud-btn';
@@ -1249,13 +1409,14 @@
     document.body.appendChild(bhudEl);
   }
 
-  function updateBrainstormHUDStatus(text, isFinished) {
+  function updateBrainstormHUDStatus(text, isFinished, isPaused) {
     if (!bhudEl || !bhudEl.isConnected) return;
     var status = bhudEl.querySelector('[data-enx-bstatus]');
     if (status) status.textContent = text;
     var pulse = bhudEl.querySelector('.alice-enx-bhud-pulse');
     if (pulse) {
       if (isFinished) pulse.className = 'alice-enx-bhud-pulse';
+      else if (isPaused) pulse.className = 'alice-enx-bhud-pulse';
       else pulse.className = 'alice-enx-bhud-pulse busy';
     }
   }
@@ -1264,32 +1425,35 @@
     bState.active = true;
     bState.stopped = false;
     bState.topic = config.topic;
-    bState.roleKey = config.roleKey;
+    bState.roleKeys = config.roleKeys && config.roleKeys.length ? config.roleKeys : ['ideation'];
     bState.customRole = config.customRole || '';
-    bState.maxRounds = config.maxRounds || 4;
+    bState.maxRounds = config.maxRounds || 5;
+    bState.autoContinue = config.autoContinue !== false;
     bState.currentRound = 1;
 
     renderBrainstormHUD();
-    updateBrainstormHUDStatus('Round 1/' + bState.maxRounds + ': Initializing brainstorm...');
+    var roundTotal = bState.maxRounds >= 999 ? '∞' : bState.maxRounds;
+    updateBrainstormHUDStatus('Round 1/' + roundTotal + ': Initializing brainstorm...');
 
-    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
-    var kickoffPrompt = role.kickoff(bState.topic, bState.customRole);
+    var kickoffPrompt = buildKickoffPrompt(bState.topic, bState.roleKeys, bState.customRole);
 
     sendAliceMessage(kickoffPrompt);
-    updateBrainstormHUDStatus('Round 1/' + bState.maxRounds + ': Alice is thinking...');
+    updateBrainstormHUDStatus('Round 1/' + roundTotal + ': Alice is thinking...');
 
     waitForAliceResponse(function () {
       if (bState.stopped) return;
       if (bState.currentRound >= bState.maxRounds) {
         bState.active = false;
         updateBrainstormHUDStatus('Session concluded with results!', true);
-      } else {
+      } else if (bState.autoContinue) {
         updateBrainstormHUDStatus('Round 1 completed. Next round in 2s...');
         setTimeout(function () {
           if (!bState.stopped && bState.active) {
             advanceBrainstormRound();
           }
         }, 2200);
+      } else {
+        updateBrainstormHUDStatus('Round 1 completed. Ready for next round.', false, true);
       }
     });
   }
@@ -1310,7 +1474,7 @@
 
     var sub = document.createElement('p');
     sub.className = 'alice-enx-modal-sub';
-    sub.textContent = 'Autonomous multi-round ideation and persona simulation. Alice explores, critiques, and refines until concluded with your desired results.';
+    sub.textContent = 'Multi-agent ideation and expert debate. Select one or more personas, set custom rounds, and explore topics autonomously.';
     modal.appendChild(sub);
 
     var topicField = document.createElement('div');
@@ -1325,14 +1489,21 @@
     topicField.appendChild(topicTa);
     modal.appendChild(topicField);
 
+    var roleHeader = document.createElement('div');
+    roleHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:6px';
     var roleLbl = document.createElement('label');
-    roleLbl.style.cssText = 'display:block;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#3e3e4a;margin-bottom:6px';
-    roleLbl.textContent = 'Select Brainstorm Role / Persona';
-    modal.appendChild(roleLbl);
+    roleLbl.style.cssText = 'font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;margin:0';
+    roleLbl.textContent = 'Select Brainstorm Agents / Experts (Multi-Select)';
+    var roleBadge = document.createElement('span');
+    roleBadge.style.cssText = 'font:500 11px/1 inherit;color:#6C4CF0;background:rgba(108,76,240,.12);padding:3px 8px;border-radius:6px';
+    roleBadge.textContent = '1 Expert Selected';
+    roleHeader.appendChild(roleLbl);
+    roleHeader.appendChild(roleBadge);
+    modal.appendChild(roleHeader);
 
     var grid = document.createElement('div');
     grid.className = 'alice-enx-role-grid';
-    var selectedRole = 'ideation';
+    var selectedRoles = ['ideation'];
 
     var customField = document.createElement('div');
     customField.className = 'alice-enx-field';
@@ -1346,11 +1517,21 @@
     customField.appendChild(customLbl);
     customField.appendChild(customTa);
 
+    function updateRoleBadge() {
+      if (selectedRoles.length === 1) {
+        var r = BRAINSTORM_ROLES[selectedRoles[0]];
+        roleBadge.textContent = (r ? r.name : selectedRoles[0]) + ' (Single Expert)';
+      } else {
+        roleBadge.textContent = selectedRoles.length + ' Experts (Panel Debate)';
+      }
+      customField.style.display = selectedRoles.indexOf('custom') > -1 ? 'block' : 'none';
+    }
+
     var cards = {};
     Object.keys(BRAINSTORM_ROLES).forEach(function (key) {
       var r = BRAINSTORM_ROLES[key];
       var card = document.createElement('div');
-      card.className = 'alice-enx-role-card' + (key === selectedRole ? ' active' : '');
+      card.className = 'alice-enx-role-card' + (selectedRoles.indexOf(key) > -1 ? ' active' : '');
       var cTitle = document.createElement('div');
       cTitle.className = 'alice-enx-role-title';
       cTitle.textContent = r.icon + ' ' + r.name;
@@ -1360,10 +1541,17 @@
       card.appendChild(cTitle);
       card.appendChild(cDesc);
       card.addEventListener('click', function () {
-        selectedRole = key;
-        Object.keys(cards).forEach(function (k) { cards[k].classList.remove('active'); });
-        card.classList.add('active');
-        customField.style.display = key === 'custom' ? 'block' : 'none';
+        var idx = selectedRoles.indexOf(key);
+        if (idx > -1) {
+          if (selectedRoles.length > 1) {
+            selectedRoles.splice(idx, 1);
+            card.classList.remove('active');
+          }
+        } else {
+          selectedRoles.push(key);
+          card.classList.add('active');
+        }
+        updateRoleBadge();
       });
       cards[key] = card;
       grid.appendChild(card);
@@ -1371,29 +1559,75 @@
     modal.appendChild(grid);
     modal.appendChild(customField);
 
+    // Rounds selector with Custom input
     var roundsField = document.createElement('div');
     roundsField.className = 'alice-enx-field';
     var roundsLbl = document.createElement('label');
     roundsLbl.textContent = 'Autonomous Rounds';
-    var roundsSel = document.createElement('select');
-    roundsSel.className = 'alice-enx-select';
-    var opts = [
-      [3, '3 Rounds (Quick Sprint)'],
-      [4, '4 Rounds (Recommended — Explore, Stress-test, Pivot, Conclude)'],
-      [6, '6 Rounds (Deep Dive)'],
-      [99, 'Continuous (Runs until you click Stop or Conclude)']
-    ];
-    opts.forEach(function (op) {
-      var o = document.createElement('option');
-      o.value = op[0];
-      o.textContent = op[1];
-      if (op[0] === 4) o.selected = true;
-      roundsSel.appendChild(o);
-    });
     roundsField.appendChild(roundsLbl);
-    roundsField.appendChild(roundsSel);
+
+    var pillsWrap = document.createElement('div');
+    pillsWrap.className = 'alice-enx-rpills';
+
+    var customRoundsInput = document.createElement('input');
+    customRoundsInput.type = 'number';
+    customRoundsInput.min = '1';
+    customRoundsInput.max = '50';
+    customRoundsInput.value = '5';
+    customRoundsInput.className = 'alice-enx-input';
+    customRoundsInput.style.cssText = 'width:80px;padding:5px 8px;font-size:12px;display:none;margin-left:6px';
+
+    var selectedRoundsValue = 5;
+    var roundOptions = [
+      { label: '3 Sprint', val: 3 },
+      { label: '5 Standard', val: 5 },
+      { label: '8 Deep Dive', val: 8 },
+      { label: 'Custom', val: 'custom' },
+      { label: '∞ Continuous', val: 999 }
+    ];
+
+    var pillBtns = [];
+    roundOptions.forEach(function (opt) {
+      var pb = document.createElement('button');
+      pb.type = 'button';
+      pb.className = 'alice-enx-rpill' + (opt.val === 5 ? ' active' : '');
+      pb.textContent = opt.label;
+      pb.addEventListener('click', function () {
+        pillBtns.forEach(function (b) { b.classList.remove('active'); });
+        pb.classList.add('active');
+        if (opt.val === 'custom') {
+          customRoundsInput.style.display = 'inline-block';
+          customRoundsInput.focus();
+          selectedRoundsValue = parseInt(customRoundsInput.value, 10) || 5;
+        } else {
+          customRoundsInput.style.display = 'none';
+          selectedRoundsValue = opt.val;
+        }
+      });
+      pillBtns.push(pb);
+      pillsWrap.appendChild(pb);
+    });
+    customRoundsInput.addEventListener('input', function () {
+      selectedRoundsValue = Math.max(1, parseInt(customRoundsInput.value, 10) || 5);
+    });
+    pillsWrap.appendChild(customRoundsInput);
+    roundsField.appendChild(pillsWrap);
     modal.appendChild(roundsField);
 
+    // Auto Continue Toggle
+    var autoRow = document.createElement('label');
+    autoRow.style.cssText = 'display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:14px;padding:8px 2px;font:500 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#333';
+    var autoCb = document.createElement('input');
+    autoCb.type = 'checkbox';
+    autoCb.checked = true;
+    autoCb.style.cssText = 'accent-color:#6C4CF0;width:16px;height:16px;cursor:pointer';
+    var autoText = document.createElement('span');
+    autoText.innerHTML = '<b>Auto Continue</b> (advance rounds autonomously without pausing)';
+    autoRow.appendChild(autoCb);
+    autoRow.appendChild(autoText);
+    modal.appendChild(autoRow);
+
+    // Actions
     var actions = document.createElement('div');
     actions.className = 'alice-enx-modal-actions';
     var cancelBtn = document.createElement('button');
@@ -1413,12 +1647,17 @@
         topicTa.style.borderColor = '#f04444';
         return;
       }
+      var roundsFinal = selectedRoundsValue === 'custom'
+        ? (parseInt(customRoundsInput.value, 10) || 5)
+        : selectedRoundsValue;
+
       backdrop.remove();
       startBrainstormSession({
         topic: topic,
-        roleKey: selectedRole,
+        roleKeys: selectedRoles,
         customRole: customTa.value,
-        maxRounds: parseInt(roundsSel.value, 10) || 4
+        maxRounds: roundsFinal,
+        autoContinue: autoCb.checked
       });
     });
 
@@ -1515,11 +1754,10 @@
   function toggleSettingsPanel(anchor) {
     if (panel && panel.isConnected) { panel.remove(); panel = null; return; }
     panel = A.mark(document.createElement('div'));
-    panel.style.cssText = 'position:fixed;z-index:2147483100;min-width:280px;max-width:340px;max-height:85vh;overflow-y:auto;padding:16px;border-radius:18px;background:rgba(255,255,255,.97);box-shadow:0 18px 48px rgba(10,10,30,.25);border:1px solid rgba(20,20,30,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-sizing:border-box';
+    panel.className = 'alice-enx-panel';
     
-    var title = document.createElement('div');
+    var title = document.createElement('h3');
     title.textContent = 'Alice Overlay Settings';
-    title.style.cssText = 'font:700 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between';
     panel.appendChild(title);
 
     // Language selector
@@ -1527,10 +1765,8 @@
     langRow.style.cssText = 'margin-bottom:12px';
     var langLbl = document.createElement('label');
     langLbl.textContent = 'Response Language';
-    langLbl.style.cssText = 'display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551;margin-bottom:4px';
     var langSel = document.createElement('select');
     langSel.className = 'alice-enx-select';
-    langSel.style.cssText = 'width:100%;border-radius:8px;border:1px solid rgba(20,20,30,.15);padding:6px 8px;font:12px/1.3 inherit;background:#fff;cursor:pointer';
     var curLang = S.targetLang || 'en';
     if (A.LANGUAGES) {
       Object.keys(A.LANGUAGES).forEach(function (k) {
@@ -1553,12 +1789,11 @@
     ciRow.style.cssText = 'margin-bottom:12px';
     var ciLbl = document.createElement('label');
     ciLbl.textContent = 'Custom Instructions / Persona';
-    ciLbl.style.cssText = 'display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551;margin-bottom:4px';
     var ciTa = document.createElement('textarea');
+    ciTa.className = 'alice-enx-textarea';
     ciTa.rows = 2;
     ciTa.placeholder = 'e.g. Respond concisely, write clean code...';
     ciTa.value = S.customInstructions || '';
-    ciTa.style.cssText = 'width:100%;box-sizing:border-box;border-radius:8px;border:1px solid rgba(20,20,30,.15);padding:6px 8px;font:11.5px/1.4 inherit;resize:vertical;background:#fff';
     ciTa.addEventListener('input', function () {
       A.applySettings({ customInstructions: ciTa.value });
     });
@@ -1576,7 +1811,7 @@
     ];
     items.forEach(function (it) {
       var row = document.createElement('label');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px;cursor:pointer;font:400 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551';
+      row.className = 'alice-enx-row';
       var lbl = document.createElement('span');
       lbl.textContent = it[1];
       var tg = document.createElement('input');
@@ -1594,7 +1829,7 @@
     var bsBtn = document.createElement('button');
     bsBtn.type = 'button';
     bsBtn.textContent = '⚡ Launch Brainstorm Studio';
-    bsBtn.style.cssText = 'width:100%;margin-top:10px;padding:8px 0;border:none;border-radius:10px;background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff;font:600 12px/1 inherit;cursor:pointer';
+    bsBtn.style.cssText = 'width:100%;margin-top:12px;padding:9px 0;border:none;border-radius:10px;background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff;font:600 12px/1 inherit;cursor:pointer';
     bsBtn.addEventListener('click', function () {
       if (panel) { panel.remove(); panel = null; }
       openBrainstormModal();
@@ -1602,8 +1837,8 @@
     panel.appendChild(bsBtn);
 
     var foot = document.createElement('div');
+    foot.className = 'alice-enx-foot';
     foot.textContent = 'v' + A.version + ' — free anonymous Alice AI';
-    foot.style.cssText = 'margin-top:10px;font:400 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#a0a0aa;text-align:center';
     panel.appendChild(foot);
     document.body.appendChild(panel);
     function reposition() {
@@ -1798,23 +2033,74 @@
     }
   }
 
-  /* ---------------- upsell hider ---------------- */
-  var UPSELL_RE = /(войдите, чтобы открыть|войдите в аккаунт, чтобы создавать|оформить опцию|обновить тариф|попробуйте ai-агентов|скачать приложение)/i;
-  var UPSELL_SEL = '[class*="Banner"],[class*="banner"],[class*="Promo"],[class*="promo"],[class*="LoginPanel"],[class*="Upsell"],[class*="Rate"],[class*="Widget"],[class*="Infobox"],[class*="Teaser"]';
+  /* ---------------- upsell hider & banner auto-closer ---------------- */
+  var UPSELL_RE = /(войдите, чтобы открыть|все возможности нейросети|войдите в аккаунт|работа с файлами|log in to unlock|everything the neural network can do|working with files|оформить опцию|обновить тариф|попробуйте ai-агентов|скачать приложение|try ai agents|download the app)/i;
+  var UPSELL_SEL = '[class*="Banner"],[class*="banner"],[class*="Promo"],[class*="promo"],[class*="Login"],[class*="login"],[class*="Upsell"],[class*="upsell"],[class*="Rate"],[class*="Widget"],[class*="Infobox"],[class*="Teaser"],[class*="Toast"],[class*="Notification"],[class*="Alert"],[class*="Snack"],[class*="Hint"],[class*="hint"],[class*="Notice"]';
+
   function scanUpsells() {
     if (!S.hideUpsell) return;
+
+    // 1. Selector-based search
     var candidates = document.querySelectorAll(UPSELL_SEL);
     for (var i = 0; i < candidates.length; i++) {
       var el = candidates[i];
-      if (el.classList.contains('alice-enx-upsell')) continue;
       if (el.closest('[data-alice-enx],[data-message-role],.Message')) continue;
-      var raw = el.textContent || '';
-      if (raw.length > 300) continue;
-      if (!UPSELL_RE.test(raw)) continue;
       if (el.querySelector('textarea')) continue;
-      el.classList.add('alice-enx-upsell');
+      var raw = (el.textContent || '').trim();
+      if (raw.length > 500) continue;
+      if (UPSELL_RE.test(raw)) {
+        el.style.setProperty('display', 'none', 'important');
+        el.classList.add('alice-enx-upsell');
+        var closeBtn = el.querySelector('button[aria-label*="Закрыть"], button[aria-label*="Close"], button[class*="close"], button[class*="Close"], button');
+        if (closeBtn) {
+          try { closeBtn.click(); } catch (e) {}
+        }
+      }
+    }
+
+    // 2. Ancestor and sibling hierarchy scan from input box
+    var box = findInputBox();
+    if (box) {
+      var cur = box;
+      for (var level = 0; level < 4; level++) {
+        if (!cur || !cur.parentElement || cur.parentElement === document.body) break;
+        var siblings = cur.parentElement.children;
+        for (var s = 0; s < siblings.length; s++) {
+          var sib = siblings[s];
+          if (sib === cur || sib.contains(box)) continue;
+          if (sib.closest && sib.closest('[data-alice-enx]')) continue;
+          if (sib.querySelector('textarea')) continue;
+          var sTxt = (sib.textContent || '').trim();
+          if (sTxt.length < 500 && UPSELL_RE.test(sTxt)) {
+            sib.style.setProperty('display', 'none', 'important');
+            sib.classList.add('alice-enx-upsell');
+            var sibClose = sib.querySelector('button[aria-label*="Закрыть"], button[aria-label*="Close"], button[class*="close"], button[class*="Close"], button, [role="button"]');
+            if (sibClose) {
+              try { sibClose.click(); } catch (e) {}
+            }
+          }
+        }
+        cur = cur.parentElement;
+      }
+    }
+
+    // 3. Scan all close buttons whose container text matches UPSELL_RE
+    var allCloseButtons = document.querySelectorAll('button[aria-label*="Закрыть"], button[aria-label*="Close"], button[class*="close"], button[class*="Close"]');
+    for (var c = 0; c < allCloseButtons.length; c++) {
+      var cb = allCloseButtons[c];
+      if (cb.closest('[data-alice-enx],[data-message-role],.Message')) continue;
+      var cParent = cb.closest('[class*="Banner"],[class*="Promo"],[class*="Login"],[class*="Upsell"],[class*="Notification"],[class*="Notice"]') || cb.parentElement;
+      if (cParent) {
+        var pTxt = (cParent.textContent || '').trim();
+        if (pTxt.length < 500 && UPSELL_RE.test(pTxt)) {
+          cParent.style.setProperty('display', 'none', 'important');
+          cParent.classList.add('alice-enx-upsell');
+          try { cb.click(); } catch (e) {}
+        }
+      }
     }
   }
+  setInterval(scanUpsells, 350);
 
   /* ---------------- limits / load notice ---------------- */
   var noticeEl = null;

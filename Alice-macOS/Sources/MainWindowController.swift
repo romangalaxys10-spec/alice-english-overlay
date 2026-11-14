@@ -7,21 +7,44 @@ final class MainWindowController: NSWindowController {
     let webViewController = WebViewController()
 
     init() {
+        let screen = NSScreen.main
+        let visible = screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
+        let defaultWidth: CGFloat = min(1200, max(1060, visible.width * 0.78))
+        let defaultHeight: CGFloat = min(840, max(760, visible.height * 0.84))
+        let originX = visible.midX - defaultWidth / 2
+        let originY = visible.midY - defaultHeight / 2
+
         let window = NSWindow(
-            contentRect: NSRect(x: 120, y: 120, width: 1200, height: 800),
+            contentRect: NSRect(x: originX, y: originY, width: defaultWidth, height: defaultHeight),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
             backing: .buffered,
             defer: false
         )
-        window.minSize = NSSize(width: 480, height: 420)
+        window.minSize = NSSize(width: 580, height: 500)
         window.title = "Alice AI"
         window.titleVisibility = .visible
-        window.setFrameAutosaveName("AliceMainWindowFrame_v3")
+        window.setFrameAutosaveName("AliceMainWindowFrame_v4")
         window.isReleasedWhenClosed = false
 
         super.init(window: window)
 
         window.contentViewController = webViewController
+    }
+
+    func ensureOptimalSize() {
+        guard let window = self.window, let screen = window.screen ?? NSScreen.main else { return }
+        let visible = screen.visibleFrame
+        if window.frame.width < 960 || window.frame.height < 720 {
+            let targetW = min(1200, max(1060, visible.width * 0.78))
+            let targetH = min(840, max(760, visible.height * 0.84))
+            let targetRect = NSRect(
+                x: visible.midX - targetW / 2,
+                y: visible.midY - targetH / 2,
+                width: targetW,
+                height: targetH
+            )
+            window.setFrame(targetRect, display: true, animate: false)
+        }
     }
 
     required init?(coder: NSCoder) {
