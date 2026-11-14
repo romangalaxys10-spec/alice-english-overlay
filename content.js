@@ -3,7 +3,7 @@
   'use strict';
   if (window.__ALICE_ENX) return;
 
-  var A = { version: '1.0.0' };
+  var A = { version: '1.1.0' };
 
   /* ---------------- environment ---------------- */
   var GMX = null;
@@ -16,14 +16,40 @@
   var HAS_SYNC = false;
   try { HAS_SYNC = EXT && !!(chrome.storage && chrome.storage.sync); } catch (e) {}
 
-  /* ---------------- settings ---------------- */
+  /* ---------------- settings & languages ---------------- */
+  var LANGUAGES = {
+    'en': { name: 'English', prompt: 'Answer strictly in English only.', code: 'en' },
+    'es': { name: 'Spanish', prompt: 'Responde estrictamente en español únicamente.', code: 'es' },
+    'fr': { name: 'French', prompt: 'Répondez strictement en français uniquement.', code: 'fr' },
+    'de': { name: 'German', prompt: 'Antworte strikt ausschließlich auf Deutsch.', code: 'de' },
+    'it': { name: 'Italian', prompt: 'Rispondi rigorosamente solo in italiano.', code: 'it' },
+    'pt': { name: 'Portuguese', prompt: 'Responda estritamente apenas em português.', code: 'pt' },
+    'zh': { name: 'Chinese (Simplified)', prompt: '请严格仅使用中文回复。', code: 'zh-CN' },
+    'ja': { name: 'Japanese', prompt: '厳格に日本語のみで回答してください。', code: 'ja' },
+    'ko': { name: 'Korean', prompt: '엄격하게 한국어로만 답변해 주세요.', code: 'ko' },
+    'ar': { name: 'Arabic', prompt: 'يرجى الإجابة بدقة باللغة العربية فقط.', code: 'ar' },
+    'tr': { name: 'Turkish', prompt: 'Lütfen kesinlikle yalnızca Türkçe olarak yanıtlayın.', code: 'tr' },
+    'uk': { name: 'Ukrainian', prompt: 'Відповідай суворо виключно українською мовою.', code: 'uk' },
+    'ru': { name: 'Russian (Original)', prompt: '', code: 'ru' }
+  };
+
+  function getLanguageConfig() {
+    var key = (settings && settings.targetLang) || 'en';
+    return LANGUAGES[key] || LANGUAGES['en'];
+  }
+  function getLanguagePrompt() {
+    return getLanguageConfig().prompt;
+  }
+
   var DEFAULTS = {
-    enReplies: true,      // silently append "Please answer in English."
-    translateBtn: true,   // "EN" machine-translation button on Alice's replies
-    chips: true,          // English starter prompt cards
-    hideUpsell: true,     // hide login / Pro banners
-    carryContext: true,   // attach a recap when opening a new chat
-    modeBar: true         // chat.z.ai-like mode bar
+    targetLang: 'en',
+    enReplies: true,
+    customInstructions: '',
+    translateBtn: true,
+    chips: true,
+    hideUpsell: true,
+    carryContext: true,
+    modeBar: true
   };
   var settings = Object.assign({}, DEFAULTS);
   var listeners = [];
@@ -411,17 +437,18 @@
   }
 
   /* ---------------- machine translation service ---------------- */
-  var EN_MARKER = 'Answer strictly in English only.';
-
-  function gtxUrl(text) {
-    return 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + encodeURIComponent(text);
+  function gtxUrl(text, targetLang) {
+    var lang = targetLang || getLanguageConfig().code || 'en';
+    return 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=' + encodeURIComponent(lang) + '&dt=t&q=' + encodeURIComponent(text);
   }
   function parseGtx(body) {
     var data = JSON.parse(body);
     if (!data || !data[0]) throw new Error('bad gtx payload');
     return data[0].map(function (seg) { return seg && seg[0] ? seg[0] : ''; }).join('');
   }
-  function myMemory(text, cb) {
+  function myMemory(text, targetLang, cb) {
+    if (typeof targetLang === 'function') { cb = targetLang; targetLang = 'en'; }
+    var lang = targetLang || getLanguageConfig().code || 'en';
     var chunks = [];
     var rest = String(text);
     while (rest.length) {
@@ -437,7 +464,7 @@
     var out = [], done = 0, failed = false;
     if (!chunks.length) { cb(null); return; }
     chunks.forEach(function (chunk, i) {
-      var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunk) + '&langpair=ru|en';
+      var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunk) + '&langpair=ru|' + encodeURIComponent(lang);
       function fin() {
         done++;
         if (done === chunks.length) cb(failed ? null : out.join(' ').replace(/\s+/g, ' ').trim());
@@ -453,28 +480,29 @@
       fetch(url).then(function (r) { return r.json(); }).then(useJson).catch(function () { failed = true; fin(); });
     });
   }
-  function gtxViaGM(text, cb) {
+  function gtxViaGM(text, targetLang, cb) {
     GMX({
-      method: 'GET', url: gtxUrl(text), timeout: 15000,
-      onload: function (r) { try { cb(parseGtx(r.responseText)); } catch (e) { myMemory(text, cb); } },
-      onerror: function () { myMemory(text, cb); },
-      ontimeout: function () { myMemory(text, cb); }
+      method: 'GET', url: gtxUrl(text, targetLang), timeout: 15000,
+      onload: function (r) { try { cb(parseGtx(r.responseText)); } catch (e) { myMemory(text, targetLang, cb); } },
+      onerror: function () { myMemory(text, targetLang, cb); },
+      ontimeout: function () { myMemory(text, targetLang, cb); }
     });
   }
   function mt(text, cb) {
     text = String(text || '').trim();
     if (!text) { cb(null); return; }
-    if (GMX) { gtxViaGM(text, cb); return; }
+    var targetLang = getLanguageConfig().code || 'en';
+    if (GMX) { gtxViaGM(text, targetLang, cb); return; }
     if (EXT) {
       try {
-        chrome.runtime.sendMessage({ type: 'aliceEnxTranslate', text: text }, function (res) {
-          if (chrome.runtime.lastError) { myMemory(text, cb); return; }
-          if (res && res.ok && res.text) cb(res.text); else myMemory(text, cb);
+        chrome.runtime.sendMessage({ type: 'aliceEnxTranslate', text: text, targetLang: targetLang }, function (res) {
+          if (chrome.runtime.lastError) { myMemory(text, targetLang, cb); return; }
+          if (res && res.ok && res.text) cb(res.text); else myMemory(text, targetLang, cb);
         });
         return;
       } catch (e) { /* fall through */ }
     }
-    myMemory(text, cb);
+    myMemory(text, targetLang, cb);
   }
 
   /* ---------------- send-time textarea helper ---------------- */
@@ -490,6 +518,9 @@
 
   /* ---------------- export ---------------- */
   A.GMX = GMX; A.EXT = EXT;
+  A.LANGUAGES = LANGUAGES;
+  A.getLanguageConfig = getLanguageConfig;
+  A.getLanguagePrompt = getLanguagePrompt;
   A.settings = settings; A.applySettings = applySettings; A.onSettings = onSettings;
   A.norm = norm; A.translateText = translateText; A.translateDocument = translateDocument;
   A.startObserver = startObserver; A.sweep = sweep;
@@ -592,7 +623,55 @@
     'html.alice-enx-hide-upsell .AdvCard,html.alice-enx-hide-upsell .AdvSnippet,',
     'html.alice-enx-hide-upsell .alice-enx-upsell{display:none !important}',
     'html.alice-enx-suggests-off .MainPageSuggests-Item{display:none !important}',
-    '.alice-enx-hidden{display:none !important}'
+    '.alice-enx-hidden{display:none !important}',
+    /* brainstorm modal & HUD */
+    '.alice-enx-modal-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,20,.58);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:2147483500;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}',
+    '.alice-enx-modal{width:min(580px,96vw);max-height:90vh;overflow-y:auto;background:rgba(255,255,255,.98);border-radius:20px;box-shadow:0 24px 64px rgba(10,10,30,.28);border:1px solid rgba(20,20,30,.1);padding:24px 26px;box-sizing:border-box}',
+    '.alice-enx-modal h2{margin:0 0 6px;font:700 18px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28;display:flex;align-items:center;gap:8px}',
+    '.alice-enx-modal p.alice-enx-modal-sub{margin:0 0 16px;font:400 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#747482}',
+    '.alice-enx-field{margin-bottom:14px}',
+    '.alice-enx-field label{display:block;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#3e3e4a;margin-bottom:6px}',
+    '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(20,20,30,.15);padding:9px 12px;font:400 13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#222;background:#fff;transition:border-color .15s}',
+    '.alice-enx-input:focus, .alice-enx-textarea:focus, .alice-enx-select:focus{border-color:#6C4CF0;outline:none;box-shadow:0 0 0 3px rgba(108,76,240,.12)}',
+    '.alice-enx-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}',
+    '@media (max-width:520px){.alice-enx-role-grid{grid-template-columns:1fr}}',
+    '.alice-enx-role-card{border:1.5px solid rgba(20,20,30,.1);border-radius:12px;padding:10px 12px;cursor:pointer;background:#fff;transition:all .15s;text-align:left}',
+    '.alice-enx-role-card:hover{border-color:rgba(108,76,240,.4);background:rgba(108,76,240,.02)}',
+    '.alice-enx-role-card.active{border-color:#6C4CF0;background:rgba(108,76,240,.07);box-shadow:0 4px 12px rgba(108,76,240,.12)}',
+    '.alice-enx-role-title{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#222;display:flex;align-items:center;gap:6px}',
+    '.alice-enx-role-desc{font:400 11px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#787886;margin-top:4px}',
+    '.alice-enx-modal-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:18px}',
+    '.alice-enx-btn-primary{border:none;border-radius:10px;background:#6C4CF0;color:#fff;font:600 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:10px 18px;cursor:pointer;transition:background .15s}',
+    '.alice-enx-btn-primary:hover{background:#583ac9}',
+    '.alice-enx-btn-secondary{border:1px solid rgba(20,20,30,.15);border-radius:10px;background:transparent;color:#555;font:500 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:9px 16px;cursor:pointer}',
+    '.alice-enx-btn-secondary:hover{background:rgba(20,20,30,.04)}',
+    /* brainstorm HUD */
+    '.alice-enx-bhud{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483200;display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;background:rgba(26,24,42,.94);color:#ede9fe;border:1px solid rgba(139,109,255,.35);box-shadow:0 12px 34px rgba(10,10,30,.4);font:500 12.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);max-width:min(94vw,680px);box-sizing:border-box}',
+    '.alice-enx-bhud-title{font-weight:700;color:#c0b2ff;display:flex;align-items:center;gap:5px}',
+    '.alice-enx-bhud-status{font-weight:400;color:#d8d2f6;font-size:11.5px;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.alice-enx-bhud-btn{border:none;border-radius:999px;cursor:pointer;padding:5px 11px;font:600 11.5px/1 inherit;transition:all .15s;display:inline-flex;align-items:center;gap:4px}',
+    '.alice-enx-bhud-conclude{background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff}',
+    '.alice-enx-bhud-conclude:hover{opacity:.9}',
+    '.alice-enx-bhud-stop{background:rgba(240,68,68,.18);color:#fca5a5;border:1px solid rgba(240,68,68,.3)}',
+    '.alice-enx-bhud-stop:hover{background:rgba(240,68,68,.3)}',
+    '.alice-enx-bhud-pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981}',
+    '.alice-enx-bhud-pulse.busy{background:#f59e0b;box-shadow:0 0 8px #f59e0b;animation:aliceEnxPulse 1.2s infinite}',
+    '@keyframes aliceEnxPulse{0%,100%{opacity:1}50%{opacity:.35}}',
+    /* dark mode */
+    '@media (prefers-color-scheme:dark){',
+      '.alice-enx-modal{background:rgba(28,28,36,.97);border-color:rgba(255,255,255,.12);color:#e8e8f0;box-shadow:0 24px 64px rgba(0,0,0,.6)}',
+      '.alice-enx-modal h2{color:#f0effa}',
+      '.alice-enx-modal p.alice-enx-modal-sub{color:#9e9ea8}',
+      '.alice-enx-field label{color:#c4c4d0}',
+      '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{background:rgba(40,40,52,.8);border-color:rgba(255,255,255,.14);color:#f0f0f5}',
+      '.alice-enx-role-card{background:rgba(36,36,46,.75);border-color:rgba(255,255,255,.1)}',
+      '.alice-enx-role-card:hover{background:rgba(139,109,255,.12);border-color:rgba(139,109,255,.4)}',
+      '.alice-enx-role-card.active{background:rgba(139,109,255,.18);border-color:#8b6ff0}',
+      '.alice-enx-role-title{color:#e8e8f2}',
+      '.alice-enx-role-desc{color:#a4a4b2}',
+      '.alice-enx-btn-secondary{border-color:rgba(255,255,255,.16);color:#ccc}',
+      '.alice-enx-btn-secondary:hover{background:rgba(255,255,255,.06)}',
+    '}'
   ].join('');
 
   function injectCSS() {
@@ -627,7 +706,8 @@
     mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
     gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/>',
     copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
-    lang: '<path d="M4 5h7M7.5 5c0 4-1.5 7-4.5 9"/><path d="M6 8.5C7 11 9 13.5 11 14.5"/><path d="M13 20l4-10 4 10M14.6 17h4.8"/>'
+    lang: '<path d="M4 5h7M7.5 5c0 4-1.5 7-4.5 9"/><path d="M6 8.5C7 11 9 13.5 11 14.5"/><path d="M13 20l4-10 4 10M14.6 17h4.8"/>',
+    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
   };
 
   /* ---------------- mode bar ---------------- */
@@ -821,6 +901,536 @@
   }
   setInterval(refreshPills, 900);
 
+  /* ---------------- Autonomous Brainstorm & Role Play Studio ---------------- */
+  var BRAINSTORM_ROLES = {
+    ideation: {
+      name: 'Ideation Engine',
+      icon: '💡',
+      desc: 'Divergent exploration, edge-case probing, stress testing, and roadmap synthesis.',
+      kickoff: function (topic) {
+        return 'We are conducting an autonomous multi-round brainstorming session on the topic:\n"' + topic + '"\n\n' +
+          'ROUND 1: DIVERGENT EXPLORATION.\n' +
+          'Generate 5 bold, creative, and distinct concepts or perspectives. Avoid generic clichés. ' +
+          'For each concept, provide: 1) Core mechanism, 2) Unique differentiator, 3) Primary obstacle.';
+      },
+      roundPrompts: [
+        'ROUND 2: DEEP DIVE & STRESS-TEST.\nSelect the 2 strongest, most unconventional concepts from above. ' +
+          'Rigorously stress-test them: what are the 3 biggest failure points, unit economics/execution hurdles, and how can we mitigate them?',
+        'ROUND 3: LATERAL PIVOT & EDGE CASES.\nWhat would a completely unconventional outsider do? ' +
+          'Introduce 2 radical lateral ideas or counter-intuitive angles that shatter standard assumptions.',
+        'ROUND 4: CONVERGENCE & ROADMAP.\nSynthesize the insights so far into a unified, actionable gameplan. ' +
+          'Detail the phased execution roadmap, key milestones, and necessary resources.'
+      ],
+      concludePrompt: 'FINAL SYNTHESIS & EXECUTIVE SUMMARY.\n' +
+        'Deliver a comprehensive, finalized conclusion of our brainstorming session on this topic. ' +
+        'Provide: 1) Executive Summary, 2) Winning Solution Architecture, 3) Ranked Top 5 Action Items, 4) Immediate Next Steps to execute today.'
+    },
+    devils_advocate: {
+      name: "Devil's Advocate",
+      icon: '🛡️',
+      desc: 'Adversarial critical scrutiny, finding catastrophic failure modes and blind spots.',
+      kickoff: function (topic) {
+        return 'We are beginning an adversarial stress-testing session where you act as a merciless Devil\'s Advocate and Risk Auditor on the topic:\n"' + topic + '"\n\n' +
+          'ROUND 1: ASSUMPTION TEARDOWN.\n' +
+          'Expose and tear down all hidden assumptions in this concept. ' +
+          'List 5 reasons why this idea could catastrophically fail in the real world (market, human psychology, competitive, technical).';
+      },
+      roundPrompts: [
+        'ROUND 2: WORST-CASE SCENARIOS.\nSimulate the 3 most realistic worst-case scenarios and catastrophic failure modes. ' +
+          'How will incumbents, competitors, or unintended consequences destroy this?',
+        'ROUND 3: HARDENING & RESILIENCE.\nPropose defensive architectures and counter-measures. ' +
+          'How do we redesign this system so that each identified vulnerability is turned into an antifragile strength?'
+      ],
+      concludePrompt: 'FINAL RISK AUDIT & HARDENED BLUEPRINT.\n' +
+        'Synthesize the adversarial review into a final hardened strategic blueprint. ' +
+        'Provide: 1) The Residual Risk Matrix, 2) The 3 Non-Negotiable Survival Criteria, 3) Final Hardened Action Plan.'
+    },
+    startup_vc: {
+      name: 'Startup Pitch & VC',
+      icon: '🚀',
+      desc: 'Dynamic debate between a visionary founder and a skeptical Tier-1 VC partner.',
+      kickoff: function (topic) {
+        return 'We are launching a dynamic Venture Capital pitch simulation on the startup idea:\n"' + topic + '"\n\n' +
+          'ROUND 1: THE FOUNDER PITCH & INITIAL VC INTERROGATION.\n' +
+          'Act as BOTH the Visionary Founder delivering an irresistible 60-second pitch (Problem, Solution, Secret Sauce, TAM) ' +
+          'AND a skeptical Tier-1 VC Partner grilling the founder with 3 brutal questions about defensibility and customer acquisition.';
+      },
+      roundPrompts: [
+        'ROUND 2: DEFENDING THE MOAT & UNIT ECONOMICS.\n' +
+          'The Founder must counter the VC\'s objections with sharp, concrete unit economics (CAC, LTV, payback period) ' +
+          'and prove why Big Tech cannot replicate this in a weekend. Then the VC responds with term sheet stipulations.',
+        'ROUND 3: GO-TO-MARKET TRACTION ENGINE.\n' +
+          'Debate the 0-to-1 go-to-market strategy. Detail the exact initial distribution wedge, viral loop, and first 1,000 customers.'
+      ],
+      concludePrompt: 'FINAL TERM SHEET & VENTURE SYNTHESIS.\n' +
+        'The VC partner and Founder reach agreement. ' +
+        'Deliver: 1) Investment Thesis, 2) Key Metrics to hit for Series A, 3) 18-Month Execution Milestones, 4) Final Board Directives.'
+    },
+    consultant: {
+      name: 'Strategy Consultant',
+      icon: '📊',
+      desc: 'McKinsey/Bain structured analysis: MECE breakdown and 3-horizon plan.',
+      kickoff: function (topic) {
+        return 'Act as a Senior Partner at a top-tier management consultancy analyzing the business objective:\n"' + topic + '"\n\n' +
+          'ROUND 1: MECE ISSUE TREE & ROOT CAUSE DIAGNOSIS.\n' +
+          'Deconstruct this challenge into a Mutually Exclusive, Collectively Exhaustive (MECE) framework. ' +
+          'Identify the primary value drivers, operational bottlenecks, and core strategic levers.';
+      },
+      roundPrompts: [
+        'ROUND 2: STRATEGIC OPTIONS & BENCHMARKING.\n' +
+          'Evaluate 3 mutually distinct strategic options against Feasibility, Financial Return, and Strategic Alignment. ' +
+          'Provide a scoring matrix and clear tradeoff analysis.',
+        'ROUND 3: THREE-HORIZON EXECUTION BLUEPRINT.\n' +
+          'Structure an implementation plan across Horizon 1 (Quick wins: 0-90 days), Horizon 2 (Scale: 3-12 months), and Horizon 3 (Transformation: 1-3 years).'
+      ],
+      concludePrompt: 'EXECUTIVE COMMITTEE FINAL BRIEFING.\n' +
+        'Present the finalized strategic recommendations for the Board of Directors. ' +
+        'Include: 1) Executive Summary, 2) Strategic Recommendation, 3) Key Performance Indicators (KPIs), 4) Resource Allocation and Governance Plan.'
+    },
+    storyteller: {
+      name: 'Creative Storyteller',
+      icon: '✨',
+      desc: 'Narrative world-building, high-stakes plot twists, and vivid character arcs.',
+      kickoff: function (topic) {
+        return 'We are collaborating as a master writer\'s room crafting an original story world and narrative on the premise:\n"' + topic + '"\n\n' +
+          'ROUND 1: WORLD-BUILDING & ANTAGONISTIC FORCES.\n' +
+          'Establish the setting, the fundamental conflict of the world, and two deeply compelling characters with clashing philosophies.';
+      },
+      roundPrompts: [
+        'ROUND 2: THE INCITING INCIDENT & RISING STAKES.\n' +
+          'Describe the disruptive event that forces the protagonists out of their comfort zone, escalating tension with an unexpected moral dilemma.',
+        'ROUND 3: THE MIDPOINT REVERSAL & CLIMAX.\n' +
+          'Introduce a shocking revelation or betrayal that recontextualizes everything, driving the narrative to an intense climax.'
+      ],
+      concludePrompt: 'NARRATIVE SYNTHESIS & TREATMENT.\n' +
+        'Deliver the complete story treatment. ' +
+        'Include: 1) Core Thematic Resonance, 2) Detailed 3-Act Outline, 3) Climax Resolution and Lingering Epilogue.'
+    },
+    custom: {
+      name: 'Custom Persona / Prompt',
+      icon: '🎭',
+      desc: 'Define your own role, rules, or multi-agent persona.',
+      kickoff: function (topic, customDesc) {
+        return (customDesc ? customDesc.trim() + '\n\n' : '') +
+          'We are starting an autonomous brainstorming session on the topic:\n"' + topic + '"\n\n' +
+          'ROUND 1: Please begin your analysis and exploration from your designated persona perspective.';
+      },
+      roundPrompts: [
+        'ROUND 2: Continue the brainstorm. Deepen your analysis, address the hardest challenges, and propose concrete innovative solutions.',
+        'ROUND 3: Further expand and refine your ideas. Introduce fresh perspectives and test feasibility.'
+      ],
+      concludePrompt: 'FINAL SYNTHESIS & RESULTS.\n' +
+        'Please deliver the finalized, concluded results of this brainstorm session, summarizing all key outcomes and recommendations.'
+    }
+  };
+
+  var bState = {
+    active: false,
+    topic: '',
+    roleKey: 'ideation',
+    customRole: '',
+    maxRounds: 4,
+    currentRound: 0,
+    stopped: false,
+    pollTimer: null
+  };
+
+  function sendAliceMessage(text) {
+    var ta = document.querySelector('textarea');
+    if (!ta) return false;
+    A.setNativeValue(ta, text);
+    ta.focus();
+    setTimeout(function () {
+      var btn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
+      if (btn) {
+        btn.click();
+      } else {
+        ta.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
+      }
+    }, 120);
+    return true;
+  }
+
+  function isAliceGenerating() {
+    var stopBtn = document.querySelector('button[aria-label="Остановить"], button[aria-label="Stop"], [data-testid="button-stop"]');
+    if (stopBtn && stopBtn.offsetParent !== null) return true;
+    var sendBtn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
+    if (sendBtn) {
+      var aria = (sendBtn.getAttribute('aria-label') || '').toLowerCase();
+      if (/остановить|stop/.test(aria)) return true;
+      if (sendBtn.disabled) return true;
+    }
+    return false;
+  }
+
+  function waitForAliceResponse(onDone) {
+    if (bState.pollTimer) clearInterval(bState.pollTimer);
+    var t0 = Date.now();
+    var responseStarted = false;
+    var stableCount = 0;
+    var lastText = '';
+
+    bState.pollTimer = setInterval(function () {
+      if (bState.stopped) {
+        clearInterval(bState.pollTimer);
+        bState.pollTimer = null;
+        return;
+      }
+
+      var busy = isAliceGenerating();
+      var msgs = document.querySelectorAll('.Message:not(.Message_from_user), [data-testid="alice-chat-message"]');
+      var lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
+      var curText = lastMsg ? (lastMsg.textContent || '').trim() : '';
+
+      if (!responseStarted) {
+        if (busy || (curText && curText.length > 10)) {
+          responseStarted = true;
+        } else if (Date.now() - t0 > 14000) {
+          responseStarted = true;
+        }
+        return;
+      }
+
+      if (busy) {
+        stableCount = 0;
+        lastText = curText;
+        updateBrainstormHUDStatus('Alice is writing response...');
+        return;
+      }
+
+      if (curText && curText === lastText && curText.length > 20) {
+        stableCount++;
+        if (stableCount >= 2) {
+          clearInterval(bState.pollTimer);
+          bState.pollTimer = null;
+          onDone();
+        }
+      } else {
+        stableCount = 0;
+        lastText = curText;
+        updateBrainstormHUDStatus('Alice is generating...');
+      }
+    }, 800);
+  }
+
+  function advanceBrainstormRound() {
+    if (bState.stopped) return;
+    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
+    bState.currentRound++;
+
+    if (bState.currentRound > bState.maxRounds) {
+      concludeBrainstormNow();
+      return;
+    }
+
+    updateBrainstormHUDStatus('Round ' + bState.currentRound + '/' + bState.maxRounds + ': Sending prompt...');
+    var roundIdx = bState.currentRound - 2;
+    var promptText = '';
+    if (bState.currentRound === bState.maxRounds) {
+      promptText = role.concludePrompt;
+    } else if (role.roundPrompts && role.roundPrompts[roundIdx]) {
+      promptText = role.roundPrompts[roundIdx];
+    } else {
+      promptText = 'ROUND ' + bState.currentRound + ': Continue the brainstorm and expand on the previous insights.';
+    }
+
+    sendAliceMessage(promptText);
+    updateBrainstormHUDStatus('Round ' + bState.currentRound + '/' + bState.maxRounds + ': Alice is thinking...');
+
+    waitForAliceResponse(function () {
+      if (bState.stopped) return;
+      if (bState.currentRound >= bState.maxRounds) {
+        bState.active = false;
+        updateBrainstormHUDStatus('Session concluded with results!', true);
+      } else {
+        updateBrainstormHUDStatus('Round ' + bState.currentRound + ' completed. Next round in 2s...');
+        setTimeout(function () {
+          if (!bState.stopped && bState.active) {
+            advanceBrainstormRound();
+          }
+        }, 2200);
+      }
+    });
+  }
+
+  function concludeBrainstormNow() {
+    if (bState.stopped) return;
+    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
+    updateBrainstormHUDStatus('Synthesizing final conclusion...');
+    sendAliceMessage(role.concludePrompt);
+    waitForAliceResponse(function () {
+      bState.active = false;
+      updateBrainstormHUDStatus('Session concluded with results!', true);
+    });
+  }
+
+  function stopBrainstormSession() {
+    bState.stopped = true;
+    bState.active = false;
+    if (bState.pollTimer) { clearInterval(bState.pollTimer); bState.pollTimer = null; }
+    updateBrainstormHUDStatus('Session stopped by user.', true);
+  }
+
+  var bhudEl = null;
+  function renderBrainstormHUD() {
+    if (bhudEl && bhudEl.isConnected) bhudEl.remove();
+    bhudEl = A.mark(document.createElement('div'));
+    bhudEl.className = 'alice-enx-bhud';
+
+    var pulse = document.createElement('span');
+    pulse.className = 'alice-enx-bhud-pulse busy';
+    bhudEl.appendChild(pulse);
+
+    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
+    var title = document.createElement('span');
+    title.className = 'alice-enx-bhud-title';
+    title.textContent = '⚡ ' + role.name;
+    bhudEl.appendChild(title);
+
+    var sepEl = document.createElement('span');
+    sepEl.style.cssText = 'opacity:.35;margin:0 2px';
+    sepEl.textContent = '|';
+    bhudEl.appendChild(sepEl);
+
+    var status = document.createElement('span');
+    status.className = 'alice-enx-bhud-status';
+    status.setAttribute('data-enx-bstatus', '1');
+    status.textContent = 'Starting Round 1...';
+    bhudEl.appendChild(status);
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'alice-enx-bhud-btn';
+    nextBtn.style.cssText = 'background:rgba(255,255,255,.15);color:#fff';
+    nextBtn.textContent = '⏩ Next';
+    nextBtn.title = 'Advance to next round immediately';
+    nextBtn.addEventListener('click', function () {
+      advanceBrainstormRound();
+    });
+    bhudEl.appendChild(nextBtn);
+
+    var concBtn = document.createElement('button');
+    concBtn.className = 'alice-enx-bhud-btn alice-enx-bhud-conclude';
+    concBtn.textContent = '🏁 Conclude';
+    concBtn.title = 'Conclude brainstorm and generate final executive summary';
+    concBtn.addEventListener('click', function () {
+      concludeBrainstormNow();
+    });
+    bhudEl.appendChild(concBtn);
+
+    var stopBtn = document.createElement('button');
+    stopBtn.className = 'alice-enx-bhud-btn alice-enx-bhud-stop';
+    stopBtn.textContent = '⏹ Stop';
+    stopBtn.title = 'Stop autonomous brainstorm';
+    stopBtn.addEventListener('click', function () {
+      stopBrainstormSession();
+    });
+    bhudEl.appendChild(stopBtn);
+
+    var closeBtn = document.createElement('button');
+    closeBtn.style.cssText = 'border:none;background:transparent;color:#9d96b8;cursor:pointer;padding:2px 6px;font-size:13px';
+    closeBtn.textContent = '✕';
+    closeBtn.addEventListener('click', function () {
+      stopBrainstormSession();
+      if (bhudEl) bhudEl.remove();
+    });
+    bhudEl.appendChild(closeBtn);
+
+    document.body.appendChild(bhudEl);
+  }
+
+  function updateBrainstormHUDStatus(text, isFinished) {
+    if (!bhudEl || !bhudEl.isConnected) return;
+    var status = bhudEl.querySelector('[data-enx-bstatus]');
+    if (status) status.textContent = text;
+    var pulse = bhudEl.querySelector('.alice-enx-bhud-pulse');
+    if (pulse) {
+      if (isFinished) pulse.className = 'alice-enx-bhud-pulse';
+      else pulse.className = 'alice-enx-bhud-pulse busy';
+    }
+  }
+
+  function startBrainstormSession(config) {
+    bState.active = true;
+    bState.stopped = false;
+    bState.topic = config.topic;
+    bState.roleKey = config.roleKey;
+    bState.customRole = config.customRole || '';
+    bState.maxRounds = config.maxRounds || 4;
+    bState.currentRound = 1;
+
+    renderBrainstormHUD();
+    updateBrainstormHUDStatus('Round 1/' + bState.maxRounds + ': Initializing brainstorm...');
+
+    var role = BRAINSTORM_ROLES[bState.roleKey] || BRAINSTORM_ROLES.ideation;
+    var kickoffPrompt = role.kickoff(bState.topic, bState.customRole);
+
+    sendAliceMessage(kickoffPrompt);
+    updateBrainstormHUDStatus('Round 1/' + bState.maxRounds + ': Alice is thinking...');
+
+    waitForAliceResponse(function () {
+      if (bState.stopped) return;
+      if (bState.currentRound >= bState.maxRounds) {
+        bState.active = false;
+        updateBrainstormHUDStatus('Session concluded with results!', true);
+      } else {
+        updateBrainstormHUDStatus('Round 1 completed. Next round in 2s...');
+        setTimeout(function () {
+          if (!bState.stopped && bState.active) {
+            advanceBrainstormRound();
+          }
+        }, 2200);
+      }
+    });
+  }
+
+  function openBrainstormModal() {
+    var existing = document.querySelector('.alice-enx-modal-backdrop');
+    if (existing) existing.remove();
+
+    var backdrop = A.mark(document.createElement('div'));
+    backdrop.className = 'alice-enx-modal-backdrop';
+
+    var modal = document.createElement('div');
+    modal.className = 'alice-enx-modal';
+
+    var h2 = document.createElement('h2');
+    h2.innerHTML = '⚡ Alice Brainstorm &amp; Role-Play Studio';
+    modal.appendChild(h2);
+
+    var sub = document.createElement('p');
+    sub.className = 'alice-enx-modal-sub';
+    sub.textContent = 'Autonomous multi-round ideation and persona simulation. Alice explores, critiques, and refines until concluded with your desired results.';
+    modal.appendChild(sub);
+
+    var topicField = document.createElement('div');
+    topicField.className = 'alice-enx-field';
+    var topicLbl = document.createElement('label');
+    topicLbl.textContent = 'Brainstorm Topic or Challenge';
+    var topicTa = document.createElement('textarea');
+    topicTa.className = 'alice-enx-textarea';
+    topicTa.rows = 2;
+    topicTa.placeholder = 'e.g. Design a viral mobile app for dog owners, or Pitch an enterprise B2B AI tool to tier-1 investors';
+    topicField.appendChild(topicLbl);
+    topicField.appendChild(topicTa);
+    modal.appendChild(topicField);
+
+    var roleLbl = document.createElement('label');
+    roleLbl.style.cssText = 'display:block;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#3e3e4a;margin-bottom:6px';
+    roleLbl.textContent = 'Select Brainstorm Role / Persona';
+    modal.appendChild(roleLbl);
+
+    var grid = document.createElement('div');
+    grid.className = 'alice-enx-role-grid';
+    var selectedRole = 'ideation';
+
+    var customField = document.createElement('div');
+    customField.className = 'alice-enx-field';
+    customField.style.display = 'none';
+    var customLbl = document.createElement('label');
+    customLbl.textContent = 'Custom Role Instructions';
+    var customTa = document.createElement('textarea');
+    customTa.className = 'alice-enx-textarea';
+    customTa.rows = 2;
+    customTa.placeholder = 'e.g. You are Steve Jobs reviewing our product. Be brutally honest about simplicity and taste.';
+    customField.appendChild(customLbl);
+    customField.appendChild(customTa);
+
+    var cards = {};
+    Object.keys(BRAINSTORM_ROLES).forEach(function (key) {
+      var r = BRAINSTORM_ROLES[key];
+      var card = document.createElement('div');
+      card.className = 'alice-enx-role-card' + (key === selectedRole ? ' active' : '');
+      var cTitle = document.createElement('div');
+      cTitle.className = 'alice-enx-role-title';
+      cTitle.textContent = r.icon + ' ' + r.name;
+      var cDesc = document.createElement('div');
+      cDesc.className = 'alice-enx-role-desc';
+      cDesc.textContent = r.desc;
+      card.appendChild(cTitle);
+      card.appendChild(cDesc);
+      card.addEventListener('click', function () {
+        selectedRole = key;
+        Object.keys(cards).forEach(function (k) { cards[k].classList.remove('active'); });
+        card.classList.add('active');
+        customField.style.display = key === 'custom' ? 'block' : 'none';
+      });
+      cards[key] = card;
+      grid.appendChild(card);
+    });
+    modal.appendChild(grid);
+    modal.appendChild(customField);
+
+    var roundsField = document.createElement('div');
+    roundsField.className = 'alice-enx-field';
+    var roundsLbl = document.createElement('label');
+    roundsLbl.textContent = 'Autonomous Rounds';
+    var roundsSel = document.createElement('select');
+    roundsSel.className = 'alice-enx-select';
+    var opts = [
+      [3, '3 Rounds (Quick Sprint)'],
+      [4, '4 Rounds (Recommended — Explore, Stress-test, Pivot, Conclude)'],
+      [6, '6 Rounds (Deep Dive)'],
+      [99, 'Continuous (Runs until you click Stop or Conclude)']
+    ];
+    opts.forEach(function (op) {
+      var o = document.createElement('option');
+      o.value = op[0];
+      o.textContent = op[1];
+      if (op[0] === 4) o.selected = true;
+      roundsSel.appendChild(o);
+    });
+    roundsField.appendChild(roundsLbl);
+    roundsField.appendChild(roundsSel);
+    modal.appendChild(roundsField);
+
+    var actions = document.createElement('div');
+    actions.className = 'alice-enx-modal-actions';
+    var cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'alice-enx-btn-secondary';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', function () { backdrop.remove(); });
+
+    var startBtn = document.createElement('button');
+    startBtn.type = 'button';
+    startBtn.className = 'alice-enx-btn-primary';
+    startBtn.textContent = '⚡ Start Brainstorm';
+    startBtn.addEventListener('click', function () {
+      var topic = (topicTa.value || '').trim();
+      if (!topic) {
+        topicTa.focus();
+        topicTa.style.borderColor = '#f04444';
+        return;
+      }
+      backdrop.remove();
+      startBrainstormSession({
+        topic: topic,
+        roleKey: selectedRole,
+        customRole: customTa.value,
+        maxRounds: parseInt(roundsSel.value, 10) || 4
+      });
+    });
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(startBtn);
+    modal.appendChild(actions);
+
+    backdrop.appendChild(modal);
+    document.body.appendChild(backdrop);
+
+    backdrop.addEventListener('click', function (e) {
+      if (e.target === backdrop) backdrop.remove();
+    });
+    document.addEventListener('keydown', function onEsc(e) {
+      if (e.key === 'Escape' && backdrop.isConnected) {
+        backdrop.remove();
+        document.removeEventListener('keydown', onEsc);
+      }
+    });
+
+    setTimeout(function () { topicTa.focus(); }, 100);
+  }
+
   function buildModeBar() {
     modeBar = A.mark(document.createElement('div'));
     modeBar.className = 'alice-enx-modebar';
@@ -828,6 +1438,7 @@
     modeBar.appendChild(sep());
     modeBar.appendChild(pill('auto', 'Auto', 'spark', function () { switchIntelligence('auto'); }, 'Auto intelligence — Alice picks the level'));
     modeBar.appendChild(pill('expert', 'Expert', 'brain', function () { switchIntelligence('expert'); }, 'Expert intelligence — deeper reasoning'));
+    modeBar.appendChild(pill('brainstorm', 'Brainstorm', 'users', function () { openBrainstormModal(); }, 'Autonomous brainstorm and role-play studio'));
     modeBar.appendChild(pill('draw', 'Draw', 'palette', function () { toolMode('draw'); }, 'Image generation mode'));
     modeBar.appendChild(pill('deals', 'Deals', 'tag', function () { toolMode('deals'); }, 'Shopping — find a better price'));
     modeBar.appendChild(pill('math', 'Math', 'sigma', function () { toolMode('math'); }, 'Math tutor mode'));
@@ -893,22 +1504,68 @@
   function toggleSettingsPanel(anchor) {
     if (panel && panel.isConnected) { panel.remove(); panel = null; return; }
     panel = A.mark(document.createElement('div'));
-    panel.style.cssText = 'position:fixed;z-index:2147483100;min-width:250px;padding:14px;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 16px 44px rgba(10,10,30,.22);border:1px solid rgba(20,20,30,.1);backdrop-filter:blur(14px)';
+    panel.style.cssText = 'position:fixed;z-index:2147483100;min-width:280px;max-width:340px;max-height:85vh;overflow-y:auto;padding:16px;border-radius:18px;background:rgba(255,255,255,.97);box-shadow:0 18px 48px rgba(10,10,30,.25);border:1px solid rgba(20,20,30,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-sizing:border-box';
+    
     var title = document.createElement('div');
-    title.textContent = 'Alice English Overlay';
-    title.style.cssText = 'font:600 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#2b2b33;margin-bottom:10px';
+    title.textContent = 'Alice Overlay Settings';
+    title.style.cssText = 'font:700 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between';
     panel.appendChild(title);
+
+    // Language selector
+    var langRow = document.createElement('div');
+    langRow.style.cssText = 'margin-bottom:12px';
+    var langLbl = document.createElement('label');
+    langLbl.textContent = 'Response Language';
+    langLbl.style.cssText = 'display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551;margin-bottom:4px';
+    var langSel = document.createElement('select');
+    langSel.className = 'alice-enx-select';
+    langSel.style.cssText = 'width:100%;border-radius:8px;border:1px solid rgba(20,20,30,.15);padding:6px 8px;font:12px/1.3 inherit;background:#fff;cursor:pointer';
+    var curLang = S.targetLang || 'en';
+    if (A.LANGUAGES) {
+      Object.keys(A.LANGUAGES).forEach(function (k) {
+        var opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = A.LANGUAGES[k].name;
+        if (k === curLang) opt.selected = true;
+        langSel.appendChild(opt);
+      });
+    }
+    langSel.addEventListener('change', function () {
+      A.applySettings({ targetLang: langSel.value });
+    });
+    langRow.appendChild(langLbl);
+    langRow.appendChild(langSel);
+    panel.appendChild(langRow);
+
+    // Custom instructions textarea
+    var ciRow = document.createElement('div');
+    ciRow.style.cssText = 'margin-bottom:12px';
+    var ciLbl = document.createElement('label');
+    ciLbl.textContent = 'Custom Instructions / Persona';
+    ciLbl.style.cssText = 'display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551;margin-bottom:4px';
+    var ciTa = document.createElement('textarea');
+    ciTa.rows = 2;
+    ciTa.placeholder = 'e.g. Respond concisely, write clean code...';
+    ciTa.value = S.customInstructions || '';
+    ciTa.style.cssText = 'width:100%;box-sizing:border-box;border-radius:8px;border:1px solid rgba(20,20,30,.15);padding:6px 8px;font:11.5px/1.4 inherit;resize:vertical;background:#fff';
+    ciTa.addEventListener('input', function () {
+      A.applySettings({ customInstructions: ciTa.value });
+    });
+    ciRow.appendChild(ciLbl);
+    ciRow.appendChild(ciTa);
+    panel.appendChild(ciRow);
+
     var items = [
-      ['enReplies', 'Reply in English (auto)'],
-      ['translateBtn', '"EN" translate button on replies'],
-      ['chips', 'English prompt chips'],
+      ['enReplies', 'Force target language (auto)'],
+      ['translateBtn', 'Quick translate button on replies'],
+      ['chips', 'Prompt starter cards'],
       ['hideUpsell', 'Hide ads & login upsells'],
       ['carryContext', 'Carry context to new chats'],
       ['modeBar', 'Show mode bar']
     ];
     items.forEach(function (it) {
       var row = document.createElement('label');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:14px;padding:7px 2px;cursor:pointer;font:400 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551';
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px;cursor:pointer;font:400 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551';
       var lbl = document.createElement('span');
       lbl.textContent = it[1];
       var tg = document.createElement('input');
@@ -922,15 +1579,26 @@
       row.appendChild(lbl); row.appendChild(tg);
       panel.appendChild(row);
     });
+
+    var bsBtn = document.createElement('button');
+    bsBtn.type = 'button';
+    bsBtn.textContent = '⚡ Launch Brainstorm Studio';
+    bsBtn.style.cssText = 'width:100%;margin-top:10px;padding:8px 0;border:none;border-radius:10px;background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff;font:600 12px/1 inherit;cursor:pointer';
+    bsBtn.addEventListener('click', function () {
+      if (panel) { panel.remove(); panel = null; }
+      openBrainstormModal();
+    });
+    panel.appendChild(bsBtn);
+
     var foot = document.createElement('div');
-    foot.textContent = 'v' + A.version + ' — free anonymous Alice, in English';
-    foot.style.cssText = 'margin-top:10px;font:400 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#a0a0aa';
+    foot.textContent = 'v' + A.version + ' — free anonymous Alice AI';
+    foot.style.cssText = 'margin-top:10px;font:400 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#a0a0aa;text-align:center';
     panel.appendChild(foot);
     document.body.appendChild(panel);
     function reposition() {
       var r = anchor.getBoundingClientRect();
-      var pw = panel.offsetWidth || 260;
-      var ph = panel.offsetHeight || 280;
+      var pw = panel.offsetWidth || 280;
+      var ph = panel.offsetHeight || 320;
       var top = r.top - ph - 10;
       if (top < 10) top = r.bottom + 10;
       if (top + ph > window.innerHeight - 10) top = Math.max(10, window.innerHeight - ph - 10);
@@ -959,7 +1627,7 @@
     scanUpsells();
   });
 
-  /* ---------------- EN replies + context carry (send interception) ---------------- */
+  /* ---------------- Multi-language & Custom Instructions (send interception) ---------------- */
   function toolBlocksInjection() {
     return state.lastTool === 'draw' || state.lastTool === 'deals';
   }
@@ -969,7 +1637,16 @@
     if (!v.trim()) return;
     var changed = false;
     var parts = [];
-    if (S.enReplies && !toolBlocksInjection() && v.indexOf(EN_MARKER) === -1) parts.push(EN_MARKER);
+    var langPrompt = A.getLanguagePrompt ? A.getLanguagePrompt() : '';
+    if (S.enReplies && !toolBlocksInjection() && langPrompt && v.indexOf(langPrompt) === -1) {
+      parts.push(langPrompt);
+    }
+    if (S.customInstructions && typeof S.customInstructions === 'string' && S.customInstructions.trim()) {
+      var ci = S.customInstructions.trim();
+      if (v.indexOf(ci) === -1) {
+        parts.push('Custom instructions:\n' + ci);
+      }
+    }
     if (state.pendingRecap && v.indexOf('Context from our previous chat') === -1) {
       parts.push('Context from our previous chat (summary):\n' + state.pendingRecap);
       clearRecap();
@@ -1063,21 +1740,25 @@
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, done);
       else done();
     });
+    var langCfg = A.getLanguageConfig ? A.getLanguageConfig() : { code: 'en', name: 'English' };
+    var langBadge = (langCfg.code || 'en').toUpperCase().slice(0, 2);
     var en = A.mark(document.createElement('button'));
     en.className = 'alice-enx-rbtn'; en.type = 'button';
     en.appendChild(svg(ICONS.lang));
-    var et = document.createElement('span'); et.textContent = 'EN';
+    var et = document.createElement('span'); et.textContent = langBadge;
     en.appendChild(et);
     en.addEventListener('click', function () {
+      var curCfg = A.getLanguageConfig ? A.getLanguageConfig() : { code: 'en', name: 'English' };
+      var curBadge = (curCfg.code || 'en').toUpperCase().slice(0, 2);
       var existing = msgRoot.querySelector('.alice-enx-mt');
-      if (existing) { existing.remove(); et.textContent = 'EN'; return; }
+      if (existing) { existing.remove(); et.textContent = curBadge; return; }
       et.textContent = '…';
       var text = msgText(msgRoot);
       A.mt(text, function (res) {
         var block = A.mark(document.createElement('div'));
         block.className = 'alice-enx-mt';
         var lbl = document.createElement('span');
-        lbl.className = 'alice-enx-mt-label'; lbl.textContent = 'English translation';
+        lbl.className = 'alice-enx-mt-label'; lbl.textContent = curCfg.name + ' translation';
         block.appendChild(lbl);
         var body = document.createElement('div');
         body.textContent = res || 'Translation is unavailable here (blocked or quota reached).';
@@ -1085,7 +1766,7 @@
         var anchor = msgRoot.querySelector('.alice-enx-toolsbar') || msgRoot;
         if (anchor.parentNode === msgRoot) msgRoot.insertBefore(block, anchor);
         else msgRoot.appendChild(block);
-        et.textContent = res ? 'EN' : 'EN!';
+        et.textContent = res ? curBadge : (curBadge + '!');
       });
     });
     bar.appendChild(copy);

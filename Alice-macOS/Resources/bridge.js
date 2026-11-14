@@ -53,10 +53,12 @@
         callbacks[reqId] = callback;
       }
       if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.aliceBridge) {
+        var lang = msg.targetLang || (window.__ALICE_ENX && window.__ALICE_ENX.settings && window.__ALICE_ENX.settings.targetLang) || 'en';
         window.webkit.messageHandlers.aliceBridge.postMessage({
           type: 'translate',
           id: reqId,
-          text: msg.text || ''
+          text: msg.text || '',
+          targetLang: lang
         });
       } else if (typeof callback === 'function') {
         callback({ ok: false, error: 'Bridge not available' });

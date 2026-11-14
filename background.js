@@ -1,15 +1,17 @@
 /* Alice English Overlay — MV3 background: machine-translation proxy (page CSP blocks direct fetch) */
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   if (!msg || msg.type !== 'aliceEnxTranslate') return;
-  translateText(msg.text).then(
+  var lang = msg.targetLang || 'en';
+  translateText(msg.text, lang).then(
     function (t) { sendResponse({ ok: true, text: t }); },
     function (e) { sendResponse({ ok: false, error: String(e && e.message || e) }); }
   );
   return true; // async
 });
 
-function gtx(text) {
-  var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + encodeURIComponent(text);
+function gtx(text, targetLang) {
+  var lang = targetLang || 'en';
+  var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=' + encodeURIComponent(lang) + '&dt=t&q=' + encodeURIComponent(text);
   return fetch(url).then(function (r) {
     if (!r.ok) throw new Error('gtx HTTP ' + r.status);
     return r.json();
@@ -19,7 +21,8 @@ function gtx(text) {
   });
 }
 
-function myMemoryAll(text) {
+function myMemoryAll(text, targetLang) {
+  var lang = targetLang || 'en';
   var chunks = [];
   var rest = String(text);
   while (rest.length) {
@@ -34,7 +37,7 @@ function myMemoryAll(text) {
     rest = rest.slice(cut);
   }
   return Promise.all(chunks.map(function (chunk) {
-    var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunk) + '&langpair=ru|en';
+    var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunk) + '&langpair=ru|' + encodeURIComponent(lang);
     return fetch(url).then(function (r) { return r.json(); }).then(function (j) {
       if (j && j.responseData && j.responseData.translatedText && j.responseStatus === 200 && !/MYMEMORY WARNING/i.test(j.responseData.translatedText)) {
         return j.responseData.translatedText;
@@ -44,8 +47,9 @@ function myMemoryAll(text) {
   })).then(function (parts) { return parts.join(' ').replace(/\s+/g, ' ').trim(); });
 }
 
-function translateText(text) {
+function translateText(text, targetLang) {
   text = String(text || '').trim();
   if (!text) return Promise.resolve('');
-  return gtx(text).catch(function () { return myMemoryAll(text); });
+  var lang = targetLang || 'en';
+  return gtx(text, lang).catch(function () { return myMemoryAll(text, lang); });
 }

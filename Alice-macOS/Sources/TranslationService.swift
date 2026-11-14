@@ -11,24 +11,25 @@ final class TranslationService: @unchecked Sendable {
         self.session = URLSession(configuration: config)
     }
 
-    func translate(text: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func translate(text: String, targetLang: String = "en", completion: @escaping (Result<String, Error>) -> Void) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
             completion(.success(""))
             return
         }
+        let lang = targetLang.isEmpty ? "en" : targetLang
 
-        translateGtx(text: trimmed) { [weak self] result in
+        translateGtx(text: trimmed, targetLang: lang) { [weak self] result in
             switch result {
             case .success(let translated):
                 completion(.success(translated))
             case .failure:
-                self?.translateMyMemory(text: trimmed, completion: completion)
+                self?.translateMyMemory(text: trimmed, targetLang: lang, completion: completion)
             }
         }
     }
 
-    private func translateGtx(text: String, completion: @escaping (Result<String, Error>) -> Void) {
+    private func translateGtx(text: String, targetLang: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard var components = URLComponents(string: "https://translate.googleapis.com/translate_a/single") else {
             completion(.failure(NSError(domain: "AliceTranslate", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid base URL"])))
             return
@@ -37,7 +38,7 @@ final class TranslationService: @unchecked Sendable {
         components.queryItems = [
             URLQueryItem(name: "client", value: "gtx"),
             URLQueryItem(name: "sl", value: "auto"),
-            URLQueryItem(name: "tl", value: "en"),
+            URLQueryItem(name: "tl", value: targetLang),
             URLQueryItem(name: "dt", value: "t"),
             URLQueryItem(name: "q", value: text)
         ]
@@ -79,7 +80,7 @@ final class TranslationService: @unchecked Sendable {
         }.resume()
     }
 
-    private func translateMyMemory(text: String, completion: @escaping (Result<String, Error>) -> Void) {
+    private func translateMyMemory(text: String, targetLang: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard var components = URLComponents(string: "https://api.mymemory.translated.net/get") else {
             completion(.failure(NSError(domain: "AliceTranslate", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid base URL"])))
             return
@@ -87,7 +88,7 @@ final class TranslationService: @unchecked Sendable {
 
         components.queryItems = [
             URLQueryItem(name: "q", value: text),
-            URLQueryItem(name: "langpair", value: "ru|en")
+            URLQueryItem(name: "langpair", value: "ru|\(targetLang)")
         ]
 
         guard let url = components.url else {

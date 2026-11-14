@@ -139,7 +139,8 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         if type == "translate",
            let reqId = body["id"] as? String,
            let text = body["text"] as? String {
-            TranslationService.shared.translate(text: text) { [weak self] result in
+            let targetLang = body["targetLang"] as? String ?? "en"
+            TranslationService.shared.translate(text: text, targetLang: targetLang) { [weak self] result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let translated):

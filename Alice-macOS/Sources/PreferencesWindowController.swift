@@ -1,10 +1,12 @@
 import Cocoa
 import WebKit
 
-final class PreferencesWindowController: NSWindowController {
+final class PreferencesWindowController: NSWindowController, NSTextViewDelegate {
     static let shared = PreferencesWindowController()
 
     struct PreferenceKeys {
+        static let targetLang = "targetLang"
+        static let customInstructions = "customInstructions"
         static let enReplies = "enReplies"
         static let translateBtn = "translateBtn"
         static let chips = "chips"
@@ -13,11 +15,29 @@ final class PreferencesWindowController: NSWindowController {
         static let modeBar = "modeBar"
     }
 
+    static let languageList: [(code: String, name: String)] = [
+        ("en", "English"),
+        ("es", "Spanish (Español)"),
+        ("fr", "French (Français)"),
+        ("de", "German (Deutsch)"),
+        ("it", "Italian (Italiano)"),
+        ("pt", "Portuguese (Português)"),
+        ("zh", "Chinese (中文)"),
+        ("ja", "Japanese (日本語)"),
+        ("ko", "Korean (한국어)"),
+        ("ar", "Arabic (العربية)"),
+        ("tr", "Turkish (Türkçe)"),
+        ("uk", "Ukrainian (Українська)"),
+        ("ru", "Russian Original (Русский)")
+    ]
+
     private var checkboxes: [String: NSButton] = [:]
+    private var languagePopup: NSPopUpButton?
+    private var instructionsTextView: NSTextView?
 
     init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 440, height: 380),
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 540),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -33,9 +53,11 @@ final class PreferencesWindowController: NSWindowController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    static var currentSettings: [String: Bool] {
+    static var currentSettings: [String: Any] {
         let defaults = UserDefaults.standard
         return [
+            PreferenceKeys.targetLang: defaults.string(forKey: PreferenceKeys.targetLang) ?? "en",
+            PreferenceKeys.customInstructions: defaults.string(forKey: PreferenceKeys.customInstructions) ?? "",
             PreferenceKeys.enReplies: defaults.object(forKey: PreferenceKeys.enReplies) as? Bool ?? true,
             PreferenceKeys.translateBtn: defaults.object(forKey: PreferenceKeys.translateBtn) as? Bool ?? true,
             PreferenceKeys.chips: defaults.object(forKey: PreferenceKeys.chips) as? Bool ?? true,
@@ -51,24 +73,24 @@ final class PreferencesWindowController: NSWindowController {
         let container = NSStackView()
         container.orientation = .vertical
         container.alignment = .leading
-        container.spacing = 14
+        container.spacing = 12
         container.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(container)
 
         NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
-            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
-            container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -28)
+            container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 26),
+            container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -26)
         ])
 
         // Title
-        let headerLabel = NSTextField(labelWithString: "English Overlay Configuration")
+        let headerLabel = NSTextField(labelWithString: "Alice AI Settings & Preferences")
         headerLabel.font = NSFont.systemFont(ofSize: 15, weight: .semibold)
         headerLabel.textColor = .labelColor
         container.addArrangedSubview(headerLabel)
 
-        let subLabel = NSTextField(labelWithString: "Customize translation rules, UI enhancements, and ad blocking.")
-        subLabel.font = NSFont.systemFont(ofSize: 12, weight: .regular)
+        let subLabel = NSTextField(labelWithString: "Configure target response language, custom persona instructions, and UI options.")
+        subLabel.font = NSFont.systemFont(ofSize: 11.5, weight: .regular)
         subLabel.textColor = .secondaryLabelColor
         container.addArrangedSubview(subLabel)
 
@@ -77,21 +99,79 @@ final class PreferencesWindowController: NSWindowController {
         container.addArrangedSubview(separator1)
         separator1.widthAnchor.constraint(equalTo: container.widthAnchor).isActive = true
 
+        // Language Selector Row
+        let langRow = NSStackView()
+        langRow.orientation = .horizontal
+        langRow.spacing = 10
+        langRow.alignment = .centerY
+
+        let langLabel = NSTextField(labelWithString: "Response Language:")
+        langLabel.font = NSFont.systemFont(ofSize: 12.5, weight: .medium)
+        langRow.addArrangedSubview(langLabel)
+
+        let popup = NSPopUpButton(frame: .zero, pullsDown: false)
+        for it in Self.languageList {
+            popup.addItem(withTitle: it.name)
+            popup.lastItem?.representedObject = it.code
+        }
+        let currentLang = UserDefaults.standard.string(forKey: PreferenceKeys.targetLang) ?? "en"
+        for (idx, it) in Self.languageList.enumerated() {
+            if it.code == currentLang {
+                popup.selectItem(at: idx)
+                break
+            }
+        }
+        popup.target = self
+        popup.action = #selector(languageSelected(_:))
+        self.languagePopup = popup
+        langRow.addArrangedSubview(popup)
+        container.addArrangedSubview(langRow)
+
+        // Custom Instructions Section
+        let customLabel = NSTextField(labelWithString: "Custom Instructions / Persona for Alice:")
+        customLabel.font = NSFont.systemFont(ofSize: 12.5, weight: .medium)
+        container.addArrangedSubview(customLabel)
+
+        let scrollView = NSScrollView(frame: NSRect(x: 0, y: 0, width: 428, height: 74))
+        scrollView.hasVerticalScroller = true
+        scrollView.borderType = .bezelBorder
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+
+        let textView = NSTextView(frame: NSRect(x: 0, y: 0, width: 428, height: 74))
+        textView.minSize = NSSize(width: 0, height: 74)
+        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        textView.isVerticallyResizable = true
+        textView.isHorizontallyResizable = false
+        textView.autoresizingMask = [.width]
+        textView.textContainer?.containerSize = NSSize(width: 428, height: CGFloat.greatestFiniteMagnitude)
+        textView.textContainer?.widthTracksTextView = true
+        textView.font = NSFont.systemFont(ofSize: 12)
+        textView.string = UserDefaults.standard.string(forKey: PreferenceKeys.customInstructions) ?? ""
+        textView.delegate = self
+        self.instructionsTextView = textView
+        scrollView.documentView = textView
+
+        container.addArrangedSubview(scrollView)
+        NSLayoutConstraint.activate([
+            scrollView.widthAnchor.constraint(equalTo: container.widthAnchor),
+            scrollView.heightAnchor.constraint(equalToConstant: 74)
+        ])
+
         let options: [(key: String, title: String)] = [
-            (PreferenceKeys.enReplies, "Reply in English automatically (inject instruction)"),
-            (PreferenceKeys.translateBtn, "Show 'EN' translation button on assistant replies"),
-            (PreferenceKeys.chips, "Display English starter prompt cards"),
-            (PreferenceKeys.hideUpsell, "Hide ads, promotional banners, and login upsells"),
+            (PreferenceKeys.enReplies, "Force selected language on outbound queries"),
+            (PreferenceKeys.translateBtn, "Show quick machine translation button on assistant replies"),
+            (PreferenceKeys.chips, "Display starter prompt cards on welcome screen"),
+            (PreferenceKeys.hideUpsell, "Hide ads, promotional banners, and login nag popups"),
             (PreferenceKeys.carryContext, "Carry chat summary context forward into new chats"),
-            (PreferenceKeys.modeBar, "Show floating mode switcher bar (Auto, Expert, Draw, Math)")
+            (PreferenceKeys.modeBar, "Show floating mode switcher and brainstorm bar")
         ]
 
         let current = Self.currentSettings
         for opt in options {
             let checkbox = NSButton(checkboxWithTitle: opt.title, target: self, action: #selector(preferenceToggled(_:)))
             checkbox.identifier = NSUserInterfaceItemIdentifier(opt.key)
-            checkbox.state = (current[opt.key] ?? true) ? .on : .off
-            checkbox.font = NSFont.systemFont(ofSize: 13)
+            checkbox.state = (current[opt.key] as? Bool ?? true) ? .on : .off
+            checkbox.font = NSFont.systemFont(ofSize: 12.5)
             checkboxes[opt.key] = checkbox
             container.addArrangedSubview(checkbox)
         }
@@ -116,6 +196,18 @@ final class PreferencesWindowController: NSWindowController {
         actionStack.addArrangedSubview(reloadBtn)
 
         container.addArrangedSubview(actionStack)
+    }
+
+    @objc private func languageSelected(_ sender: NSPopUpButton) {
+        let code = sender.selectedItem?.representedObject as? String ?? "en"
+        UserDefaults.standard.set(code, forKey: PreferenceKeys.targetLang)
+        syncSettingsToWeb()
+    }
+
+    func textDidChange(_ notification: Notification) {
+        guard let tv = notification.object as? NSTextView else { return }
+        UserDefaults.standard.set(tv.string, forKey: PreferenceKeys.customInstructions)
+        syncSettingsToWeb()
     }
 
     @objc private func preferenceToggled(_ sender: NSButton) {

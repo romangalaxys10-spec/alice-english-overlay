@@ -1,10 +1,10 @@
-# Alice AI: English Overlay & Native macOS App
+# Alice AI: Multi-Language Overlay, Role-Play & Native macOS App
 
-Experience Yandex Alice AI in complete English. Available both as a pure native macOS desktop application and as a lightweight browser extension for Chrome, Brave, Arc, and Edge.
+Experience Yandex Alice AI in English, Spanish, French, German, Chinese, Japanese, and more. Available both as a pure native macOS desktop application and as a lightweight browser extension for Chrome, Brave, Arc, and Edge.
 
-Alice AI (alice.yandex.ru) is a powerful, free conversational AI developed by Yandex. It includes advanced reasoning, image generation, math problem solving, and shopping deal search. Alice offers full anonymous access without requiring an account or credit card. However, its native interface and responses are primarily in Russian.
+Alice AI (alice.yandex.ru) is a powerful conversational AI developed by Yandex. It includes advanced reasoning, image generation, math problem solving, and shopping deal search. Alice offers full anonymous access without requiring an account or credit card. However, its native interface and responses are primarily in Russian.
 
-This project bridges that gap by providing a real-time English interface, automatic English replies, an adaptive intelligence mode bar, starter prompts, and clean ad-free styling.
+This project bridges that gap by providing a real-time multilingual interface, automatic target language prompting, preset custom instructions, an autonomous brainstorm & role-play studio, an adaptive intelligence mode bar, and clean ad-free styling.
 
 ---
 
@@ -12,12 +12,27 @@ This project bridges that gap by providing a real-time English interface, automa
 
 - **Native macOS Desktop Application**: Built with Swift and WebKit. Launches instantly with under 600 KB total app bundle footprint, using a fraction of the memory of Electron wrappers.
 - **Chrome / Chromium Browser Extension**: Fully compliant with Manifest V3. Runs seamlessly on Chrome, Brave, Arc, Edge, and Opera.
+- **Multi-Language Support**: Choose your preferred response language across 13 options:
+  - English, Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, Turkish, Ukrainian, and Russian Original.
+  - Automatically forces Alice to reply strictly in your chosen language.
+- **Custom Instructions & Persona Presets**: Store your persistent system instructions (e.g., concise code formatting, specific persona, or domain guidelines) injected directly into Alice chats.
+- **Autonomous Brainstorm & Role-Play Studio**:
+  - Launch autonomous multi-round brainstorming sessions directly from the mode bar.
+  - 6 distinct personas:
+    1. **Ideation Engine**: Divergent creative exploration, edge-case probing, stress testing, and roadmap synthesis.
+    2. **Devil's Advocate**: Adversarial critical scrutiny, finding catastrophic failure modes and hidden assumptions.
+    3. **Startup Pitch & VC**: Dynamic debate between a visionary founder and a skeptical Tier-1 VC partner defending traction, TAM, and defensibility.
+    4. **Strategy Consultant**: McKinsey/Bain style MECE issue tree breakdown, tradeoff scoring, and 3-horizon execution blueprint.
+    5. **Creative Storyteller**: Collaborative world-building, high-stakes plot twists, and vivid character arcs.
+    6. **Custom Persona**: User-defined roles and custom system prompts.
+  - Autonomous loop: Alice progresses round by round automatically until concluded with results or stopped by the user.
+  - Floating Brainstorm HUD: Displays real-time round progress, generation state, and instant controls (`Next Round`, `Conclude Now`, `Stop Session`).
 - **Real-Time Dynamic UI Translation**: Translates Russian buttons, placeholders, menus, and system prompts into clean English via a MutationObserver and curated dictionary.
-- **Auto-English Prompt Injection**: Automatically prepends English response instructions to outbound queries so Alice replies in English.
-- **Integrated Machine Translation Proxy**: Adds an "EN" translate button underneath Alice's replies. Uses native networking and Google Translate with automatic fallback to MyMemory to translate any residual Russian text, bypassing web Content Security Policy limitations.
+- **Integrated Machine Translation Proxy**: Adds a quick translate button (`EN`, `ES`, `FR`, `DE`, `ZH`, etc.) underneath Alice's replies. Uses native networking and Google Translate with automatic fallback to MyMemory to translate residual Russian text.
 - **Floating Intelligence Mode Bar**: Quick switching between Alice modes:
   - **Auto**: Balanced everyday intelligence.
   - **Expert**: Deep reasoning and complex problem analysis.
+  - **Brainstorm**: Autonomous multi-round role-play and ideation studio.
   - **Draw**: Image generation and creative visuals.
   - **Deals**: Product pricing and shopping search.
   - **Math**: Step-by-step math solver.
