@@ -578,11 +578,39 @@
     'header, [class*="Header"], [class*="header"] { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,.05) !important; }',
     'button[aria-label="Войти"], button[class*="Login"], a[class*="Login"], [class*="HeaderAuth"], [class*="AuthButton"] { background: rgba(255,255,255,.06) !important; border: 1px solid rgba(255,255,255,.12) !important; color: #e2e8f0 !important; border-radius: 999px !important; font-size: 13px !important; padding: 5px 16px !important; font-weight: 500 !important; box-shadow: 0 2px 8px rgba(0,0,0,.2) !important; transition: all .15s ease !important; }',
     'button[aria-label="Войти"]:hover, button[class*="Login"]:hover, a[class*="Login"]:hover { background: rgba(255,255,255,.12) !important; color: #fff !important; border-color: rgba(255,255,255,.22) !important; }',
-    '.Message_from_user, [data-message-role="user"], .alice-enx-user-msg { background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(99,102,241,.16)) !important; border: 1px solid rgba(139,92,246,.35) !important; border-radius: 18px 18px 4px 18px !important; color: #f8fafc !important; box-shadow: 0 4px 16px rgba(0,0,0,.25) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; padding: 12px 18px !important; }',
-    '.Message:not(.Message_from_user), [data-message-role="assistant"], .alice-enx-alice-msg { background: transparent !important; color: #e2e8f0 !important; font-size: 14.5px !important; line-height: 1.65 !important; letter-spacing: -0.005em !important; }',
-    '.Message:not(.Message_from_user) p, [data-message-role="assistant"] p { color: #e2e8f0 !important; }',
-    '.Message:not(.Message_from_user) strong, .Message:not(.Message_from_user) b { color: #f8fafc !important; }',
-    '.Message:not(.Message_from_user) li { color: #e2e8f0 !important; line-height: 1.65 !important; }',
+    /* Chat Messages layout & Obsidian typography */
+    '.AliceChat-Messages, [class*="MessagesList"], [class*="Chat_messages"], [class*="ChatMessages"] { max-width: 860px !important; width: 100% !important; margin: 0 auto !important; padding: 20px 16px 110px !important; box-sizing: border-box !important; }',
+    '.AliceChat-Message, [data-testid="alice-chat-message"] { margin-bottom: 24px !important; width: 100% !important; transition: opacity .15s ease !important; }',
+    '.Message_from_user, [data-message-role="user"], .alice-enx-user-msg { margin: 12px 0 12px auto !important; max-width: min(700px, 85%) !important; width: fit-content !important; background: linear-gradient(135deg, rgba(124,58,237,.24), rgba(99,102,241,.18)) !important; border: 1px solid rgba(139,92,246,.38) !important; border-radius: 18px 18px 4px 18px !important; color: #f8fafc !important; box-shadow: 0 4px 20px rgba(0,0,0,.28), 0 0 1px rgba(255,255,255,.1) inset !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 18px !important; font-size: 14.5px !important; line-height: 1.6 !important; word-break: break-word !important; }',
+    '.Message_from_user p, [data-message-role="user"] p, .alice-enx-user-msg p { color: #f8fafc !important; margin: 0 !important; }',
+    '.Message:not(.Message_from_user), [data-message-role="assistant"], .alice-enx-alice-msg { background: transparent !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; color: #e2e8f0 !important; font-size: 15px !important; line-height: 1.7 !important; letter-spacing: -0.01em !important; padding: 4px 0 !important; max-width: 100% !important; word-break: break-word !important; }',
+    '.Message:not(.Message_from_user) h1, [data-message-role="assistant"] h1 { font-size: 20px !important; font-weight: 700 !important; color: #fff !important; margin: 20px 0 10px !important; letter-spacing: -0.02em !important; }',
+    '.Message:not(.Message_from_user) h2, [data-message-role="assistant"] h2 { font-size: 17px !important; font-weight: 600 !important; color: #fff !important; margin: 18px 0 8px !important; letter-spacing: -0.015em !important; }',
+    '.Message:not(.Message_from_user) h3, [data-message-role="assistant"] h3 { font-size: 15px !important; font-weight: 600 !important; color: #f8fafc !important; margin: 16px 0 6px !important; }',
+    '.Message:not(.Message_from_user) p, [data-message-role="assistant"] p { color: #e2e8f0 !important; font-size: 14.5px !important; line-height: 1.7 !important; margin: 0 0 12px !important; letter-spacing: -0.005em !important; }',
+    '.Message:not(.Message_from_user) p:last-child, [data-message-role="assistant"] p:last-child { margin-bottom: 0 !important; }',
+    '.Message:not(.Message_from_user) strong, .Message:not(.Message_from_user) b, [data-message-role="assistant"] strong, [data-message-role="assistant"] b { color: #fff !important; font-weight: 600 !important; }',
+    '.Message:not(.Message_from_user) ul, [data-message-role="assistant"] ul { padding-left: 20px !important; margin: 8px 0 14px !important; color: #e2e8f0 !important; }',
+    '.Message:not(.Message_from_user) ol, [data-message-role="assistant"] ol { padding-left: 20px !important; margin: 8px 0 14px !important; color: #e2e8f0 !important; }',
+    '.Message:not(.Message_from_user) li, [data-message-role="assistant"] li { margin-bottom: 6px !important; line-height: 1.65 !important; color: #e2e8f0 !important; }',
+    '.Message:not(.Message_from_user) blockquote, [data-message-role="assistant"] blockquote { border-left: 3px solid #8b5cf6 !important; background: rgba(139,92,246,.08) !important; border-radius: 0 8px 8px 0 !important; padding: 10px 16px !important; margin: 14px 0 !important; color: #cbd5e1 !important; font-style: italic !important; }',
+    '.Message:not(.Message_from_user) table, [data-message-role="assistant"] table { width: 100% !important; border-collapse: separate !important; border-spacing: 0 !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 10px !important; overflow: hidden !important; margin: 16px 0 !important; background: rgba(13,14,22,.6) !important; }',
+    '.Message:not(.Message_from_user) th, [data-message-role="assistant"] th { background: rgba(255,255,255,.06) !important; color: #f8fafc !important; font-weight: 600 !important; font-size: 13px !important; padding: 9px 14px !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; text-align: left !important; }',
+    '.Message:not(.Message_from_user) td, [data-message-role="assistant"] td { padding: 9px 14px !important; border-bottom: 1px solid rgba(255,255,255,.04) !important; color: #cbd5e1 !important; font-size: 13.5px !important; }',
+    '.Message:not(.Message_from_user) tr:last-child td, [data-message-role="assistant"] tr:last-child td { border-bottom: none !important; }',
+    '.Message:not(.Message_from_user) a, [data-message-role="assistant"] a { color: #a78bfa !important; text-decoration: none !important; border-bottom: 1px dotted rgba(167,139,250,.4) !important; transition: all .15s ease !important; }',
+    '.Message:not(.Message_from_user) a:hover, [data-message-role="assistant"] a:hover { color: #c4b5fd !important; border-bottom-color: #c4b5fd !important; }',
+    '.Message:not(.Message_from_user) hr, [data-message-role="assistant"] hr { border: none !important; height: 1px !important; background: rgba(255,255,255,.08) !important; margin: 20px 0 !important; }',
+    /* Session Header Bar: Chat/Render Window Identity */
+    '.alice-enx-session-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; margin: 0 auto 20px; max-width: 860px; width: 100%; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); box-sizing: border-box; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }',
+    '.alice-enx-session-header-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }',
+    '.alice-enx-session-header-icon { font-size: 13px; flex-shrink: 0; }',
+    '.alice-enx-session-header-title { font: 600 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #f1f5f9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }',
+    '.alice-enx-session-header-mode { font: 700 9.5px/1 -apple-system, BlinkMacSystemFont, sans-serif; padding: 2px 6px; border-radius: 4px; background: rgba(124,58,237,.25); color: #c4b5fd; border: 1px solid rgba(139,92,246,.4); letter-spacing: .05em; text-transform: uppercase; flex-shrink: 0; }',
+    '.alice-enx-session-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }',
+    '.alice-enx-session-header-count { font: 400 11.5px/1 -apple-system, BlinkMacSystemFont, sans-serif; color: #64748b; }',
+    '.alice-enx-session-header-new-btn { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 3px 9px; font: 500 11px/1.2 -apple-system, BlinkMacSystemFont, sans-serif; color: #cbd5e1; cursor: pointer; transition: all .15s; }',
+    '.alice-enx-session-header-new-btn:hover { background: rgba(124,58,237,.3); border-color: rgba(139,92,246,.5); color: #fff; }',
     '[class*="StatusMessage"], [class*="HeaderIndicator"], [class*="ModeIndicator"], [class*="Status_root"] { display: inline-flex !important; align-items: center !important; gap: 5px !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.05em !important; text-transform: uppercase !important; color: #a78bfa !important; background: rgba(139,92,246,.12) !important; border: 1px solid rgba(139,92,246,.25) !important; border-radius: 999px !important; padding: 3px 10px !important; margin-bottom: 8px !important; }',
     'pre { background: #08090e !important; border: 1px solid rgba(255,255,255,.09) !important; border-radius: 12px !important; box-shadow: 0 8px 24px rgba(0,0,0,.45) !important; overflow: hidden !important; }',
     'pre code { color: #e2e8f0 !important; font-family: ui-monospace, Menlo, Monaco, "SF Mono", monospace !important; font-size: 12.5px !important; line-height: 1.55 !important; }',
@@ -707,17 +735,16 @@
     '.alice-enx-chip:hover{background:rgba(24,25,38,.85);border-color:rgba(139,92,246,.45);box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(124,58,237,.18);transform:translateY(-2px);color:#fff}',
     '.alice-enx-chip b{display:block;font-weight:600;font-size:13px;color:#f1f5f9}',
     '.alice-enx-chip span{display:block;font-weight:400;font-size:11.5px;color:#94a3b8;margin-top:2px}',
-    /* reply tool buttons */
-    '.alice-enx-toolsbar{display:flex;align-items:center;gap:4px;margin-top:6px}',
-    '.alice-enx-rbtn{display:inline-flex;align-items:center;gap:5px;border:none;background:transparent;cursor:pointer;padding:5px 8px;border-radius:8px;',
-      'font:500 12.5px/1 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#8a8a95;transition:background .15s,color .15s}',
-    '.alice-enx-rbtn:hover{background:rgba(108,76,240,.10);color:#5b3fd6}',
-    '.alice-enx-rbtn svg{width:13px;height:13px}',
+    /* reply tool buttons: chat.z.ai style */
+    '.alice-enx-toolsbar{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 6px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}',
+    '.alice-enx-rbtn{display:inline-flex;align-items:center;gap:5px;border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;',
+      'font:500 11.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#94a3b8;transition:all .15s ease}',
+    '.alice-enx-rbtn:hover{background:rgba(255,255,255,.08);color:#f1f5f9}',
+    '.alice-enx-rbtn svg{width:12px;height:12px}',
     /* machine-translation block */
-    '.alice-enx-mt{margin:10px 0 2px;padding:10px 12px;border-left:3px solid rgba(108,76,240,.55);border-radius:8px;background:rgba(108,76,240,.06);',
-      'font:400 13.5px/1.55 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#3a3a44}',
-    '.alice-enx-mt-label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8b6ff0;margin-bottom:4px}',
-    '@media (prefers-color-scheme:dark){.alice-enx-mt{background:rgba(139,109,255,.08);color:#d3d3dc}}',
+    '.alice-enx-mt{margin:12px 0 4px;padding:10px 14px;border-left:3px solid #8b5cf6;border-radius:0 10px 10px 0;background:rgba(124,58,237,.08);border:1px solid rgba(139,92,246,.2);border-left:3px solid #8b5cf6;',
+      'font:400 14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#e2e8f0}',
+    '.alice-enx-mt-label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#c4b5fd;margin-bottom:4px}',
     /* notice bar */
     '.alice-enx-notice{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483100;display:flex;align-items:center;gap:10px;max-width:min(680px,92vw);',
       'padding:10px 12px 10px 14px;border-radius:14px;background:rgba(30,28,44,.94);color:#eae6ff;',
@@ -892,16 +919,18 @@
     '.alice-enx-sidebar-chat-info{flex:1;min-width:0;margin-right:6px}',
     '.alice-enx-sidebar-chat-name{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-name{color:#fff !important}',
-    '.alice-enx-sidebar-chat-sub{font:400 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:2px}',
+    '.alice-enx-sidebar-chat-sub{font:400 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:3px;display:flex;align-items:center;gap:6px}',
+    '.alice-enx-sidebar-chat-tag{font-size:9.5px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.08);color:#cbd5e1;text-transform:uppercase;font-weight:600}',
+    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-tag{background:rgba(255,255,255,.2);color:#fff}',
     '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-sub{color:rgba(255,255,255,.85) !important}',
     '.alice-enx-sidebar-chat-del{opacity:0;background:transparent;border:none;color:#94a3b8;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;line-height:1;transition:opacity .15s,color .15s}',
     '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-del{color:rgba(255,255,255,.85) !important}',
     '.alice-enx-sidebar-chat-item:hover .alice-enx-sidebar-chat-del{opacity:1}',
     '.alice-enx-sidebar-chat-del:hover{color:#f87171 !important;background:rgba(239,68,68,.15)}',
     '@media (prefers-color-scheme: dark){.alice-enx-sidebar-chats{border-top-color:rgba(255,255,255,.08)}.alice-enx-sidebar-chats-title{color:#94a3b8}.alice-enx-sidebar-chats-badge{background:rgba(108,76,240,.2);color:#c4b5fd;border-color:rgba(108,76,240,.35)}.alice-enx-sidebar-new-btn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#e2e8f0}.alice-enx-sidebar-chat-item{color:#cbd5e1}.alice-enx-sidebar-chat-item:hover{background:rgba(255,255,255,.05);color:#f8fafc}.alice-enx-sidebar-chat-name{color:#f1f5f9}.alice-enx-sidebar-chat-sub{color:#94a3b8}}',
-    /* Restored Message Bubbles */
-    '.alice-enx-user-msg{align-self:flex-end;background:rgba(108,76,240,.2);border:1px solid rgba(108,76,240,.4);border-radius:16px 16px 4px 16px;padding:12px 16px;margin:10px 0 10px auto;max-width:82%;color:#f1f5f9;font:400 14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;word-break:break-word}',
-    '.alice-enx-alice-msg{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px 16px 16px 4px;padding:14px 18px;margin:10px auto 10px 0;max-width:88%;color:#e2e8f0;font:400 14px/1.55 -apple-system,BlinkMacSystemFont,sans-serif;word-break:break-word}',
+    /* Sleek Message Bubbles */
+    '.alice-enx-user-msg{align-self:flex-end;background:linear-gradient(135deg,rgba(124,58,237,.24),rgba(99,102,241,.18)) !important;border:1px solid rgba(139,92,246,.38) !important;border-radius:18px 18px 4px 18px !important;padding:12px 18px !important;margin:12px 0 12px auto !important;max-width:min(700px,85%) !important;color:#f8fafc !important;font:400 14.5px/1.6 -apple-system,BlinkMacSystemFont,sans-serif !important;box-shadow:0 4px 16px rgba(0,0,0,.25) !important;word-break:break-word !important}',
+    '.alice-enx-alice-msg{align-self:flex-start;background:transparent !important;border:none !important;border-radius:0 !important;padding:6px 0 !important;margin:12px auto 12px 0 !important;max-width:100% !important;color:#e2e8f0 !important;font:400 15px/1.7 -apple-system,BlinkMacSystemFont,sans-serif !important;word-break:break-word !important}',
     /* Auto-fallback Toast */
     '.alice-enx-fallback-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:2147483600;background:rgba(30,24,10,.95);border:1px solid rgba(245,158,11,.4);color:#fef3c7;padding:8px 16px;border-radius:999px;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:aliceEnxSlideDown .25s ease-out}',
     '@keyframes aliceEnxSlideDown{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}',
@@ -1289,10 +1318,52 @@
       this.saveSessions(list);
     },
 
+    renderSessionHeader: function () {
+      var container = findMessagesContainer();
+      if (!container) return;
+      var activeId = this.getActiveId();
+      var list = this.getSessions();
+      var cur = list.find(function (s) { return s.id === activeId; }) || { title: 'Main Chat', mode: 'auto', messages: [] };
+
+      var existingHdr = container.querySelector('.alice-enx-session-header');
+      var msgs = cur.messages && cur.messages.length ? cur.messages : this.extractMessages();
+      if (msgs && msgs.length > 0) {
+        if (!existingHdr) {
+          existingHdr = document.createElement('div');
+          existingHdr.className = 'alice-enx-session-header';
+          existingHdr.setAttribute('data-alice-enx', '1');
+          container.insertBefore(existingHdr, container.firstChild);
+        }
+        var count = msgs.length;
+        var modeName = (cur.mode || state.activeHarnessMode || 'auto').toUpperCase();
+        existingHdr.innerHTML =
+          '<div class="alice-enx-session-header-left">' +
+            '<span class="alice-enx-session-header-icon">💬</span>' +
+            '<span class="alice-enx-session-header-title">' + escapeHtml(cur.title || 'Chat Session') + '</span>' +
+            '<span class="alice-enx-session-header-mode">' + modeName + '</span>' +
+          '</div>' +
+          '<div class="alice-enx-session-header-right">' +
+            '<span class="alice-enx-session-header-count">' + count + ' ' + (count === 1 ? 'msg' : 'msgs') + '</span>' +
+            '<button type="button" class="alice-enx-session-header-new-btn" title="Start a fresh chat">+ New</button>' +
+          '</div>';
+
+        var newBtn = existingHdr.querySelector('.alice-enx-session-header-new-btn');
+        if (newBtn) {
+          newBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            SessionManager.createSession();
+          });
+        }
+      } else if (existingHdr) {
+        existingHdr.remove();
+      }
+    },
+
     autoSaveActiveSession: function () {
       if (isAliceGenerating()) return;
       this.snapshotCurrent();
       this.renderSidebarChats();
+      this.renderSessionHeader();
       if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
     },
 
@@ -1333,6 +1404,7 @@
 
       ensureChips();
       this.renderSidebarChats();
+      this.renderSessionHeader();
       if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
     },
 
@@ -1387,6 +1459,7 @@
       ensureReplyTools();
       ensureChips();
       this.renderSidebarChats();
+      this.renderSessionHeader();
       if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
     },
 
@@ -1472,7 +1545,8 @@
         var sub = document.createElement('div');
         sub.className = 'alice-enx-sidebar-chat-sub';
         var count = s.messageCount || (s.messages ? s.messages.length : 0);
-        sub.textContent = count + ' msgs';
+        var sMode = (s.mode || 'auto').toUpperCase();
+        sub.innerHTML = '<span class="alice-enx-sidebar-chat-tag">' + sMode + '</span><span>' + count + ' ' + (count === 1 ? 'msg' : 'msgs') + '</span>';
 
         info.appendChild(name);
         info.appendChild(sub);
@@ -6724,8 +6798,8 @@
     buildModeBar();
     document.documentElement.classList.toggle('alice-enx-hide-upsell', !!S.hideUpsell);
     document.documentElement.classList.toggle('alice-enx-suggests-off', !!S.chips);
-    setTimeout(function () { ensureChips(); ensureReplyTools(); ensurePermissionsPill(); ensureSidebarChats(); scanUpsells(); }, 600);
-    setTimeout(function () { ensureReplyTools(); ensurePermissionsPill(); ensureSidebarChats(); }, 1200);
+    setTimeout(function () { ensureChips(); ensureReplyTools(); ensurePermissionsPill(); ensureSidebarChats(); SessionManager.renderSessionHeader(); scanUpsells(); }, 600);
+    setTimeout(function () { ensureReplyTools(); ensurePermissionsPill(); ensureSidebarChats(); SessionManager.renderSessionHeader(); }, 1200);
     mo2.observe(document.documentElement, { childList: true, subtree: true });
     stashToPending();
   }
