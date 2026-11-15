@@ -863,7 +863,21 @@
     '.alice-enx-btn-reject{background:#7f1d1d;color:#fca5a5;border:1px solid rgba(239,68,68,.4);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
     '.alice-enx-btn-reject:hover{background:#991b1b}',
     '.alice-enx-btn-turbo-switch{background:linear-gradient(135deg,#6C4CF0,#8B5CF6);color:#fff;border:1px solid rgba(167,139,250,.5);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
-    '.alice-enx-btn-turbo-switch:hover{background:linear-gradient(135deg,#5b3ce0,#7c3aed)}'
+    '.alice-enx-btn-turbo-switch:hover{background:linear-gradient(135deg,#5b3ce0,#7c3aed)}',
+    /* Self-Correction Loop Engine Styles */
+    '.alice-enx-auto-harness-card.self-correcting{border-color:rgba(245,158,11,.7);background:linear-gradient(180deg,#221910,#141119);box-shadow:0 0 24px rgba(245,158,11,.18)}',
+    '.alice-enx-self-correct-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.5);color:#fef08a;font-weight:700;font-size:11px}',
+    '.alice-enx-diag-box{margin:8px 0;padding:8px 10px;background:rgba(0,0,0,.35);border-left:3px solid #f59e0b;border-radius:4px;font-size:11.5px;line-height:1.4;color:#f1f5f9}',
+    '.alice-enx-diag-hdr{font-weight:700;color:#fcd34d;margin-bottom:3px}',
+    '.alice-enx-diag-fix{color:#86efac;margin-top:3px}',
+    '.alice-enx-attempts-pills{display:inline-flex;gap:4px;align-items:center;margin-left:8px}',
+    '.alice-enx-attempt-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);display:inline-block}',
+    '.alice-enx-attempt-dot.failed{background:#ef4444}',
+    '.alice-enx-attempt-dot.active{background:#f59e0b;box-shadow:0 0 8px #f59e0b}',
+    '.alice-enx-attempt-dot.success{background:#22c55e}',
+    '.alice-enx-btn-autocorrect{background:linear-gradient(135deg,#d97706,#b45309);color:#fff !important;border:1px solid rgba(245,158,11,.5);border-radius:6px;padding:3px 9px;font:700 11px/1.2 inherit;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s;margin-left:auto}',
+    '.alice-enx-btn-autocorrect:hover{background:linear-gradient(135deg,#b45309,#92400e)}',
+    '.alice-enx-cmd-result.err{border-color:rgba(239,68,68,.4);background:#1a0f12;color:#fca5a5}'
   ].join('');
 
   function injectCSS() {
@@ -2781,14 +2795,8 @@
   }
 
   function triggerVibeTask(taskPrompt) {
-    var ta = document.querySelector('textarea');
-    if (ta) {
-      ta.value = taskPrompt;
-      ta.dispatchEvent(new Event('input', { bubbles: true }));
-      var sendBtn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
-      if (sendBtn) sendBtn.click();
-      logTerm('info', '[VibeCoder] Dispatched task: ' + taskPrompt.slice(0, 80) + '...');
-    }
+    sendAliceMessage(taskPrompt);
+    logTerm('info', '[VibeCoder] Dispatched task: ' + taskPrompt.slice(0, 80) + '...');
   }
   window.__aliceTriggerVibeTask = triggerVibeTask;
 
@@ -2828,6 +2836,15 @@
 
     var tools = document.createElement('div');
     tools.className = 'alice-enx-wb-tools';
+
+    var scBadge = document.createElement('span');
+    scBadge.className = 'alice-enx-self-correct-wb-status';
+    scBadge.style.cssText = 'display:none;align-items:center;gap:5px;font:700 11px/1 -apple-system,sans-serif;color:#fef08a;background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.4);padding:2px 8px;border-radius:999px;cursor:pointer';
+    scBadge.title = 'Active Self-Correction Loop status';
+    scBadge.addEventListener('click', function () {
+      switchWorkbenchTab('terminal');
+    });
+    tools.appendChild(scBadge);
 
     var wsLabel = document.createElement('span');
     wsLabel.style.cssText = 'color:#a5a5c0;font-size:11px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-flex;align-items:center;gap:4px';
@@ -3461,6 +3478,57 @@
     return false;
   }
 
+  function detectCodeLanguage(codeTxt, pre) {
+    if (!codeTxt) return 'unknown';
+    var cls = ((pre && pre.className) || '') + ' ' + (((pre && pre.querySelector('code')) || {}).className || '');
+    if (/python|py\b/i.test(cls)) return 'python';
+    if (/javascript|js\b|node/i.test(cls)) return 'node';
+    if (/bash|sh\b|zsh|shell/i.test(cls)) return 'bash';
+
+    if (/^\s*(?:import\s+[\w.]+|from\s+[\w.]+\s+import|def\s+\w+\s*\(|class\s+\w+[\s:(]|if\s+__name__\s*==)/m.test(codeTxt)) {
+      return 'python';
+    }
+    if (/^\s*(?:const\s+\w+\s*=|let\s+\w+\s*=|var\s+\w+\s*=|require\s*\(|import\s+.*from\s+['"]|console\.log\s*\()/m.test(codeTxt)) {
+      return 'node';
+    }
+    if (isShellCommand(codeTxt)) {
+      return 'bash';
+    }
+    return 'unknown';
+  }
+
+  function executeSnippet(codeTxt, lang, onFinish) {
+    if (lang === 'python') {
+      var scratchPy = '.alice_scratch.py';
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(scratchPy, codeTxt, function (wRes) {
+          if (!wRes.ok) return onFinish(false, '', 'Failed to stage python script: ' + (wRes.error || ''), 1);
+          runTerminalCommand('python3 ' + scratchPy, onFinish);
+        });
+        return;
+      }
+    } else if (lang === 'node') {
+      var scratchJs = '.alice_scratch.js';
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(scratchJs, codeTxt, function (wRes) {
+          if (!wRes.ok) return onFinish(false, '', 'Failed to stage node script: ' + (wRes.error || ''), 1);
+          runTerminalCommand('node ' + scratchJs, onFinish);
+        });
+        return;
+      }
+    } else if (lang === 'bash' && codeTxt.split('\n').length > 2) {
+      var scratchSh = '.alice_scratch.sh';
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(scratchSh, codeTxt, function (wRes) {
+          if (!wRes.ok) return runTerminalCommand(codeTxt, onFinish);
+          runTerminalCommand('chmod +x ' + scratchSh + ' && ./' + scratchSh, onFinish);
+        });
+        return;
+      }
+    }
+    runTerminalCommand(codeTxt, onFinish);
+  }
+
   function enhanceCodeBlocks(msgRoot) {
     if (!msgRoot) return;
     var pres = msgRoot.querySelectorAll('pre');
@@ -3480,67 +3548,114 @@
       bar.className = 'alice-enx-code-actions';
       bar.setAttribute('data-alice-enx', '1');
 
+      var lang = detectCodeLanguage(codeTxt, pre);
       var isShell = isShellCommand(codeTxt) ||
         pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1 || pre.className.indexOf('sh') > -1;
+      var isRunnable = isShell || lang === 'python' || lang === 'node';
 
-      if (isShell) {
+      if (isRunnable) {
         var runBtn = document.createElement('button');
         runBtn.className = 'alice-enx-code-btn alice-enx-code-btn-run';
-        runBtn.innerHTML = '<span class="alice-enx-code-btn-icon">▶</span><span>Run in Terminal</span>';
-        runBtn.title = 'Run shell command in Alice local terminal';
-        (function (cmd, targetPre) {
+        var runIcon = lang === 'python' ? '🐍' : (lang === 'node' ? '⬢' : '▶');
+        var runTitle = lang === 'python' ? 'Run Python script in local terminal' : (lang === 'node' ? 'Run Node script in local terminal' : 'Run shell command in Alice local terminal');
+        runBtn.innerHTML = '<span class="alice-enx-code-btn-icon">' + runIcon + '</span><span>Run in Terminal</span>';
+        runBtn.title = runTitle;
+        (function (cmd, targetPre, sLang) {
           runBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             toggleWorkbench('terminal');
             runBtn.disabled = true;
             runBtn.textContent = 'Running...';
-            runTerminalCommand(cmd, function (ok, stdout, stderr) {
+            executeSnippet(cmd, sLang, function (ok, stdout, stderr, exitCode) {
               runBtn.disabled = false;
-              runBtn.innerHTML = '<span class="alice-enx-code-btn-icon">▶</span><span>Run in Terminal</span>';
+              runBtn.innerHTML = '<span class="alice-enx-code-btn-icon">' + runIcon + '</span><span>Run in Terminal</span>';
               var resText = (stdout || stderr || '').trim();
-              if (resText) {
+              var code = (typeof exitCode === 'number') ? exitCode : (ok ? 0 : 1);
+              if (resText || code !== 0) {
                 var outBadge = targetPre.nextElementSibling && targetPre.nextElementSibling.classList.contains('alice-enx-cmd-result')
                   ? targetPre.nextElementSibling
                   : document.createElement('div');
-                outBadge.className = 'alice-enx-cmd-result';
-                outBadge.textContent = '✓ Output:\n' + resText;
+                if (code === 0) {
+                  outBadge.className = 'alice-enx-cmd-result';
+                  outBadge.textContent = '✓ Output:\n' + resText;
+                } else {
+                  outBadge.className = 'alice-enx-cmd-result err';
+                  outBadge.innerHTML =
+                    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+                      '<span>✗ Execution Failed (exit ' + code + ')</span>' +
+                      '<button class="alice-enx-btn-autocorrect" type="button">🔄 Auto-Correct Script</button>' +
+                    '</div>' +
+                    '<pre style="margin:0;white-space:pre-wrap;font:inherit">' + escapeHtml(resText) + '</pre>';
+
+                  var autoBtn = outBadge.querySelector('.alice-enx-btn-autocorrect');
+                  if (autoBtn) {
+                    autoBtn.addEventListener('click', function (ev) {
+                      ev.stopPropagation();
+                      autoBtn.disabled = true;
+                      autoBtn.textContent = 'Starting loop...';
+                      SelfCorrectionEngine.startLoop(cmd, code, resText, sLang, null, null);
+                    });
+                  }
+                }
                 if (!outBadge.parentNode) {
                   targetPre.parentNode.insertBefore(outBadge, targetPre.nextSibling);
                 }
               }
             });
           });
-        })(codeTxt, pre);
+        })(codeTxt, pre, lang);
         bar.appendChild(runBtn);
 
         var answerBtn = document.createElement('button');
         answerBtn.className = 'alice-enx-code-btn alice-enx-code-btn-answer';
         answerBtn.innerHTML = '<span class="alice-enx-code-btn-icon">⚡</span><span>Run & Answer</span>';
         answerBtn.title = 'Run locally and feed live observation back to Alice';
-        (function (cmd, targetPre) {
+        (function (cmd, targetPre, sLang) {
           answerBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             toggleWorkbench('terminal');
             answerBtn.disabled = true;
             answerBtn.textContent = 'Executing...';
-            runTerminalCommand(cmd, function (ok, stdout, stderr) {
+            executeSnippet(cmd, sLang, function (ok, stdout, stderr, exitCode) {
               answerBtn.disabled = false;
               answerBtn.innerHTML = '<span class="alice-enx-code-btn-icon">⚡</span><span>Run & Answer</span>';
               var resText = (stdout || stderr || '').trim();
-              if (resText) {
+              var code = (typeof exitCode === 'number') ? exitCode : (ok ? 0 : 1);
+              if (resText || code !== 0) {
                 var outBadge = targetPre.nextElementSibling && targetPre.nextElementSibling.classList.contains('alice-enx-cmd-result')
                   ? targetPre.nextElementSibling
                   : document.createElement('div');
-                outBadge.className = 'alice-enx-cmd-result';
-                outBadge.textContent = '✓ Tool Result:\n' + resText;
+                if (code === 0) {
+                  outBadge.className = 'alice-enx-cmd-result';
+                  outBadge.textContent = '✓ Tool Result:\n' + resText;
+                  sendAliceMessage('[Harness Tool Observation for: `' + cmd.slice(0, 80) + '`]\n```\n' + resText + '\n```\nPlease answer the user based on this tool result.');
+                } else {
+                  outBadge.className = 'alice-enx-cmd-result err';
+                  outBadge.innerHTML =
+                    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+                      '<span>✗ Execution Failed (exit ' + code + ')</span>' +
+                      '<button class="alice-enx-btn-autocorrect" type="button">🔄 Auto-Correct Script</button>' +
+                    '</div>' +
+                    '<pre style="margin:0;white-space:pre-wrap;font:inherit">' + escapeHtml(resText) + '</pre>';
+
+                  var autoBtn = outBadge.querySelector('.alice-enx-btn-autocorrect');
+                  if (autoBtn) {
+                    autoBtn.addEventListener('click', function (ev) {
+                      ev.stopPropagation();
+                      autoBtn.disabled = true;
+                      autoBtn.textContent = 'Starting loop...';
+                      SelfCorrectionEngine.startLoop(cmd, code, resText, sLang, null, null);
+                    });
+                  }
+                  SelfCorrectionEngine.startLoop(cmd, code, resText, sLang, null, null);
+                }
                 if (!outBadge.parentNode) {
                   targetPre.parentNode.insertBefore(outBadge, targetPre.nextSibling);
                 }
-                sendAliceMessage('[Harness Tool Observation for: `' + cmd + '`]\n```\n' + resText + '\n```\nPlease answer the user based on this tool result.');
               }
             });
           });
-        })(codeTxt, pre);
+        })(codeTxt, pre, lang);
         bar.appendChild(answerBtn);
       } else if (/(?:file:|filename:|path:|\/\/\s*|#\s*)[\w./-]+\.\w+/i.test(codeTxt) || codeTxt.split('\n').length > 2) {
         var saveBtn = document.createElement('button');
@@ -4256,55 +4371,189 @@
 
   /* ---------------- Hermes Diagnostic & Self-Correction Engine (NousResearch/hermes-agent) ---------------- */
   var HermesEngine = {
-    diagnose: function (command, exitCode, output) {
-      if (exitCode === 0) return null;
+    diagnose: function (command, exitCode, output, scriptType) {
+      if (exitCode === 0) {
+        return { category: 'Success', type: 'CleanExit', summary: 'Process exited with code 0', fix: 'No fix needed.' };
+      }
       var out = output || '';
-      var scan = out.slice(0, 4000);
+      var scan = out.slice(-4000);
 
-      var cmdNotFound = scan.match(/(?:bash: line \d+: |bash: |sh: \d*:? ?)?([\w.+-]+): command not found/i);
-      if (cmdNotFound) {
-        var missing = cmdNotFound[1];
-        if (missing === 'python') return 'This system has no bare python. Use python3 or activate your project venv.';
-        if (missing === 'pip') return 'This system has no bare pip. Use pip3, python3 -m pip, or the project venv.';
-        return 'Command ' + missing + ' is not on PATH. Check installation or use an absolute path.';
+      // 1. Python Syntax / Indentation
+      var pyIndent = scan.match(/IndentationError: (.*?)(?:\n|$)/i);
+      if (pyIndent) {
+        var lineM = scan.match(/File ".*?", line (\d+)/i);
+        var lineNum = lineM ? ' (around line ' + lineM[1] + ')' : '';
+        return {
+          category: 'Python Indentation',
+          type: 'IndentationError',
+          summary: 'Inconsistent indentation' + lineNum + ': ' + pyIndent[1],
+          fix: 'Format with 4 spaces consistently and avoid mixing tabs and spaces.'
+        };
+      }
+      var pySyntax = scan.match(/SyntaxError: (.*?)(?:\n|$)/i);
+      if (pySyntax) {
+        var lineM2 = scan.match(/File ".*?", line (\d+)/i);
+        var lineNum2 = lineM2 ? ' (line ' + lineM2[1] + ')' : '';
+        return {
+          category: 'Python Syntax',
+          type: 'SyntaxError',
+          summary: 'Syntax error' + lineNum2 + ': ' + pySyntax[1],
+          fix: 'Check for unclosed quotes, missing colons, unbalanced parentheses, or invalid syntax on line ' + (lineM2 ? lineM2[1] : 'indicated') + '.'
+        };
       }
 
+      // 2. Python Missing Dependencies & Imports
       var modErr = scan.match(/(?:ModuleNotFoundError|ImportError): No module named '?([\w.]+)'?/i);
       if (modErr) {
-        return 'Python missing module ' + modErr[1] + '. Run pip3 install ' + modErr[1] + ' or activate the project venv.';
+        return {
+          category: 'Missing Dependency',
+          type: 'ModuleNotFoundError',
+          summary: "Python library '" + modErr[1] + "' is not installed",
+          fix: "Install with 'pip3 install " + modErr[1] + "' or rewrite script using Python standard libraries (e.g. urllib.request, json, subprocess)."
+        };
+      }
+      var nameErr = scan.match(/NameError: name '?([\w.]+)'? is not defined/i);
+      if (nameErr) {
+        return {
+          category: 'Undefined Variable/Import',
+          type: 'NameError',
+          summary: "Variable or module '" + nameErr[1] + "' is referenced before definition",
+          fix: "Add missing import for '" + nameErr[1] + "' or define it prior to usage."
+        };
+      }
+      var attrErr = scan.match(/AttributeError: (.*?)(?:\n|$)/i);
+      if (attrErr) {
+        return {
+          category: 'Attribute Mismatch',
+          type: 'AttributeError',
+          summary: attrErr[1],
+          fix: 'Check the library API documentation for deprecated methods or verify the object type before calling the attribute.'
+        };
+      }
+      var typeErr = scan.match(/TypeError: (.*?)(?:\n|$)/i);
+      if (typeErr) {
+        return {
+          category: 'Type Mismatch',
+          type: 'TypeError',
+          summary: typeErr[1],
+          fix: 'Verify variable types, cast with str()/int()/float(), or adjust parameter counts.'
+        };
+      }
+      var fnfErr = scan.match(/(?:FileNotFoundError: \[Errno 2\] No such file or directory|No such file or directory): '?([^'\n]+)'?/i);
+      if (fnfErr) {
+        return {
+          category: 'Missing Path',
+          type: 'FileNotFoundError',
+          summary: "Target path not found: '" + fnfErr[1].trim() + "'",
+          fix: "Ensure directory or file exists before access, or use os.makedirs(..., exist_ok=True)."
+        };
+      }
+      var pep668 = scan.match(/externally-managed-environment/i);
+      if (pep668) {
+        return {
+          category: 'PEP 668 Restriction',
+          type: 'ExternallyManagedEnv',
+          summary: 'Homebrew Python blocks global pip installs',
+          fix: "Use 'pip3 install --break-system-packages <package>' or create a project venv with 'python3 -m venv .venv && source .venv/bin/activate'."
+        };
       }
 
-      var nodeErr = scan.match(/Cannot find module '?([\w.@/-]+)'?/i);
-      if (nodeErr) {
-        return 'Node missing module ' + nodeErr[1] + '. Run npm install ' + nodeErr[1] + ' in project workspace.';
+      // 3. Node.js / JavaScript
+      var nodeMod = scan.match(/Cannot find module '?([\w.@/-]+)'?/i);
+      if (nodeMod) {
+        return {
+          category: 'Missing Node Package',
+          type: 'MODULE_NOT_FOUND',
+          summary: "Node package '" + nodeMod[1] + "' is missing",
+          fix: "Run 'npm install " + nodeMod[1] + "' in workspace or use built-in node modules."
+        };
+      }
+      var nodeRef = scan.match(/ReferenceError: (.*?)(?:\n|$)/i);
+      if (nodeRef) {
+        return {
+          category: 'Node ReferenceError',
+          type: 'ReferenceError',
+          summary: nodeRef[1],
+          fix: 'Declare the variable with const/let or import it from the required module.'
+        };
+      }
+      var portOccupied = scan.match(/(?:EADDRINUSE|address already in use).*?:(\d+)/i);
+      if (portOccupied) {
+        return {
+          category: 'Port Conflict',
+          type: 'EADDRINUSE',
+          summary: 'Port ' + portOccupied[1] + ' is already occupied',
+          fix: "Kill the occupying process with 'lsof -ti :" + portOccupied[1] + " | xargs kill -9' or configure a different port."
+        };
       }
 
+      // 4. Shell / Command Missing / Perms
+      var cmdNotFound = scan.match(/(?:bash: line \d+: |bash: |sh: \d*:? ?|zsh: )?([\w.+-]+): command not found/i);
+      if (cmdNotFound) {
+        var missing = cmdNotFound[1];
+        var fixCmd = 'brew install ' + missing;
+        if (missing === 'python') fixCmd = 'Use python3 or specify the active virtualenv python binary.';
+        if (missing === 'pip') fixCmd = 'Use pip3 or python3 -m pip.';
+        return {
+          category: 'Missing Executable',
+          type: 'CommandNotFound',
+          summary: "Command '" + missing + "' is not on PATH",
+          fix: fixCmd
+        };
+      }
       if (/Permission denied|EACCES/i.test(scan)) {
-        return 'Permission denied. Check file permissions with ls -la and prefer user-writable locations.';
+        return {
+          category: 'Permissions',
+          type: 'PermissionDenied',
+          summary: 'Permission denied accessing file or directory',
+          fix: "Ensure target is executable ('chmod +x <file>') or write to a user-writable directory."
+        };
       }
-
+      if (/unary operator expected|bad substitution/i.test(scan)) {
+        return {
+          category: 'Shell Syntax',
+          type: 'BadSubstitution',
+          summary: 'Bash parameter syntax error',
+          fix: 'Quote variables in conditionals (e.g. [ -n "$VAR" ]) or use standard [[ ... ]] syntax.'
+        };
+      }
       if (/CONFLICT|Automatic merge failed|needs merge/i.test(scan)) {
-        return 'Git merge conflict. Resolve conflicted files before continuing or run git merge --abort.';
+        return {
+          category: 'Git Merge',
+          type: 'GitConflict',
+          summary: 'Git merge conflict',
+          fix: 'Resolve conflicted files before continuing or run git merge --abort.'
+        };
       }
 
-      var existsErr = scan.match(/(?:fatal|error):.*?'([^']+)' already exists/i);
-      if (existsErr) {
-        return 'Target ' + existsErr[1] + ' already exists. Reuse it or choose another name.';
+      // 5. Standard Exit Codes
+      if (exitCode === 126) {
+        return { category: 'Permissions', type: 'Exit126', summary: 'File is not executable', fix: "Run 'chmod +x <file>' before executing." };
+      }
+      if (exitCode === 127) {
+        return { category: 'PATH', type: 'Exit127', summary: 'Command not found on PATH', fix: 'Check binary installation or provide the full absolute path.' };
+      }
+      if (exitCode === 124) {
+        return { category: 'Timeout', type: 'Exit124', summary: 'Execution timed out after 60 seconds', fix: 'Break task into smaller chunks, add timeouts, or run asynchronously in background.' };
+      }
+      if (exitCode === 137) {
+        return { category: 'Process Killed', type: 'Exit137', summary: 'Process was terminated with SIGKILL (out of memory or killed)', fix: 'Reduce memory allocation or batch data processing in smaller increments.' };
       }
 
-      if (exitCode === 126) return 'Exit 126: File is not executable. Add executable permission with chmod +x.';
-      if (exitCode === 127) return 'Exit 127: Command not found on PATH.';
-      if (exitCode === 137) return 'Exit 137: Process terminated by SIGKILL (memory limit or external kill).';
-      if (exitCode === 124) return 'Exit 124: Command timed out. Break it down or execute asynchronously.';
-
-      return 'Process returned exit code ' + exitCode + '. Review the error log and adjust script logic.';
+      var firstErrLine = (scan.match(/(?:Error|Exception|fatal|FAILED):[^\n]+/i) || [])[0] || ('Process exited with code ' + exitCode);
+      return {
+        category: 'Runtime Error',
+        type: 'ExitCode' + exitCode,
+        summary: firstErrLine.trim(),
+        fix: 'Review the traceback and error log above, isolate the failing operation, and adjust the script logic.'
+      };
     },
 
     detectMaskedFailure: function (command, output) {
       if (!command) return false;
       var hasPipeline = /\|\s*(?:tail|head|cat|tee|less|more|wc|sort|uniq)\b/i.test(command) || /\|\|\s*(?:echo|printf|true)\b/i.test(command);
       if (!hasPipeline) return false;
-      var hasFailureText = /error|fatal|exception|failed|compilation terminated|npm ERR!/i.test(output || '');
+      var hasFailureText = /error|fatal|exception|failed|compilation terminated|npm ERR!|Traceback \(most recent call last\)/i.test(output || '');
       return hasFailureText;
     }
   };
@@ -4461,12 +4710,233 @@
     togglePermissionsMenu(pill);
   };
 
+  /* ---------------- Self-Correction Engine (Autonomous Feedback Loop) ---------------- */
+  var SelfCorrectionEngine = {
+    maxAttempts: 5,
+    state: {
+      isActive: false,
+      attempt: 0,
+      originalCmd: '',
+      scriptType: 'bash',
+      filePath: null,
+      history: [],
+      activeCardEl: null
+    },
+
+    reset: function () {
+      this.state.isActive = false;
+      this.state.attempt = 0;
+      this.state.originalCmd = '';
+      this.state.scriptType = 'bash';
+      this.state.filePath = null;
+      this.state.history = [];
+      this.state.activeCardEl = null;
+      this.updateWorkbenchBadge();
+    },
+
+    updateWorkbenchBadge: function () {
+      var badge = document.querySelector('.alice-enx-self-correct-wb-status');
+      if (!badge) return;
+      if (this.state.isActive) {
+        badge.innerHTML = '<span class="alice-enx-pulse" style="background:#f59e0b"></span><span>Self-Correction: Attempt ' + this.state.attempt + '/' + this.maxAttempts + '</span>';
+        badge.style.display = 'inline-flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    },
+
+    renderAttemptDots: function (currentAttempt, maxAttempts, succeeded) {
+      var html = '';
+      for (var i = 1; i <= maxAttempts; i++) {
+        var cls = 'alice-enx-attempt-dot';
+        if (i < currentAttempt) {
+          cls += ' failed';
+        } else if (i === currentAttempt) {
+          cls += succeeded ? ' success' : ' active';
+        }
+        html += '<span class="' + cls + '" title="Attempt ' + i + '"></span>';
+      }
+      return html;
+    },
+
+    startLoop: function (cmd, code, outText, scriptType, filePath, cardEl) {
+      autoHarnessHalted = false;
+      this.state.isActive = true;
+      this.state.attempt = 1;
+      this.state.originalCmd = cmd || filePath;
+      this.state.scriptType = scriptType || 'bash';
+      this.state.filePath = filePath;
+      this.state.history = [];
+      this.state.activeCardEl = cardEl;
+
+      var diag = HermesEngine.diagnose(cmd, code, outText, scriptType);
+      this.state.history.push({
+        attempt: 1,
+        cmd: cmd || filePath,
+        code: code,
+        diag: diag
+      });
+
+      this.renderSelfCorrectionCard(cardEl, cmd, code, outText, diag, false);
+      var prompt = this.formatDirectivePrompt(cmd, code, outText, diag);
+      sendAliceMessage(prompt);
+      logTerm('err', '[SelfCorrection 1/' + this.maxAttempts + '] Loop started for: ' + (cmd || filePath) + ' (' + diag.summary + ')');
+      this.updateWorkbenchBadge();
+    },
+
+    onNextAttempt: function (cmd, code, outText, isFile, filePath, targetPre, msgRoot, cardEl) {
+      this.state.attempt++;
+      this.state.activeCardEl = cardEl;
+      var diag = HermesEngine.diagnose(cmd, code, outText, this.state.scriptType);
+      this.state.history.push({
+        attempt: this.state.attempt,
+        cmd: cmd || filePath,
+        code: code,
+        diag: diag
+      });
+
+      if (this.state.attempt <= this.maxAttempts) {
+        this.renderSelfCorrectionCard(cardEl, cmd, code, outText, diag, false);
+        var prompt = this.formatDirectivePrompt(cmd, code, outText, diag);
+        sendAliceMessage(prompt);
+        logTerm('err', '[SelfCorrection ' + this.state.attempt + '/' + this.maxAttempts + '] Failure registered: ' + diag.summary);
+        this.updateWorkbenchBadge();
+      } else {
+        this.onHalt(cardEl, cmd, code, outText, diag);
+      }
+    },
+
+    renderSelfCorrectionCard: function (cardEl, cmd, code, outText, diag, succeeded) {
+      if (!cardEl) return;
+      cardEl.className = 'alice-enx-auto-harness-card self-correcting';
+      cardEl.innerHTML =
+        '<div class="alice-enx-auto-harness-hdr">' +
+          '<span class="alice-enx-self-correct-badge">🔄 Self-Correction: Attempt ' + this.state.attempt + '/' + this.maxAttempts + '</span>' +
+          '<div class="alice-enx-attempts-pills">' + this.renderAttemptDots(this.state.attempt, this.maxAttempts, succeeded) + '</div>' +
+          '<span class="alice-enx-auto-harness-lbl" style="margin-left:auto;font-size:11px;color:#fca5a5">Exit ' + code + '</span>' +
+          '<button class="alice-enx-auto-harness-stop" type="button">Stop Loop</button>' +
+        '</div>' +
+        '<div class="alice-enx-diag-box">' +
+          '<div class="alice-enx-diag-hdr">⚠ ' + escapeHtml(diag.category) + ': ' + escapeHtml(diag.summary) + '</div>' +
+          '<div class="alice-enx-diag-fix">💡 Strategy: ' + escapeHtml(diag.fix) + '</div>' +
+        '</div>' +
+        '<div class="alice-enx-auto-harness-cmd"><code>$ ' + escapeHtml(cmd ? cmd.slice(0, 160) : ('write ' + this.state.filePath)) + '</code></div>' +
+        '<pre class="alice-enx-auto-harness-out err">' + escapeHtml(outText.slice(-1200) || '(command produced no output)') + '</pre>';
+
+      var stopBtn = cardEl.querySelector('.alice-enx-auto-harness-stop');
+      if (stopBtn) {
+        stopBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          SelfCorrectionEngine.stopLoop('user_cancelled', cardEl);
+        });
+      }
+    },
+
+    onSuccess: function (cmd, outText, cardEl, elapsed) {
+      var attemptNum = this.state.attempt || 1;
+      if (cardEl) {
+        cardEl.className = 'alice-enx-auto-harness-card success';
+        cardEl.innerHTML =
+          '<div class="alice-enx-auto-harness-hdr">' +
+            '<span class="alice-enx-check">✓</span>' +
+            '<span class="alice-enx-auto-harness-lbl">Self-Correction Succeeded on Attempt ' + attemptNum + '/' + this.maxAttempts + '! (exit 0 in ' + elapsed + 'ms)</span>' +
+            '<div class="alice-enx-attempts-pills">' + this.renderAttemptDots(attemptNum, this.maxAttempts, true) + '</div>' +
+            '<button class="alice-enx-auto-harness-toggle" type="button">Toggle Output</button>' +
+          '</div>' +
+          '<div class="alice-enx-diag-box" style="border-left-color:#22c55e;background:rgba(34,197,94,.08)">' +
+            '<div class="alice-enx-diag-hdr" style="color:#86efac">✓ Script Verified and Fixed</div>' +
+            '<div class="alice-enx-diag-fix" style="color:#e2e8f0">Corrected script passed all runtime checks cleanly.</div>' +
+          '</div>' +
+          '<pre class="alice-enx-auto-harness-out">' + escapeHtml(outText || '(script completed successfully with exit code 0)') + '</pre>';
+
+        var toggleBtn = cardEl.querySelector('.alice-enx-auto-harness-toggle');
+        var outPre = cardEl.querySelector('.alice-enx-auto-harness-out');
+        if (toggleBtn && outPre) {
+          toggleBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            outPre.style.display = outPre.style.display === 'none' ? 'block' : 'none';
+          });
+        }
+      }
+
+      var obsText = '[Harness Self-Correction Succeeded (Attempt ' + attemptNum + ')]:\n' +
+        'Command: `' + cmd + '` executed successfully with exit code 0.\n' +
+        'Execution Output:\n```\n' + (outText || '(completed cleanly with exit code 0)') + '\n```\n' +
+        'Please present the final factual results to the user and confirm task completion.';
+      sendAliceMessage(obsText);
+      logTerm('stdout', '[SelfCorrection] Succeeded on attempt ' + attemptNum + ' for: ' + cmd);
+      this.reset();
+    },
+
+    onHalt: function (cardEl, cmd, code, outText, diag) {
+      if (cardEl) {
+        cardEl.className = 'alice-enx-auto-harness-card stopped';
+        cardEl.innerHTML =
+          '<div class="alice-enx-auto-harness-hdr">' +
+            '<span class="alice-enx-err-icon">⏹</span>' +
+            '<span class="alice-enx-auto-harness-lbl">Self-Correction Halted (Max ' + this.maxAttempts + ' attempts reached)</span>' +
+          '</div>' +
+          '<div class="alice-enx-diag-box">' +
+            '<div class="alice-enx-diag-hdr">Persistent Blocker: ' + escapeHtml(diag.summary) + '</div>' +
+            '<div class="alice-enx-diag-fix">Suggested manual fix: ' + escapeHtml(diag.fix) + '</div>' +
+          '</div>' +
+          '<pre class="alice-enx-auto-harness-out err">' + escapeHtml(outText.slice(-800) || '(command failed)') + '</pre>';
+      }
+
+      var haltMsg = '[Harness Self-Correction Halted]: Script failed after ' + this.maxAttempts + ' automatic attempts.\n' +
+        'Last Target: `' + (cmd || this.state.filePath) + '` (Exit ' + code + ')\n' +
+        'Persistent Error: ' + diag.summary + '\n' +
+        'Error Details:\n```\n' + outText.slice(-800) + '\n```\n' +
+        'Please explain the blocker clearly to the user with the recommended manual resolution steps.';
+      sendAliceMessage(haltMsg);
+      logTerm('err', '[SelfCorrection] Halted after ' + this.maxAttempts + ' attempts.');
+      this.reset();
+    },
+
+    stopLoop: function (reason, cardEl) {
+      autoHarnessHalted = true;
+      if (cardEl) {
+        cardEl.className = 'alice-enx-auto-harness-card stopped';
+        cardEl.innerHTML =
+          '<div class="alice-enx-auto-harness-hdr">' +
+            '<span class="alice-enx-err-icon">⏹</span>' +
+            '<span class="alice-enx-auto-harness-lbl">Self-Correction Loop Stopped by User</span>' +
+          '</div>';
+      }
+      sendAliceMessage('[Harness Loop Cancelled]: The user stopped the autonomous self-correction loop. Please acknowledge and ask how the user wishes to proceed.');
+      this.reset();
+    },
+
+    formatDirectivePrompt: function (cmd, code, outText, diag) {
+      var historyLines = '';
+      if (this.state.history.length > 1) {
+        historyLines = '\nPrevious attempts in this loop:\n' +
+          this.state.history.slice(0, -1).map(function (h) {
+            return '• Attempt ' + h.attempt + ': `' + (h.cmd ? h.cmd.slice(0, 80) : '') + '` -> ' + h.diag.summary;
+          }).join('\n') + '\n';
+      }
+
+      return '[Harness Self-Correction Loop — Attempt ' + this.state.attempt + ' of ' + this.maxAttempts + ']:\n' +
+        '🚨 Execution failed with exit code ' + code + '.\n' +
+        'Failed Target: `' + (cmd || this.state.filePath) + '`\n\n' +
+        'Root Cause Diagnosis:\n' +
+        '• Category: ' + diag.category + '\n' +
+        '• Issue: ' + diag.summary + '\n' +
+        '• Resolution Strategy: ' + diag.fix + '\n' +
+        historyLines + '\n' +
+        'Raw Error Output:\n```\n' + outText.slice(-1500) + '\n```\n\n' +
+        'Self-Correction Directive:\n' +
+        '1. Inspect the error and root cause above.\n' +
+        '2. Fix the script or command to resolve the error.\n' +
+        '3. Provide the corrected, executable code block (```bash or ```python or ```file:path) now to continue autonomous execution.';
+    }
+  };
+
   /* ---------------- Autonomous Harness Agent Loop ---------------- */
   var autoHarnessTurnCount = 0;
-  var autoHarnessFailCount = 0;
   var autoHarnessHalted = false;
 
-  function renderApprovalCard(cmd, isFile, filePath, fileContent, targetPre, msgRoot, reason) {
+  function renderApprovalCard(cmd, isFile, filePath, fileContent, targetPre, msgRoot, reason, scriptLang) {
     msgRoot.setAttribute('data-harness-auto-ran', '1');
 
     var card = document.createElement('div');
@@ -4491,7 +4961,7 @@
     approveBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       card.remove();
-      proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot);
+      proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot, scriptLang);
     });
 
     rejectBtn.addEventListener('click', function (e) {
@@ -4509,7 +4979,7 @@
       e.stopPropagation();
       setPermissionsMode('turbo');
       card.remove();
-      proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot);
+      proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot, scriptLang);
     });
 
     if (targetPre && targetPre.parentNode) {
@@ -4519,8 +4989,8 @@
     }
   }
 
-  function executeAutoTool(cmd, isFile, filePath, fileContent, targetPre, msgRoot) {
-    if (autoHarnessHalted || autoHarnessTurnCount >= 12) return;
+  function executeAutoTool(cmd, isFile, filePath, fileContent, targetPre, msgRoot, scriptLang) {
+    if (autoHarnessHalted || autoHarnessTurnCount >= 20) return;
 
     var mode = getPermissionsMode();
 
@@ -4540,25 +5010,30 @@
     }
 
     if (needsApproval) {
-      renderApprovalCard(cmd, isFile, filePath, fileContent, targetPre, msgRoot, reason);
+      renderApprovalCard(cmd, isFile, filePath, fileContent, targetPre, msgRoot, reason, scriptLang);
       return;
     }
 
-    proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot);
+    proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot, scriptLang);
   }
 
-  function proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot) {
-    if (autoHarnessHalted || autoHarnessTurnCount >= 12) return;
+  function proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot, scriptLang) {
+    if (autoHarnessHalted || autoHarnessTurnCount >= 20) return;
     autoHarnessTurnCount++;
     msgRoot.setAttribute('data-harness-auto-ran', '1');
 
     var card = document.createElement('div');
-    card.className = 'alice-enx-auto-harness-card executing';
+    card.className = 'alice-enx-auto-harness-card executing' + (SelfCorrectionEngine.state.isActive ? ' self-correcting' : '');
     card.setAttribute('data-alice-enx', '1');
+
+    var hdrLabel = SelfCorrectionEngine.state.isActive
+      ? '🔄 Self-Correction: Executing Attempt ' + SelfCorrectionEngine.state.attempt + '/' + SelfCorrectionEngine.maxAttempts + '...'
+      : '⚡ Autonomous Harness: Executing on Mac...';
+
     card.innerHTML =
       '<div class="alice-enx-auto-harness-hdr">' +
         '<span class="alice-enx-pulse"></span>' +
-        '<span class="alice-enx-auto-harness-lbl">⚡ Autonomous Harness: Executing on Mac...</span>' +
+        '<span class="alice-enx-auto-harness-lbl">' + hdrLabel + '</span>' +
         '<button class="alice-enx-auto-harness-stop" type="button">Stop Loop</button>' +
       '</div>' +
       '<div class="alice-enx-auto-harness-cmd"><code>$ ' + escapeHtml(cmd ? cmd.slice(0, 160) : ('write ' + filePath)) + '</code></div>';
@@ -4566,10 +5041,14 @@
     var stopBtn = card.querySelector('.alice-enx-auto-harness-stop');
     stopBtn.addEventListener('click', function (e) {
       e.stopPropagation();
-      autoHarnessHalted = true;
-      card.className = 'alice-enx-auto-harness-card stopped';
-      card.querySelector('.alice-enx-auto-harness-lbl').textContent = '⏹ Autonomous Loop Stopped by User';
-      stopBtn.remove();
+      if (SelfCorrectionEngine.state.isActive) {
+        SelfCorrectionEngine.stopLoop('user_cancelled', card);
+      } else {
+        autoHarnessHalted = true;
+        card.className = 'alice-enx-auto-harness-card stopped';
+        card.querySelector('.alice-enx-auto-harness-lbl').textContent = '⏹ Autonomous Loop Stopped by User';
+        stopBtn.remove();
+      }
     });
 
     if (targetPre && targetPre.parentNode) {
@@ -4593,70 +5072,114 @@
                 '<span class="alice-enx-check">✓</span>' +
                 '<span class="alice-enx-auto-harness-lbl">File Created: ' + escapeHtml(filePath) + ' (' + (res.data ? res.data.bytes : fileContent.length) + ' bytes in ' + elapsed + 'ms)</span>' +
               '</div>';
-            sendAliceMessage('[Harness Tool Observation (File System)]:\nSuccessfully created and wrote file: `' + filePath + '`.\nPlease continue with the next step or confirm completion to the user.');
+            var msg = SelfCorrectionEngine.state.isActive
+              ? '[Harness Self-Correction]: File `' + filePath + '` was updated with your fix. Now execute the test command or script to verify it.'
+              : '[Harness Tool Observation (File System)]:\nSuccessfully created and wrote file: `' + filePath + '`.\nPlease continue with the next step or confirm completion to the user.';
+            sendAliceMessage(msg);
           } else {
             logTerm('err', '[FileSystem] Write failed: ' + filePath + ': ' + (res.error || 'Unknown error'));
-            card.className = 'alice-enx-auto-harness-card error';
-            card.innerHTML =
-              '<div class="alice-enx-auto-harness-hdr">' +
-                '<span class="alice-enx-err-icon">✗</span>' +
-                '<span class="alice-enx-auto-harness-lbl">File Write Failed: ' + escapeHtml(res.error || 'Unknown error') + '</span>' +
-              '</div>';
-            sendAliceMessage('[Harness Tool Error]: Failed to write file `' + filePath + '`: ' + (res.error || 'Permission error'));
+            if (SelfCorrectionEngine.state.isActive) {
+              SelfCorrectionEngine.onNextAttempt(null, 1, res.error || 'Write error', true, filePath, targetPre, msgRoot, card);
+            } else {
+              SelfCorrectionEngine.startLoop(null, 1, res.error || 'Write error', 'file', filePath, card);
+            }
           }
         });
       }
       return;
     }
 
-    runTerminalCommand(cmd, function (ok, stdout, stderr, exitCode) {
-      var elapsed = Date.now() - startTime;
-      if (autoHarnessHalted) return;
-      var outText = (stdout || stderr || '').trim();
-      var code = (typeof exitCode === 'number') ? exitCode : (ok ? 0 : 1);
+    function dispatchRun(finalCmd) {
+      runTerminalCommand(finalCmd, function (ok, stdout, stderr, exitCode) {
+        var elapsed = Date.now() - startTime;
+        if (autoHarnessHalted) return;
+        var outText = (stdout || stderr || '').trim();
+        var code = (typeof exitCode === 'number') ? exitCode : (ok ? 0 : 1);
 
-      card.className = 'alice-enx-auto-harness-card ' + (code === 0 ? 'success' : 'error');
-      card.innerHTML =
-        '<div class="alice-enx-auto-harness-hdr">' +
-          '<span class="' + (code === 0 ? 'alice-enx-check' : 'alice-enx-err-icon') + '">' + (code === 0 ? '✓' : '✗') + '</span>' +
-          '<span class="alice-enx-auto-harness-lbl">' + (code === 0 ? 'Tool Executed' : 'Execution Returned Error') + ' (exit ' + code + ' in ' + elapsed + 'ms)</span>' +
-          '<button class="alice-enx-auto-harness-toggle" type="button">Toggle Output</button>' +
-        '</div>' +
-        '<pre class="alice-enx-auto-harness-out' + (code === 0 ? '' : ' err') + '">' + escapeHtml(outText || '(command produced no output)') + '</pre>';
+        var isMasked = (code === 0) && HermesEngine.detectMaskedFailure(finalCmd, outText);
+        var effectiveCode = isMasked ? 1 : code;
 
-      var toggleBtn = card.querySelector('.alice-enx-auto-harness-toggle');
-      var outPre = card.querySelector('.alice-enx-auto-harness-out');
-      toggleBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        outPre.style.display = outPre.style.display === 'none' ? 'block' : 'none';
-      });
+        if (effectiveCode === 0) {
+          if (SelfCorrectionEngine.state.isActive) {
+            SelfCorrectionEngine.onSuccess(finalCmd, outText, card, elapsed);
+          } else {
+            card.className = 'alice-enx-auto-harness-card success';
+            card.innerHTML =
+              '<div class="alice-enx-auto-harness-hdr">' +
+                '<span class="alice-enx-check">✓</span>' +
+                '<span class="alice-enx-auto-harness-lbl">Tool Executed (exit 0 in ' + elapsed + 'ms)</span>' +
+                '<button class="alice-enx-auto-harness-toggle" type="button">Toggle Output</button>' +
+              '</div>' +
+              '<pre class="alice-enx-auto-harness-out">' + escapeHtml(outText || '(command produced no output)') + '</pre>';
 
-      if (code === 0) {
-        autoHarnessFailCount = 0;
-        var isMasked = HermesEngine.detectMaskedFailure(cmd, outText);
-        if (isMasked) {
-          var maskMsg = '[Harness Pipeline Warning]: Command returned exit 0 but output indicates error conditions:\n```\n' + outText + '\n```\nPlease verify and adjust without pipeline swallow.';
-          sendAliceMessage(maskMsg);
-          return;
-        }
-        var obsText = '[Harness Tool Observation for: `' + cmd + '` (exit code 0)]:\n```\n' + (outText || '(no output, process completed successfully)') + '\n```\nPlease synthesize the final factual answer or proceed with the next task step.';
-        sendAliceMessage(obsText);
-      } else {
-        autoHarnessFailCount++;
-        var hint = HermesEngine.diagnose(cmd, code, outText);
-        if (autoHarnessFailCount <= 3) {
-          var retryMsg = '[Harness Self-Correction - Exit Code ' + code + ']:\n' +
-            'Command: `' + cmd + '`\n' +
-            'Error Output:\n```\n' + (outText || '(no output)') + '\n```\n' +
-            'Diagnostic Hint: ' + hint + '\n' +
-            'Self-Correction Instruction: Diagnose root cause, adjust the command or script to fix the error, and provide the corrected executable ```bash block now.';
-          sendAliceMessage(retryMsg);
+            var toggleBtn = card.querySelector('.alice-enx-auto-harness-toggle');
+            var outPre = card.querySelector('.alice-enx-auto-harness-out');
+            if (toggleBtn && outPre) {
+              toggleBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                outPre.style.display = outPre.style.display === 'none' ? 'block' : 'none';
+              });
+            }
+
+            var obsText = '[Harness Tool Observation for: `' + finalCmd + '` (exit code 0)]:\n```\n' + (outText || '(no output, process completed successfully)') + '\n```\nPlease synthesize the final factual answer or proceed with the next task step.';
+            sendAliceMessage(obsText);
+          }
         } else {
-          var haltMsg = '[Harness Loop Halted]: Tool execution failed 3 times with exit ' + code + '.\nFinal error: ' + (outText || 'Command failed') + '\nPlease explain the blocker to the user.';
-          sendAliceMessage(haltMsg);
+          if (SelfCorrectionEngine.state.isActive) {
+            SelfCorrectionEngine.onNextAttempt(finalCmd, effectiveCode, outText, false, null, targetPre, msgRoot, card);
+          } else {
+            SelfCorrectionEngine.startLoop(finalCmd, effectiveCode, outText, scriptLang || 'bash', null, card);
+          }
         }
+      });
+    }
+
+    // Python script staging
+    if (scriptLang === 'python') {
+      var scratchPy = '.alice_scratch.py';
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(scratchPy, cmd, function (wRes) {
+          if (!wRes.ok) {
+            SelfCorrectionEngine.startLoop(cmd, 1, 'Failed to stage python script: ' + (wRes.error || ''), 'python', null, card);
+            return;
+          }
+          dispatchRun('python3 ' + scratchPy);
+        });
+        return;
       }
-    });
+    }
+
+    // Node script staging
+    if (scriptLang === 'node') {
+      var scratchJs = '.alice_scratch.js';
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(scratchJs, cmd, function (wRes) {
+          if (!wRes.ok) {
+            SelfCorrectionEngine.startLoop(cmd, 1, 'Failed to stage node script: ' + (wRes.error || ''), 'node', null, card);
+            return;
+          }
+          dispatchRun('node ' + scratchJs);
+        });
+        return;
+      }
+    }
+
+    // Multi-line bash script staging
+    if (scriptLang === 'bash' && cmd.split('\n').length > 2) {
+      var scratchSh = '.alice_scratch.sh';
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(scratchSh, cmd, function (wRes) {
+          if (!wRes.ok) {
+            dispatchRun(cmd);
+            return;
+          }
+          dispatchRun('chmod +x ' + scratchSh + ' && ./' + scratchSh);
+        });
+        return;
+      }
+    }
+
+    dispatchRun(cmd);
   }
 
   function checkAutoHarnessRun() {
@@ -4679,12 +5202,21 @@
         var lines = clean.split('\n');
         lines.shift();
         var fileContent = lines.join('\n');
-        executeAutoTool(null, true, filePath, fileContent, pre, lastMsg);
+        executeAutoTool(null, true, filePath, fileContent, pre, lastMsg, 'file');
         return;
       }
 
-      if (isShellCommand(clean) || pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1) {
-        executeAutoTool(clean, false, null, null, pre, lastMsg);
+      var lang = detectCodeLanguage(clean, pre);
+      if (lang === 'bash' || isShellCommand(clean) || pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1) {
+        executeAutoTool(clean, false, null, null, pre, lastMsg, 'bash');
+        return;
+      }
+      if (lang === 'python') {
+        executeAutoTool(clean, false, null, null, pre, lastMsg, 'python');
+        return;
+      }
+      if (lang === 'node') {
+        executeAutoTool(clean, false, null, null, pre, lastMsg, 'node');
         return;
       }
     }
