@@ -102,6 +102,21 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         webView.reload()
     }
 
+    func resetAnonymousSession() {
+        let dataStore = WKWebsiteDataStore.default()
+        dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { [weak self] records in
+            let yandexRecords = records.filter {
+                let name = $0.displayName.lowercased()
+                return name.contains("yandex") || name.contains("passport") || name.contains("ya.ru")
+            }
+            dataStore.removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), for: yandexRecords) {
+                DispatchQueue.main.async {
+                    self?.loadInitialPage()
+                }
+            }
+        }
+    }
+
     func goBack() {
         if webView.canGoBack {
             webView.goBack()
@@ -221,6 +236,18 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         let host = url.host?.lowercased() ?? ""
+        let path = url.path.lowercased()
+        let urlStr = url.absoluteString.lowercased()
+
+        // 1. Block any redirection to Yandex Passport / Auth / Phone login page
+        if host.contains("passport.yandex") || host.contains("passport.") || path.contains("/auth") || urlStr.contains("passport.yandex") {
+            decisionHandler(.cancel)
+            if self.webView.url?.host?.contains("passport.") == true || self.webView.url == nil {
+                self.loadInitialPage()
+            }
+            return
+        }
+
         let isYandex = host.contains("yandex.") || host.contains("ya.ru") || host.contains("yastatic.net")
         let isGoogleTranslate = host.contains("translate.googleapis.com")
 
@@ -234,10 +261,25 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if let currentURL = webView.url {
+            let host = currentURL.host?.lowercased() ?? ""
+            let urlStr = currentURL.absoluteString.lowercased()
+            if host.contains("passport.") || urlStr.contains("passport.yandex") {
+                self.loadInitialPage()
+                return
+            }
+        }
+    }
+
     // MARK: - WKUIDelegate (Popups, Uploads, Microphone, Dialogs)
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if let url = navigationAction.request.url {
             let host = url.host?.lowercased() ?? ""
+            let urlStr = url.absoluteString.lowercased()
+            if host.contains("passport.") || urlStr.contains("passport.yandex") {
+                return nil
+            }
             if host.contains("yandex.") || host.contains("ya.ru") {
                 webView.load(navigationAction.request)
             } else {

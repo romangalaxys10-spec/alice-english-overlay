@@ -58,6 +58,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.addItem(fileMenuItem)
 
         fileMenu.addItem(withTitle: "New Chat", action: #selector(newChat), keyEquivalent: "n")
+        let resetSessionItem = NSMenuItem(title: "Reset Anonymous Session", action: #selector(resetAnonymousSession), keyEquivalent: "r")
+        resetSessionItem.keyEquivalentModifierMask = [.command, .shift]
+        fileMenu.addItem(resetSessionItem)
         fileMenu.addItem(NSMenuItem.separator())
         fileMenu.addItem(withTitle: "Close Window", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
 
@@ -212,6 +215,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func newChat() {
         MainWindowController.shared.newChatClicked()
+    }
+
+    @objc private func resetAnonymousSession() {
+        MainWindowController.shared.webViewController.resetAnonymousSession()
     }
 
     @objc private func reloadPage() {

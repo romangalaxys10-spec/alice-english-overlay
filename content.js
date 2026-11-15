@@ -1,6 +1,11 @@
 /* Alice English Overlay — Part A: settings, dictionary, translator, machine translation */
 (function () {
   'use strict';
+  // Safety guard: prevent any landing on Yandex Passport login
+  if (window.location.hostname.indexOf('passport.yandex') > -1 || window.location.pathname.indexOf('/auth') === 0) {
+    window.location.replace('https://alice.yandex.ru/');
+    return;
+  }
   if (window.__ALICE_ENX) return;
 
   var A = { version: '1.1.0' };
@@ -562,6 +567,7 @@
       'border:1px solid rgba(20,20,30,.09);box-shadow:0 10px 30px rgba(10,10,30,.13);max-width:min(94vw,700px);overflow-x:auto;scrollbar-width:none;box-sizing:border-box}',
     'html:has([role="dialog"]) .alice-enx-modebar, body:has([role="dialog"]) .alice-enx-modebar,',
     'html:has([class*="Modal-Content"]) .alice-enx-modebar, body:has([class*="Modal-Content"]) .alice-enx-modebar{display:none !important}',
+    'iframe[src*="passport.yandex"], [class*="PassportModal"], [class*="LoginModal"], .AuthPopup {display:none !important;pointer-events:none !important;visibility:hidden !important}',
     '.alice-enx-cmd-result{margin:6px 0 10px;padding:8px 12px;background:#0d0d14;border:1px solid rgba(74,222,128,.35);border-radius:8px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
     '.alice-enx-auto-harness-card{margin:8px 0 12px;padding:10px 14px;border-radius:10px;background:#13131c;border:1px solid rgba(108,76,240,.35);font-family:ui-monospace,Menlo,monospace;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:all .2s}',
     '.alice-enx-auto-harness-card.executing{border-color:rgba(108,76,240,.75);background:linear-gradient(180deg,#181628,#12111d)}',
@@ -2929,11 +2935,71 @@
   }
 
   /* ---------------- upsell hider & banner auto-closer ---------------- */
-  var UPSELL_RE = /(войдите, чтобы открыть|все возможности нейросети|войдите в аккаунт|работа с файлами|log in to unlock|everything the neural network can do|working with files|оформить опцию|обновить тариф|попробуйте ai-агентов|скачать приложение|try ai agents|download the app)/i;
-  var UPSELL_SEL = '[class*="Banner"],[class*="banner"],[class*="Promo"],[class*="promo"],[class*="Login"],[class*="login"],[class*="Upsell"],[class*="upsell"],[class*="Rate"],[class*="Widget"],[class*="Infobox"],[class*="Teaser"],[class*="Toast"],[class*="Notification"],[class*="Alert"],[class*="Snack"],[class*="Hint"],[class*="hint"],[class*="Notice"]';
+  var UPSELL_RE = /(войдите, чтобы открыть|все возможности нейросети|войдите в аккаунт|работа с файлами|log in to unlock|everything the neural network can do|working with files|оформить опцию|обновить тариф|попробуйте ai-агентов|скачать приложение|try ai agents|download the app|enter your phone number|укажите номер телефона|yandex id|яндекс id|passport)/i;
+  var UPSELL_SEL = '[class*="Banner"],[class*="banner"],[class*="Promo"],[class*="promo"],[class*="Login"],[class*="login"],[class*="Upsell"],[class*="upsell"],[class*="Rate"],[class*="Widget"],[class*="Infobox"],[class*="Teaser"],[class*="Toast"],[class*="Notification"],[class*="Alert"],[class*="Snack"],[class*="Hint"],[class*="hint"],[class*="Notice"],[class*="Auth"],[class*="Passport"]';
+
+  function findActualCloseButton(rootEl) {
+    if (!rootEl) return null;
+    var candidates = rootEl.querySelectorAll('button, [role="button"], a[role="button"]');
+    for (var i = 0; i < candidates.length; i++) {
+      var b = candidates[i];
+      var aria = (b.getAttribute('aria-label') || '').toLowerCase();
+      var cls = (b.className || '').toString().toLowerCase();
+      var txt = (b.textContent || '').trim().toLowerCase();
+      // Explicitly reject any button related to login, authorization, registration, or passport
+      if (/войти|вход|log\s*in|sign\s*in|auth|passport|регистрац|register|phone|телефон/i.test(txt) ||
+          /login|auth|passport|signin/i.test(cls) ||
+          /войти|log\s*in|sign\s*in/i.test(aria)) {
+        continue;
+      }
+      // Look for true close / dismiss buttons
+      if (/закрыть|close|dismiss|отклонить|позже|later|cancel|отмена/i.test(aria) ||
+          /close|dismiss|cancel/i.test(cls) ||
+          /^(✕|×|x)$/i.test(txt)) {
+        return b;
+      }
+    }
+    return null;
+  }
+
+  function dismissLoginModals() {
+    // Dismiss any in-page Passport iframe or Yandex ID popup
+    var loginIframes = document.querySelectorAll('iframe[src*="passport.yandex"], iframe[src*="/auth"]');
+    for (var f = 0; f < loginIframes.length; f++) {
+      var iframe = loginIframes[f];
+      var modal = iframe.closest('[role="dialog"], .Modal, [class*="Modal"], [class*="Popup"], [class*="Overlay"]') || iframe.parentElement;
+      if (modal && modal !== document.body) {
+        modal.remove();
+      } else {
+        iframe.remove();
+      }
+    }
+
+    var dialogs = document.querySelectorAll('[role="dialog"], .Modal, [class*="Modal_visible"], [class*="Popup-Content"], [class*="AuthPopup"]');
+    for (var d = 0; d < dialogs.length; d++) {
+      var dlg = dialogs[d];
+      if (dlg.closest('[data-alice-enx]')) continue;
+      var dTxt = (dlg.textContent || '').trim();
+      if (UPSELL_RE.test(dTxt) && (/phone|номер|yandex id|яндекс id|войти|log in|passport/i.test(dTxt))) {
+        dlg.style.setProperty('display', 'none', 'important');
+        var closeBtn = findActualCloseButton(dlg);
+        if (closeBtn) {
+          try { closeBtn.click(); } catch (e) {}
+        } else {
+          dlg.remove();
+        }
+        var backdrops = document.querySelectorAll('.Modal-Backdrop, [class*="Backdrop"], [class*="backdrop"], .Popup-Overlay');
+        for (var b = 0; b < backdrops.length; b++) {
+          backdrops[b].style.setProperty('display', 'none', 'important');
+          backdrops[b].remove();
+        }
+      }
+    }
+  }
 
   function scanUpsells() {
     if (!S.hideUpsell) return;
+    dismissLoginModals();
 
     // 1. Selector-based search
     var candidates = document.querySelectorAll(UPSELL_SEL);
@@ -2946,7 +3012,7 @@
       if (UPSELL_RE.test(raw)) {
         el.style.setProperty('display', 'none', 'important');
         el.classList.add('alice-enx-upsell');
-        var closeBtn = el.querySelector('button[aria-label*="Закрыть"], button[aria-label*="Close"], button[class*="close"], button[class*="Close"], button');
+        var closeBtn = findActualCloseButton(el);
         if (closeBtn) {
           try { closeBtn.click(); } catch (e) {}
         }
@@ -2969,7 +3035,7 @@
           if (sTxt.length < 500 && UPSELL_RE.test(sTxt)) {
             sib.style.setProperty('display', 'none', 'important');
             sib.classList.add('alice-enx-upsell');
-            var sibClose = sib.querySelector('button[aria-label*="Закрыть"], button[aria-label*="Close"], button[class*="close"], button[class*="Close"], button, [role="button"]');
+            var sibClose = findActualCloseButton(sib);
             if (sibClose) {
               try { sibClose.click(); } catch (e) {}
             }
@@ -2995,15 +3061,15 @@
       }
     }
   }
-  setInterval(scanUpsells, 350);
+  setInterval(scanUpsells, 300);
 
   /* ---------------- limits / load notice ---------------- */
   var noticeEl = null;
   var NOTICE_RULES = [
-    [/из-за высокой нагрузки/i, 'Free mode is busy — you are getting the standard model. The full Alice AI unlocks a bit later, or right away with a free Yandex login.'],
-    [/это ответ менее мощной модели/i, 'You are on the free standard model. Log in with a free Yandex ID (or wait out the busy period) to unlock the full Alice AI.'],
-    [/превышен лимит|слишком много запросов/i, 'Free-mode limit reached — responses pause for a while. Wait a bit, or log in to restore full access.'],
-    [/попробуйте позже/i, 'Alice is overloaded right now. Try again in a minute — free access resumes automatically.']
+    [/из-за высокой нагрузки/i, 'Free mode is busy — you are getting standard responses. Higher reasoning resumes automatically.'],
+    [/это ответ менее мощной модели/i, 'Standard model response. Full reasoning resumes automatically as load eases.'],
+    [/превышен лимит|слишком много запросов/i, 'Free mode query pause. Please wait a brief moment — requests resume automatically.'],
+    [/попробуйте позже/i, 'Service is busy. Please try again shortly.']
   ];
   function scanNotices() {
     var texts = document.querySelectorAll('.Message,[data-message-role],[class*="Notice"],[class*="Banner"],[class*="banner"],[class*="Hint"],[class*="hint"],[class*="Warning"]');
@@ -3028,18 +3094,12 @@
     msg.setAttribute('data-alice-enx-msg', '1');
     msg.innerHTML = '<b>Free mode:</b> ' + message.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     noticeEl.appendChild(msg);
-    var open = document.createElement('button');
-    open.textContent = 'Log in';
-    open.addEventListener('click', function () {
-      var b = document.querySelector('[data-testid="login-button"]');
-      if (b) b.click(); else window.open('https://passport.yandex.ru/', '_blank');
-    });
     var x = document.createElement('button');
     x.className = 'alice-enx-x'; x.textContent = '✕'; x.setAttribute('aria-label', 'Dismiss');
     x.addEventListener('click', function () { if (noticeEl) noticeEl.remove(); });
-    noticeEl.appendChild(open); noticeEl.appendChild(x);
+    noticeEl.appendChild(x);
     document.body.appendChild(noticeEl);
-    setTimeout(function () { if (noticeEl && noticeEl.isConnected) noticeEl.remove(); }, 20000);
+    setTimeout(function () { if (noticeEl && noticeEl.isConnected) noticeEl.remove(); }, 12000);
   }
 
   /* ---------------- Autonomous Harness Agent Loop ---------------- */
