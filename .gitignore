@@ -15,3 +15,4 @@ Alice.app/
 *.log
 *.tmp
 .alice/
+.alice_scratch.*

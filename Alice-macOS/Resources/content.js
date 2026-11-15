@@ -589,7 +589,9 @@
     '.alice-enx-check{color:#4ade80;font-weight:700}',
     '.alice-enx-err-icon{color:#ef4444;font-weight:700}',
     /* Autonomous Loop Agent HUD & Studio */
-    '.alice-enx-loop-hud{position:sticky;top:10px;z-index:150;margin:10px auto 14px;max-width:850px;width:calc(100% - 24px);padding:10px 14px;border-radius:12px;background:rgba(20,20,32,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(139,92,246,.35);box-shadow:0 8px 24px rgba(0,0,0,.45);font-family:-apple-system,BlinkMacSystemFont,sans-serif}',
+    '.alice-enx-loop-hud{position:relative;z-index:90;margin:10px auto 14px;max-width:850px;width:calc(100% - 24px);padding:10px 14px;border-radius:12px;background:rgba(20,20,32,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(139,92,246,.35);box-shadow:0 8px 24px rgba(0,0,0,.45);font-family:-apple-system,BlinkMacSystemFont,sans-serif;box-sizing:border-box;transition:all .2s ease}',
+    '.alice-enx-loop-hud.collapsed{padding:6px 12px;margin:6px auto 10px}',
+    '.alice-enx-loop-hud.collapsed .alice-enx-loop-hud-progress, .alice-enx-loop-hud.collapsed .alice-enx-loop-hud-active-story{display:none !important}',
     '.alice-enx-loop-hud-top{display:flex;align-items:center;gap:8px}',
     '.alice-enx-loop-hud-title{font-weight:700;font-size:13px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.alice-enx-loop-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(139,92,246,.25);color:#c4b5fd;border:1px solid rgba(139,92,246,.4)}',
@@ -633,23 +635,33 @@
       '.alice-enx-pill{padding:6px 9px}',
       '.alice-enx-sep{display:none}',
     '}',
-    '@media (max-height:720px){',
-      '.alice-enx-chips{margin:8px auto 44px;gap:6px}',
-      '.alice-enx-chip{padding:8px 12px}',
-    '}',
-    /* chips */
-    '.alice-enx-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;max-width:680px;margin:14px auto 58px;padding:0 12px}',
-    '@media (max-width:640px){.alice-enx-chips{grid-template-columns:1fr;margin:10px auto 48px}}',
+    /* Collapsible prompt starters */
+    '.alice-enx-chips-wrapper{max-width:720px;width:100%;margin:10px auto 18px;padding:0 12px;box-sizing:border-box;transition:all .2s ease}',
+    '.alice-enx-chips-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 6px}',
+    '.alice-enx-chips-title{font:600 11px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#8a8a98;letter-spacing:.04em;text-transform:uppercase}',
+    '.alice-enx-chips-toggle{background:rgba(20,20,30,.06);border:1px solid rgba(20,20,30,.12);border-radius:6px;padding:3px 9px;font:500 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#6b7280;cursor:pointer;transition:all .15s}',
+    '.alice-enx-chips-toggle:hover{background:rgba(108,76,240,.12);border-color:rgba(108,76,240,.3);color:#6c4cf0}',
+    '.alice-enx-chips-mini-row{display:none;align-items:center;gap:6px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}',
+    '.alice-enx-chip-mini{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid rgba(20,20,30,.1);color:#374151;font:500 11.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s}',
+    '.alice-enx-chip-mini:hover{background:rgba(108,76,240,.12);border-color:rgba(108,76,240,.4);color:#5b3fd6}',
+    '.alice-enx-chips-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}',
+    '.alice-enx-chips-wrapper.collapsed .alice-enx-chips-grid{display:none !important}',
+    '.alice-enx-chips-wrapper.collapsed .alice-enx-chips-mini-row{display:flex !important}',
+    '@media (max-width:640px){.alice-enx-chips-grid{grid-template-columns:1fr}}',
     '.AliceChat-Messages,[class*="MessagesList"]{padding-bottom:56px !important}',
     '[data-testid="alice-chat-message"]:last-child,.AliceChat-Message:last-child{margin-bottom:52px !important}',
-    '.alice-enx-chip{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;cursor:pointer;text-align:left;',
+    '.alice-enx-chip{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;cursor:pointer;text-align:left;',
       'background:rgba(255,255,255,.75);border:1px solid rgba(20,20,30,.08);',
-      'font:400 13.5px/1.45 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#3c3c46;',
+      'font:400 13px/1.45 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#3c3c46;',
       'transition:border-color .15s,box-shadow .15s,transform .15s}',
     '.alice-enx-chip:hover{border-color:rgba(108,76,240,.45);box-shadow:0 6px 18px rgba(108,76,240,.12);transform:translateY(-1px)}',
-    '.alice-enx-chip b{display:block;font-weight:600;font-size:13.5px;color:#26262e}',
-    '.alice-enx-chip span{display:block;font-weight:400;font-size:12px;color:#8b8b96;margin-top:2px}',
+    '.alice-enx-chip b{display:block;font-weight:600;font-size:13px;color:#26262e}',
+    '.alice-enx-chip span{display:block;font-weight:400;font-size:11.5px;color:#8b8b96;margin-top:2px}',
     '@media (prefers-color-scheme:dark){',
+      '.alice-enx-chips-toggle{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#cbd5e1}',
+      '.alice-enx-chips-toggle:hover{background:rgba(139,92,246,.25);border-color:rgba(139,92,246,.5);color:#fff}',
+      '.alice-enx-chip-mini{background:rgba(28,28,38,.8);border-color:rgba(255,255,255,.12);color:#cbd5e1}',
+      '.alice-enx-chip-mini:hover{background:rgba(139,92,246,.25);border-color:rgba(139,92,246,.5);color:#fff}',
       '.alice-enx-chip{background:rgba(32,32,40,.72);border-color:rgba(255,255,255,.09);color:#c6c6cf}',
       '.alice-enx-chip b{color:#e9e9f0}.alice-enx-chip span{color:#96969f}',
       '.alice-enx-chip:hover{border-color:rgba(139,109,255,.55)}}',
@@ -1286,7 +1298,7 @@
         container.innerHTML = '';
       }
 
-      var greets = document.querySelectorAll('.MainPageSuggests, [class*="MainPageSuggests"], [class*="Greeting"], .alice-enx-chips');
+      var greets = document.querySelectorAll('.MainPageSuggests, [class*="MainPageSuggests"], [class*="Greeting"], .alice-enx-chips, .alice-enx-chips-wrapper');
       for (var g = 0; g < greets.length; g++) {
         greets[g].style.display = '';
       }
@@ -1297,6 +1309,7 @@
         ta.focus();
       }
 
+      ensureChips();
       this.renderSidebarChats();
       if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
     },
@@ -1311,7 +1324,7 @@
       if (!target) return;
 
       var container = findMessagesContainer();
-      var greets = document.querySelectorAll('.MainPageSuggests, [class*="MainPageSuggests"], [class*="Greeting"], .alice-enx-chips');
+      var greets = document.querySelectorAll('.MainPageSuggests, [class*="MainPageSuggests"], [class*="Greeting"], .alice-enx-chips, .alice-enx-chips-wrapper');
 
       if (target.messages && target.messages.length > 0) {
         for (var g = 0; g < greets.length; g++) {
@@ -2822,6 +2835,20 @@
       });
       controls.appendChild(stopBtn);
 
+      var collapseBtn = document.createElement('button');
+      collapseBtn.className = 'alice-enx-loop-ctrl-btn';
+      var isCollapsed = localStorage.getItem('alice_enx_loop_hud_collapsed') === '1';
+      if (isCollapsed) loopHudEl.classList.add('collapsed');
+      collapseBtn.textContent = isCollapsed ? '▴ Expand' : '▾ Collapse';
+      collapseBtn.title = 'Collapse/expand automation HUD';
+      collapseBtn.addEventListener('click', function () {
+        loopHudEl.classList.toggle('collapsed');
+        var nowCollapsed = loopHudEl.classList.contains('collapsed');
+        localStorage.setItem('alice_enx_loop_hud_collapsed', nowCollapsed ? '1' : '0');
+        collapseBtn.textContent = nowCollapsed ? '▴ Expand' : '▾ Collapse';
+      });
+      controls.appendChild(collapseBtn);
+
       top.appendChild(controls);
       loopHudEl.appendChild(top);
 
@@ -2838,8 +2865,13 @@
       activeStoryEl.textContent = 'Initializing autonomous loop...';
       loopHudEl.appendChild(activeStoryEl);
 
-      var chatHost = document.querySelector('.AliceChat, [class*="Chat_root"], main') || document.body;
-      chatHost.insertBefore(loopHudEl, chatHost.firstChild);
+      var msgsCont = findMessagesContainer();
+      if (msgsCont) {
+        msgsCont.insertBefore(loopHudEl, msgsCont.firstChild);
+      } else {
+        var chatHost = document.querySelector('.AliceChat, [class*="Chat_root"], main') || document.body;
+        chatHost.insertBefore(loopHudEl, chatHost.firstChild);
+      }
     },
 
     updateHUD: function (text, pct, isPaused, isComplete) {
@@ -4816,7 +4848,15 @@
     modeBar.style.left = centerX + 'px';
     modeBar.style.transform = 'translateX(-50%)';
 
-    var bottom = Math.max(10, Math.round(window.innerHeight - r.top + 10));
+    var ta = document.querySelector('textarea');
+    var inputTop = r.top;
+    if (ta) {
+      var taRect = ta.getBoundingClientRect();
+      if (taRect && taRect.top > 40) {
+        inputTop = Math.max(r.top, taRect.top - 18);
+      }
+    }
+    var bottom = Math.max(10, Math.round(window.innerHeight - inputTop + 8));
     modeBar.style.bottom = bottom + 'px';
 
     if (ctxBar && ctxBar.isConnected) {
@@ -5190,92 +5230,170 @@
   }, true);
 
   /* ---------------- prompt chips ---------------- */
+  function hasChatMessages() {
+    var msgs = document.querySelectorAll('.Message, [data-testid="alice-chat-message"], .AliceChat-Message, [class*="ChatMessage"]');
+    for (var i = 0; i < msgs.length; i++) {
+      var m = msgs[i];
+      if (m.closest && m.closest('[data-alice-enx]')) continue;
+      if (m.offsetWidth > 0 || m.offsetHeight > 0) return true;
+    }
+    return false;
+  }
+
   var STARTERS = [
-    ['🔁 Autonomous loop agent', 'Launch an autonomous multi-step loop for coding, research, QA, or design.'],
-    ['🧠 Distill reusable skill', '/learn distill the workflow and commands into a reusable SKILL.md package'],
-    ['⚡ Check Mac specs', 'Check my exact Mac hardware specs (RAM, CPU, model, macOS) using your terminal harness.'],
-    ['🛠 Run code & test', 'Create a small Python script to benchmark CPU arithmetic and run it with your harness.'],
-    ['Explain something simply', 'Explain how neural networks learn, in simple words'],
-    ['Plan my week', 'Help me plan my week: 5 focus tasks, realistic timing'],
-    ['Draft an email', 'Draft a short polite email asking my landlord to fix the heating'],
-    ['Brainstorm ideas', 'Brainstorm 10 creative gift ideas for a friend who loves hiking']
+    { title: '🔁 Autonomous loop agent', short: '🔁 Loop Agent', desc: 'Launch an autonomous multi-step loop for coding, research, QA, or design.', action: 'loop' },
+    { title: '🧠 Distill reusable skill', short: '🧠 Distill Skill', desc: '/learn distill the workflow and commands into a reusable SKILL.md package', action: 'distill' },
+    { title: '⚡ Check Mac specs', short: '⚡ Mac Specs', desc: 'Check my exact Mac hardware specs (RAM, CPU, model, macOS) using your terminal harness.', action: 'specs' },
+    { title: '🛠 Run code & test', short: '🛠 Run Code', desc: 'Create a small Python script to benchmark CPU arithmetic and run it with your harness.', action: 'code' },
+    { title: 'Explain something simply', short: '💬 Explain', desc: 'Explain how neural networks learn, in simple words', action: 'text' },
+    { title: 'Plan my week', short: '📅 Plan Week', desc: 'Help me plan my week: 5 focus tasks, realistic timing', action: 'text' },
+    { title: 'Draft an email', short: '✉️ Draft Email', desc: 'Draft a short polite email asking my landlord to fix the heating', action: 'text' },
+    { title: 'Brainstorm ideas', short: '💡 Brainstorm', desc: 'Brainstorm 10 creative gift ideas for a friend who loves hiking', action: 'text' }
   ];
-  var chipsEl = null;
-  function ensureChips() {
-    if (!S.chips || chipsEl && chipsEl.isConnected) return;
+
+  function runStarterAction(st) {
+    if (st.action === 'loop') {
+      setActiveMode('loop');
+      openLoopModal();
+      return;
+    }
+    if (st.action === 'distill') {
+      setActiveMode('memory');
+      toggleWorkbench('memory');
+      setTimeout(function () {
+        var distillBtn = document.querySelector('.alice-enx-mem-subnav button:last-child');
+        if (distillBtn) distillBtn.click();
+      }, 150);
+      return;
+    }
+    if (st.action === 'specs') {
+      setActiveMode('terminal');
+      var ta = document.querySelector('textarea');
+      if (ta) {
+        A.setNativeValue(ta, st.desc);
+        ta.focus();
+        var sendBtn = document.querySelector('button[aria-label="Отправить"],button[aria-label="Send"],[data-testid="oknyx"]');
+        if (sendBtn) {
+          setTimeout(function () { sendBtn.click(); }, 100);
+          return;
+        }
+      }
+    }
+    if (st.action === 'code') {
+      setActiveMode('code');
+      var ta = document.querySelector('textarea');
+      if (ta) {
+        A.setNativeValue(ta, st.desc);
+        ta.focus();
+        var sendBtn = document.querySelector('button[aria-label="Отправить"],button[aria-label="Send"],[data-testid="oknyx"]');
+        if (sendBtn) {
+          setTimeout(function () { sendBtn.click(); }, 100);
+          return;
+        }
+      }
+    }
     var ta = document.querySelector('textarea');
     if (!ta) return;
-    if (document.querySelector('[data-testid="alice-chat-message"],.AliceChat-Message')) return;
+    A.setNativeValue(ta, st.desc);
+    ta.focus();
+    try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (e) {}
+  }
+
+  var chipsEl = null;
+  function ensureChips() {
+    if (!S.chips) {
+      if (chipsEl && chipsEl.isConnected) chipsEl.remove();
+      return;
+    }
+    if (hasChatMessages()) {
+      if (chipsEl) chipsEl.style.display = 'none';
+      return;
+    }
+    if (chipsEl && chipsEl.isConnected) {
+      chipsEl.style.display = '';
+      return;
+    }
+    var ta = document.querySelector('textarea');
+    if (!ta) return;
     var suggests = document.querySelector('.MainPageSuggests, [class*="MainPageSuggests"]');
     var host = null;
-    if (suggests && suggests.parentNode) { host = suggests.parentNode; host.insertBefore(chipsRow(), suggests); }
-    else {
+    if (suggests && suggests.parentNode) {
+      host = suggests.parentNode;
+      host.insertBefore(chipsRow(), suggests);
+    } else {
       var form = ta.closest('form') || ta.parentElement;
       var col = form && form.parentElement;
       if (col) col.insertBefore(chipsRow(), col.contains(form) ? form : null);
     }
   }
+
   function chipsRow() {
     chipsEl = A.mark(document.createElement('div'));
-    chipsEl.className = 'alice-enx-chips';
+    chipsEl.className = 'alice-enx-chips-wrapper';
+
+    var head = document.createElement('div');
+    head.className = 'alice-enx-chips-head';
+
+    var title = document.createElement('span');
+    title.className = 'alice-enx-chips-title';
+    title.textContent = 'Quick Starters';
+    head.appendChild(title);
+
+    var toggleBtn = document.createElement('button');
+    toggleBtn.className = 'alice-enx-chips-toggle';
+    toggleBtn.type = 'button';
+
+    var isCollapsed = localStorage.getItem('alice_enx_chips_collapsed') === '1';
+    if (isCollapsed) chipsEl.classList.add('collapsed');
+    toggleBtn.textContent = isCollapsed ? '▴ Expand' : '▾ Collapse';
+
+    toggleBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      chipsEl.classList.toggle('collapsed');
+      var nowCollapsed = chipsEl.classList.contains('collapsed');
+      localStorage.setItem('alice_enx_chips_collapsed', nowCollapsed ? '1' : '0');
+      toggleBtn.textContent = nowCollapsed ? '▴ Expand' : '▾ Collapse';
+      placeBar();
+    });
+    head.appendChild(toggleBtn);
+    chipsEl.appendChild(head);
+
+    var miniRow = document.createElement('div');
+    miniRow.className = 'alice-enx-chips-mini-row';
+    STARTERS.forEach(function (st) {
+      var miniBtn = document.createElement('button');
+      miniBtn.className = 'alice-enx-chip-mini';
+      miniBtn.type = 'button';
+      miniBtn.textContent = st.short || st.title;
+      miniBtn.title = st.desc;
+      miniBtn.addEventListener('click', function () {
+        runStarterAction(st);
+      });
+      miniRow.appendChild(miniBtn);
+    });
+    chipsEl.appendChild(miniRow);
+
+    var grid = document.createElement('div');
+    grid.className = 'alice-enx-chips-grid';
     STARTERS.forEach(function (st) {
       var c = document.createElement('button');
       c.className = 'alice-enx-chip';
       c.type = 'button';
       var wrap = document.createElement('div');
-      var b = document.createElement('b'); b.textContent = st[0];
-      var s = document.createElement('span'); s.textContent = st[1].length > 64 ? st[1].slice(0, 64) + '…' : st[1];
-      wrap.appendChild(b); wrap.appendChild(s);
+      var b = document.createElement('b');
+      b.textContent = st.title;
+      var s = document.createElement('span');
+      s.textContent = st.desc.length > 64 ? st.desc.slice(0, 64) + '…' : st.desc;
+      wrap.appendChild(b);
+      wrap.appendChild(s);
       c.appendChild(wrap);
       c.addEventListener('click', function () {
-        if (st[0].indexOf('Autonomous loop') > -1) {
-          setActiveMode('loop');
-          openLoopModal();
-          return;
-        }
-        if (st[0].indexOf('Distill reusable skill') > -1) {
-          setActiveMode('memory');
-          toggleWorkbench('memory');
-          setTimeout(function () {
-            var distillBtn = document.querySelector('.alice-enx-mem-subnav button:last-child');
-            if (distillBtn) distillBtn.click();
-          }, 150);
-          return;
-        }
-        if (st[0].indexOf('Check Mac specs') > -1) {
-          setActiveMode('terminal');
-          var ta = document.querySelector('textarea');
-          if (ta) {
-            A.setNativeValue(ta, 'Check my exact Mac hardware specs (RAM, CPU, model, macOS) using your terminal harness.');
-            ta.focus();
-            var sendBtn = document.querySelector('button[aria-label="Отправить"],button[aria-label="Send"],[data-testid="oknyx"]');
-            if (sendBtn) {
-              setTimeout(function () { sendBtn.click(); }, 100);
-              return;
-            }
-          }
-        }
-        if (st[0].indexOf('Run code & test') > -1) {
-          setActiveMode('code');
-          var ta = document.querySelector('textarea');
-          if (ta) {
-            A.setNativeValue(ta, 'Create a small Python script to benchmark CPU arithmetic and run it with your harness.');
-            ta.focus();
-            var sendBtn = document.querySelector('button[aria-label="Отправить"],button[aria-label="Send"],[data-testid="oknyx"]');
-            if (sendBtn) {
-              setTimeout(function () { sendBtn.click(); }, 100);
-              return;
-            }
-          }
-        }
-        var ta = document.querySelector('textarea');
-        if (!ta) return;
-        A.setNativeValue(ta, st[1]);
-        ta.focus();
-        try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (e) {}
+        runStarterAction(st);
       });
-      chipsEl.appendChild(c);
+      grid.appendChild(c);
     });
+    chipsEl.appendChild(grid);
+
     return chipsEl;
   }
 
