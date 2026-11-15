@@ -568,453 +568,301 @@
   /* ---------------- CSS ---------------- */
   var CSS = [
     '.alice-enx-root{all:initial}',
-    '*[data-alice-enx]{font-family:-apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;box-sizing:border-box}',
-    /* chat.z.ai Obsidian Theme Core */
-    'html, body, .AliceChat, .AliceLayout, [class*="Chat_root"], [class*="Layout_root"], [class*="MainPage"], main, [class*="Page_root"] { background: radial-gradient(1200px 600px at 50% -120px, rgba(124,58,237,.10), transparent 60%), #0a0b10 !important; color: #f1f5f9 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important; -webkit-font-smoothing: antialiased !important; }',
-    'aside, nav, [class*="Sidebar"], [class*="sidebar"], [class*="Navigation"], [class*="SidePanel"] { background: #07080c !important; border-right: 1px solid rgba(255,255,255,.06) !important; }',
-    'aside *, nav *, [class*="Sidebar"] *, [class*="sidebar"] * { border-color: rgba(255,255,255,.06) !important; }',
-    'aside button, aside a, nav button, nav a, [class*="Sidebar"] button, [class*="Sidebar"] a { color: #94a3b8 !important; transition: all .15s ease !important; }',
-    'aside button:hover, aside a:hover, nav button:hover, nav a:hover, [class*="Sidebar"] button:hover, [class*="Sidebar"] a:hover { background: rgba(255,255,255,.05) !important; color: #f8fafc !important; border-radius: 8px !important; }',
+    '*[data-alice-enx]{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;box-sizing:border-box}',
+    /* DeepSeek Harness Design Platform Tokens */
+    ':root, body, html {',
+      '--dsw-static-amber-500: rgb(245, 158, 11);',
+      '--dsw-static-amber-400: rgb(247, 173, 49);',
+      '--dsw-static-blue-400: rgb(96, 165, 250);',
+      '--dsw-static-blue-450: rgb(77, 147, 248);',
+      '--dsw-static-blue-500: rgb(59, 130, 246);',
+      '--dsw-static-deepseek-400: rgb(122, 170, 255);',
+      '--dsw-static-deepseek-450: rgb(86, 134, 254);',
+      '--dsw-static-deepseek-500: rgb(65, 118, 230);',
+      '--dsw-static-green-400: rgb(78, 209, 126);',
+      '--dsw-static-green-500: rgb(34, 197, 94);',
+      '--dsw-static-red-400: rgb(248, 113, 113);',
+      '--dsw-static-violet-400: rgb(167, 139, 250);',
+      '--dsw-static-neutral-bluish-00: rgb(255, 255, 255);',
+      '--dsw-static-neutral-bluish-50: rgb(245, 247, 250);',
+      '--dsw-static-neutral-bluish-100: rgb(235, 238, 242);',
+      '--dsw-static-neutral-bluish-300: rgb(180, 184, 192);',
+      '--dsw-static-neutral-bluish-400: rgb(148, 152, 162);',
+      '--dsw-static-neutral-bluish-600: rgb(84, 88, 98);',
+      '--dsw-static-neutral-bluish-700: rgb(60, 64, 74);',
+      '--dsw-static-neutral-bluish-750: rgb(44, 47, 56);',
+      '--dsw-static-neutral-bluish-800: rgb(32, 35, 44);',
+      '--dsw-static-neutral-bluish-850: rgb(24, 26, 34);',
+      '--dsw-static-neutral-bluish-900: rgb(18, 20, 26);',
+      '--dsw-static-neutral-bluish-950: rgb(11, 12, 16);',
+      '--dsw-alias-bg-base: var(--dsw-static-neutral-bluish-950);',
+      '--dsw-alias-bg-layer-1: var(--dsw-static-neutral-bluish-900);',
+      '--dsw-alias-bg-layer-2: var(--dsw-static-neutral-bluish-850);',
+      '--dsw-alias-bg-layer-3: var(--dsw-static-neutral-bluish-800);',
+      '--dsw-alias-border-l1: rgba(255, 255, 255, 0.06);',
+      '--dsw-alias-border-l2: rgba(255, 255, 255, 0.12);',
+      '--dsw-alias-border-l3: rgba(255, 255, 255, 0.18);',
+      '--dsw-alias-brand-primary: var(--dsw-static-blue-450);',
+      '--dsw-alias-label-primary: var(--dsw-static-neutral-bluish-50);',
+      '--dsw-alias-label-secondary: var(--dsw-static-neutral-bluish-300);',
+      '--dsw-alias-label-caption: var(--dsw-static-neutral-bluish-600);',
+      '--dsw-specific-sidebar-fill: var(--dsw-static-neutral-bluish-900);',
+      '--dsh-content-font-size-secondary: 13px;',
+    '}',
+    /* DeepSeek Harness Obsidian Theme Background */
+    'html, body, .AliceChat, .AliceLayout, [class*="Chat_root"], [class*="Layout_root"], [class*="MainPage"], main, [class*="Page_root"] {',
+      'background: radial-gradient(1200px 600px at 50% -120px, rgba(86,134,254,.08), transparent 60%), #0b0c10 !important;',
+      'color: #f1f5f9 !important;',
+      'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;',
+      '-webkit-font-smoothing: antialiased !important;',
+    '}',
+    /* DeepSeek Harness Unified Sidebar: suppress all native Alice sidebar elements */
+    'aside > *:not(.alice-enx-sidebar-chats):not([data-alice-enx]),',
+    'nav > *:not(.alice-enx-sidebar-chats):not([data-alice-enx]),',
+    '[class*="SidePanel"] > *:not(.alice-enx-sidebar-chats):not([data-alice-enx]),',
+    '[class*="Sidebar"] > *:not(.alice-enx-sidebar-chats):not([data-alice-enx]),',
+    '[class*="SideColumn"] > *:not(.alice-enx-sidebar-chats):not([data-alice-enx]) {',
+      'display: none !important;',
+    '}',
+    'aside, nav, [class*="Sidebar"], [class*="sidebar"], [class*="Navigation"], [class*="SidePanel"] {',
+      'background: var(--dsw-specific-sidebar-fill, #0d0e14) !important;',
+      'border-right: 1px solid var(--dsw-alias-border-l1, rgba(255,255,255,.06)) !important;',
+    '}',
     'header, [class*="Header"], [class*="header"] { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,.05) !important; }',
-    'button[aria-label="Войти"], button[class*="Login"], a[class*="Login"], [class*="HeaderAuth"], [class*="AuthButton"] { background: rgba(255,255,255,.06) !important; border: 1px solid rgba(255,255,255,.12) !important; color: #e2e8f0 !important; border-radius: 999px !important; font-size: 13px !important; padding: 5px 16px !important; font-weight: 500 !important; box-shadow: 0 2px 8px rgba(0,0,0,.2) !important; transition: all .15s ease !important; }',
+    'button[aria-label="Войти"], button[class*="Login"], a[class*="Login"], [class*="HeaderAuth"], [class*="AuthButton"] {',
+      'background: rgba(255,255,255,.06) !important; border: 1px solid rgba(255,255,255,.12) !important; color: #e2e8f0 !important; border-radius: 999px !important; font-size: 13px !important; padding: 5px 16px !important; font-weight: 500 !important; box-shadow: 0 2px 8px rgba(0,0,0,.2) !important; transition: all .15s ease !important;',
+    '}',
     'button[aria-label="Войти"]:hover, button[class*="Login"]:hover, a[class*="Login"]:hover { background: rgba(255,255,255,.12) !important; color: #fff !important; border-color: rgba(255,255,255,.22) !important; }',
-    /* Chat Messages layout & Obsidian typography */
-    '.AliceChat-Messages, [class*="MessagesList"], [class*="Chat_messages"], [class*="ChatMessages"] { max-width: 860px !important; width: 100% !important; margin: 0 auto !important; padding: 20px 16px 110px !important; box-sizing: border-box !important; }',
-    '.AliceChat-Message, [data-testid="alice-chat-message"] { margin-bottom: 24px !important; width: 100% !important; transition: opacity .15s ease !important; }',
-    '.Message_from_user, [data-message-role="user"], .alice-enx-user-msg { margin: 12px 0 12px auto !important; max-width: min(700px, 85%) !important; width: fit-content !important; background: linear-gradient(135deg, rgba(124,58,237,.24), rgba(99,102,241,.18)) !important; border: 1px solid rgba(139,92,246,.38) !important; border-radius: 18px 18px 4px 18px !important; color: #f8fafc !important; box-shadow: 0 4px 20px rgba(0,0,0,.28), 0 0 1px rgba(255,255,255,.1) inset !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 18px !important; font-size: 14.5px !important; line-height: 1.6 !important; word-break: break-word !important; }',
+    /* Chat Messages layout & DeepSeek Harness typography */
+    '.AliceChat-Messages, [class*="MessagesList"], [class*="Chat_messages"], [class*="ChatMessages"] {',
+      'max-width: 880px !important; width: 100% !important; margin: 0 auto !important; padding: 16px 20px 110px !important; box-sizing: border-box !important;',
+    '}',
+    '.AliceChat-Message, [data-testid="alice-chat-message"] { margin-bottom: 22px !important; width: 100% !important; transition: opacity .15s ease !important; }',
+    /* User Message: DeepSeek Harness Capsule Bubble */
+    '.Message_from_user, [data-message-role="user"], .alice-enx-user-msg {',
+      'margin: 10px 0 10px auto !important; max-width: min(720px, 82%) !important; width: fit-content !important;',
+      'background: linear-gradient(135deg, rgba(77,147,248,.22), rgba(139,92,246,.18)) !important;',
+      'border: 1px solid rgba(77,147,248,.38) !important; border-radius: 18px 18px 4px 18px !important; color: #f8fafc !important;',
+      'box-shadow: 0 4px 20px rgba(0,0,0,.28), 0 0 1px rgba(255,255,255,.1) inset !important;',
+      'backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important;',
+      'padding: 12px 18px !important; font-size: 14.5px !important; line-height: 1.6 !important; word-break: break-word !important;',
+    '}',
     '.Message_from_user p, [data-message-role="user"] p, .alice-enx-user-msg p { color: #f8fafc !important; margin: 0 !important; }',
-    '.Message:not(.Message_from_user), [data-message-role="assistant"], .alice-enx-alice-msg { background: transparent !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; color: #e2e8f0 !important; font-size: 15px !important; line-height: 1.7 !important; letter-spacing: -0.01em !important; padding: 4px 0 !important; max-width: 100% !important; word-break: break-word !important; }',
-    '.Message:not(.Message_from_user) h1, [data-message-role="assistant"] h1 { font-size: 20px !important; font-weight: 700 !important; color: #fff !important; margin: 20px 0 10px !important; letter-spacing: -0.02em !important; }',
-    '.Message:not(.Message_from_user) h2, [data-message-role="assistant"] h2 { font-size: 17px !important; font-weight: 600 !important; color: #fff !important; margin: 18px 0 8px !important; letter-spacing: -0.015em !important; }',
-    '.Message:not(.Message_from_user) h3, [data-message-role="assistant"] h3 { font-size: 15px !important; font-weight: 600 !important; color: #f8fafc !important; margin: 16px 0 6px !important; }',
-    '.Message:not(.Message_from_user) p, [data-message-role="assistant"] p { color: #e2e8f0 !important; font-size: 14.5px !important; line-height: 1.7 !important; margin: 0 0 12px !important; letter-spacing: -0.005em !important; }',
+    /* Assistant Message: DeepSeek Clean Stream */
+    '.Message:not(.Message_from_user), [data-message-role="assistant"], .alice-enx-alice-msg {',
+      'background: transparent !important; border: none !important; border-radius: 0 !important; box-shadow: none !important;',
+      'color: #e2e8f0 !important; font-size: 14.5px !important; line-height: 1.7 !important; letter-spacing: -0.005em !important;',
+      'padding: 4px 0 !important; max-width: 100% !important; word-break: break-word !important;',
+    '}',
+    '.Message:not(.Message_from_user) h1, [data-message-role="assistant"] h1 { font-size: 20px !important; font-weight: 700 !important; color: #fff !important; margin: 18px 0 10px !important; letter-spacing: -0.02em !important; }',
+    '.Message:not(.Message_from_user) h2, [data-message-role="assistant"] h2 { font-size: 16.5px !important; font-weight: 600 !important; color: #fff !important; margin: 16px 0 8px !important; letter-spacing: -0.015em !important; }',
+    '.Message:not(.Message_from_user) h3, [data-message-role="assistant"] h3 { font-size: 14.5px !important; font-weight: 600 !important; color: #f8fafc !important; margin: 14px 0 6px !important; }',
+    '.Message:not(.Message_from_user) p, [data-message-role="assistant"] p { color: #e2e8f0 !important; font-size: 14px !important; line-height: 1.7 !important; margin: 0 0 12px !important; }',
     '.Message:not(.Message_from_user) p:last-child, [data-message-role="assistant"] p:last-child { margin-bottom: 0 !important; }',
     '.Message:not(.Message_from_user) strong, .Message:not(.Message_from_user) b, [data-message-role="assistant"] strong, [data-message-role="assistant"] b { color: #fff !important; font-weight: 600 !important; }',
     '.Message:not(.Message_from_user) ul, [data-message-role="assistant"] ul { padding-left: 20px !important; margin: 8px 0 14px !important; color: #e2e8f0 !important; }',
     '.Message:not(.Message_from_user) ol, [data-message-role="assistant"] ol { padding-left: 20px !important; margin: 8px 0 14px !important; color: #e2e8f0 !important; }',
     '.Message:not(.Message_from_user) li, [data-message-role="assistant"] li { margin-bottom: 6px !important; line-height: 1.65 !important; color: #e2e8f0 !important; }',
-    '.Message:not(.Message_from_user) blockquote, [data-message-role="assistant"] blockquote { border-left: 3px solid #8b5cf6 !important; background: rgba(139,92,246,.08) !important; border-radius: 0 8px 8px 0 !important; padding: 10px 16px !important; margin: 14px 0 !important; color: #cbd5e1 !important; font-style: italic !important; }',
+    '.Message:not(.Message_from_user) blockquote, [data-message-role="assistant"] blockquote { border-left: 3px solid #5686fe !important; background: rgba(86,134,254,.08) !important; border-radius: 0 8px 8px 0 !important; padding: 10px 16px !important; margin: 14px 0 !important; color: #cbd5e1 !important; }',
     '.Message:not(.Message_from_user) table, [data-message-role="assistant"] table { width: 100% !important; border-collapse: separate !important; border-spacing: 0 !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 10px !important; overflow: hidden !important; margin: 16px 0 !important; background: rgba(13,14,22,.6) !important; }',
     '.Message:not(.Message_from_user) th, [data-message-role="assistant"] th { background: rgba(255,255,255,.06) !important; color: #f8fafc !important; font-weight: 600 !important; font-size: 13px !important; padding: 9px 14px !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; text-align: left !important; }',
     '.Message:not(.Message_from_user) td, [data-message-role="assistant"] td { padding: 9px 14px !important; border-bottom: 1px solid rgba(255,255,255,.04) !important; color: #cbd5e1 !important; font-size: 13.5px !important; }',
-    '.Message:not(.Message_from_user) tr:last-child td, [data-message-role="assistant"] tr:last-child td { border-bottom: none !important; }',
-    '.Message:not(.Message_from_user) a, [data-message-role="assistant"] a { color: #a78bfa !important; text-decoration: none !important; border-bottom: 1px dotted rgba(167,139,250,.4) !important; transition: all .15s ease !important; }',
-    '.Message:not(.Message_from_user) a:hover, [data-message-role="assistant"] a:hover { color: #c4b5fd !important; border-bottom-color: #c4b5fd !important; }',
+    '.Message:not(.Message_from_user) a, [data-message-role="assistant"] a { color: #7aaaff !important; text-decoration: none !important; border-bottom: 1px dotted rgba(122,170,255,.4) !important; transition: all .15s ease !important; }',
+    '.Message:not(.Message_from_user) a:hover, [data-message-role="assistant"] a:hover { color: #99c8ff !important; border-bottom-color: #99c8ff !important; }',
     '.Message:not(.Message_from_user) hr, [data-message-role="assistant"] hr { border: none !important; height: 1px !important; background: rgba(255,255,255,.08) !important; margin: 20px 0 !important; }',
-    /* Session Header Bar: chat.z.ai Top Title Bar */
-    '.alice-enx-session-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; margin: 0 auto 16px; max-width: 900px; width: 100%; box-sizing: border-box; border-bottom: 1px solid rgba(255,255,255,.06); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }',
+    /* Session Header Bar: DeepSeek Harness Top Bar */
+    '.alice-enx-session-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; margin: 0 auto 14px; max-width: 900px; width: 100%; box-sizing: border-box; border-bottom: 1px solid rgba(255,255,255,.06); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }',
     '.alice-enx-session-header-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }',
-    '.alice-enx-session-header-icon { font-size: 14px; flex-shrink: 0; }',
     '.alice-enx-session-header-title { font: 700 15px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #f8fafc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }',
-    '.alice-enx-session-header-title:focus { outline: none; border-bottom: 1px dashed #8b5cf6; }',
-    '.alice-enx-session-header-mode { font: 700 9.5px/1 -apple-system, BlinkMacSystemFont, sans-serif; padding: 2px 6px; border-radius: 4px; background: rgba(124,58,237,.25); color: #c4b5fd; border: 1px solid rgba(139,92,246,.4); letter-spacing: .05em; text-transform: uppercase; flex-shrink: 0; }',
+    '.alice-enx-session-header-title:focus { outline: none; border-bottom: 1px dashed #5686fe; }',
+    '.alice-enx-session-header-mode { font: 700 9.5px/1 -apple-system, BlinkMacSystemFont, sans-serif; padding: 2px 6px; border-radius: 4px; background: rgba(86,134,254,.2); color: #93c5fd; border: 1px solid rgba(86,134,254,.4); letter-spacing: .05em; text-transform: uppercase; flex-shrink: 0; }',
     '.alice-enx-session-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }',
-    '.alice-enx-session-header-count { font: 400 11.5px/1 -apple-system, BlinkMacSystemFont, sans-serif; color: #64748b; }',
-    '.alice-enx-session-header-new-btn { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 3px 9px; font: 500 11px/1.2 -apple-system, BlinkMacSystemFont, sans-serif; color: #cbd5e1; cursor: pointer; transition: all .15s; }',
-    '.alice-enx-session-header-new-btn:hover { background: rgba(124,58,237,.3); border-color: rgba(139,92,246,.5); color: #fff; }',
-    '[class*="StatusMessage"], [class*="HeaderIndicator"], [class*="ModeIndicator"], [class*="Status_root"] { display: inline-flex !important; align-items: center !important; gap: 5px !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.05em !important; text-transform: uppercase !important; color: #a78bfa !important; background: rgba(139,92,246,.12) !important; border: 1px solid rgba(139,92,246,.25) !important; border-radius: 999px !important; padding: 3px 10px !important; margin-bottom: 8px !important; }',
+    '.alice-enx-session-header-new-btn { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 4px 10px; font: 500 11px/1.2 -apple-system, BlinkMacSystemFont, sans-serif; color: #cbd5e1; cursor: pointer; transition: all .15s; }',
+    '.alice-enx-session-header-new-btn:hover { background: rgba(86,134,254,.25); border-color: rgba(86,134,254,.5); color: #fff; }',
+    /* Code Blocks */
     'pre { background: #08090e !important; border: 1px solid rgba(255,255,255,.09) !important; border-radius: 12px !important; box-shadow: 0 8px 24px rgba(0,0,0,.45) !important; overflow: hidden !important; }',
     'pre code { color: #e2e8f0 !important; font-family: ui-monospace, Menlo, Monaco, "SF Mono", monospace !important; font-size: 12.5px !important; line-height: 1.55 !important; }',
-    ':not(pre) > code { background: rgba(255,255,255,.08) !important; color: #c4b5fd !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 5px !important; padding: 2px 6px !important; font-family: ui-monospace, Menlo, monospace !important; font-size: 12.5px !important; }',
-    '.StandaloneInput-Container, .AliceInput, [class*="Input_container"], [class*="inputContainer"], form { background: rgba(16,17,26,.85) !important; backdrop-filter: blur(24px) !important; -webkit-backdrop-filter: blur(24px) !important; border: 1px solid rgba(255,255,255,.1) !important; border-radius: 20px !important; box-shadow: 0 16px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04) !important; transition: border-color .2s, box-shadow .2s !important; }',
-    '.StandaloneInput-Container:focus-within, .AliceInput:focus-within, form:focus-within { border-color: rgba(139,92,246,.6) !important; box-shadow: 0 16px 48px rgba(0,0,0,.65), 0 0 0 3px rgba(139,92,246,.2) !important; }',
-    'textarea { color: #f8fafc !important; background: transparent !important; caret-color: #a855f7 !important; }',
+    ':not(pre) > code { background: rgba(255,255,255,.08) !important; color: #93c5fd !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 5px !important; padding: 2px 6px !important; font-family: ui-monospace, Menlo, monospace !important; font-size: 12.5px !important; }',
+    /* Composer / Input Area */
+    '.StandaloneInput-Container, .AliceInput, [class*="Input_container"], [class*="inputContainer"], form {',
+      'background: var(--dsw-alias-bg-layer-2, rgba(20,22,32,.92)) !important;',
+      'backdrop-filter: blur(24px) !important; -webkit-backdrop-filter: blur(24px) !important;',
+      'border: 1px solid var(--dsw-alias-border-l2, rgba(255,255,255,.12)) !important;',
+      'border-radius: 20px !important;',
+      'box-shadow: 0 16px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04) !important;',
+      'transition: border-color .2s, box-shadow .2s !important;',
+    '}',
+    '.StandaloneInput-Container:focus-within, .AliceInput:focus-within, form:focus-within {',
+      'border-color: rgba(86,134,254,.6) !important;',
+      'box-shadow: 0 16px 48px rgba(0,0,0,.65), 0 0 0 3px rgba(86,134,254,.2) !important;',
+    '}',
+    'textarea { color: #f8fafc !important; background: transparent !important; caret-color: #5686fe !important; }',
     'textarea::placeholder { color: #64748b !important; }',
-    'button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"] { background: linear-gradient(135deg, #7c3aed, #6366f1) !important; border: none !important; border-radius: 50% !important; box-shadow: 0 2px 10px rgba(124,58,237,.45) !important; transition: all .15s ease !important; }',
-    'button[aria-label="Отправить"]:hover, button[aria-label="Send"]:hover, [data-testid="oknyx"]:hover { transform: scale(1.05) !important; box-shadow: 0 4px 16px rgba(124,58,237,.65) !important; }',
+    'button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"] {',
+      'background: linear-gradient(135deg, #4d93f8, #8b5cf6) !important;',
+      'border: none !important; border-radius: 50% !important; box-shadow: 0 2px 10px rgba(77,147,248,.45) !important;',
+      'transition: all .15s ease !important;',
+    '}',
+    'button[aria-label="Отправить"]:hover, button[aria-label="Send"]:hover, [data-testid="oknyx"]:hover {',
+      'transform: scale(1.05) !important; box-shadow: 0 4px 16px rgba(77,147,248,.65) !important;',
+    '}',
     '::-webkit-scrollbar { width: 6px; height: 6px; }',
     '::-webkit-scrollbar-track { background: transparent; }',
     '::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }',
     '::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }',
-    '::selection { background: rgba(139,92,246,.35); color: #fff; }',
-    /* Mode bar: chat.z.ai capsule */
-    '.alice-enx-modebar{position:fixed;z-index:200;display:flex;align-items:center;gap:2px;padding:4px 6px;border-radius:999px;',
-      'background:rgba(13,14,22,.88) !important;backdrop-filter:blur(24px) !important;-webkit-backdrop-filter:blur(24px) !important;',
-      'border:1px solid rgba(255,255,255,.1) !important;box-shadow:0 12px 36px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04) !important;',
+    '::selection { background: rgba(77,147,248,.35); color: #fff; }',
+    /* Mode Bar: DeepSeek Capsule */
+    '.alice-enx-modebar{position:fixed;z-index:200;display:flex;align-items:center;gap:2px;padding:3px 6px;border-radius:999px;',
+      'background:var(--dsw-alias-bg-layer-2, rgba(20,22,32,.92)) !important;backdrop-filter:blur(24px) !important;-webkit-backdrop-filter:blur(24px) !important;',
+      'border:1px solid var(--dsw-alias-border-l2, rgba(255,255,255,.12)) !important;box-shadow:0 12px 36px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04) !important;',
       'max-width:calc(100vw - 24px);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;box-sizing:border-box}',
     'iframe[src*="passport.yandex"], [class*="PassportModal"], [class*="LoginModal"], .AuthPopup {display:none !important;pointer-events:none !important;visibility:hidden !important}',
-    '.alice-enx-cmd-result{margin:6px 0 10px;padding:8px 12px;background:#0d0d14;border:1px solid rgba(74,222,128,.35);border-radius:8px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
-    '.alice-enx-auto-harness-card{margin:8px 0 12px;padding:10px 14px;border-radius:10px;background:#13131c;border:1px solid rgba(108,76,240,.35);font-family:ui-monospace,Menlo,monospace;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:all .2s}',
-    '.alice-enx-auto-harness-card.executing{border-color:rgba(108,76,240,.75);background:linear-gradient(180deg,#181628,#12111d)}',
-    '.alice-enx-auto-harness-card.success{border-color:rgba(74,222,128,.4);background:#0e1713}',
-    '.alice-enx-auto-harness-card.error{border-color:rgba(239,68,68,.4);background:#1a0f12}',
-    '.alice-enx-auto-harness-card.stopped{border-color:rgba(156,163,175,.3);background:#16161d}',
-    '.alice-enx-auto-harness-hdr{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#e2e8f0}',
-    '.alice-enx-auto-harness-card.success .alice-enx-auto-harness-hdr{color:#4ade80}',
-    '.alice-enx-auto-harness-card.error .alice-enx-auto-harness-hdr{color:#f87171}',
-    '.alice-enx-auto-harness-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-    '.alice-enx-auto-harness-stop, .alice-enx-auto-harness-toggle{padding:3px 8px;border-radius:5px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#cbd5e1;font:500 11px/1.2 -apple-system,sans-serif;cursor:pointer}',
-    '.alice-enx-auto-harness-stop:hover{background:rgba(239,68,68,.25);color:#fca5a5;border-color:rgba(239,68,68,.4)}',
-    '.alice-enx-auto-harness-toggle:hover{background:rgba(255,255,255,.15);color:#fff}',
-    '.alice-enx-auto-harness-cmd{margin-top:6px;font-size:11.5px;color:#94a3b8;word-break:break-all}',
-    '.alice-enx-auto-harness-cmd code{color:#c4b5fd}',
-    '.alice-enx-auto-harness-out{margin-top:8px;padding:8px 10px;background:#09090e;border-radius:6px;border:1px solid rgba(255,255,255,.07);font-size:11.5px;line-height:1.45;color:#e2e8f0;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow-y:auto}',
-    '.alice-enx-auto-harness-out.err{color:#fca5a5;border-color:rgba(239,68,68,.2)}',
-    '.alice-enx-pulse{width:8px;height:8px;border-radius:50%;background:#a855f7;box-shadow:0 0 8px #a855f7;animation:alicePulse 1.2s infinite ease-in-out;display:inline-block;flex-shrink:0}',
-    '@keyframes alicePulse{0%,100%{transform:scale(0.85);opacity:0.6}50%{transform:scale(1.25);opacity:1}}',
-    '.alice-enx-check{color:#4ade80;font-weight:700}',
-    '.alice-enx-err-icon{color:#ef4444;font-weight:700}',
-    /* Autonomous Loop Agent HUD & Studio */
-    '.alice-enx-loop-hud{position:relative;z-index:90;margin:10px auto 14px;max-width:850px;width:calc(100% - 24px);padding:10px 14px;border-radius:12px;background:rgba(20,20,32,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(139,92,246,.35);box-shadow:0 8px 24px rgba(0,0,0,.45);font-family:-apple-system,BlinkMacSystemFont,sans-serif;box-sizing:border-box;transition:all .2s ease}',
-    '.alice-enx-loop-hud.collapsed{padding:6px 12px;margin:6px auto 10px}',
+    /* DeepSeek Harness GoalBar / Autonomous Loop HUD (Figma 1236:32276, 36px high, non-overlapping) */
+    '.alice-enx-loop-hud{position:relative !important;z-index:50 !important;box-sizing:border-box !important;',
+      'display:flex !important;flex-direction:column !important;gap:6px !important;max-width:860px !important;width:100% !important;',
+      'margin:10px auto 14px !important;padding:8px 14px !important;border-radius:12px !important;',
+      'background:var(--dsw-alias-bg-layer-2, #141622) !important;border:1px solid rgba(77,147,248,.35) !important;',
+      'box-shadow:0 8px 24px rgba(0,0,0,.45) !important;backdrop-filter:blur(16px) !important;-webkit-backdrop-filter:blur(16px) !important;',
+      'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif !important;transition:all .2s ease !important}',
+    '.alice-enx-loop-hud.collapsed{padding:6px 12px !important;margin:6px auto 10px !important}',
     '.alice-enx-loop-hud.collapsed .alice-enx-loop-hud-progress, .alice-enx-loop-hud.collapsed .alice-enx-loop-hud-active-story{display:none !important}',
-    '.alice-enx-loop-hud-top{display:flex;align-items:center;gap:8px}',
-    '.alice-enx-loop-hud-title{font-weight:700;font-size:13px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-    '.alice-enx-loop-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(139,92,246,.25);color:#c4b5fd;border:1px solid rgba(139,92,246,.4)}',
+    '.alice-enx-loop-hud-top{display:flex;align-items:center;gap:8px;height:24px}',
+    '.alice-enx-loop-hud-title{font-weight:600;font-size:13px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-loop-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(86,134,254,.2);color:#93c5fd;border:1px solid rgba(86,134,254,.4)}',
     '.alice-enx-loop-controls{display:flex;gap:6px}',
     '.alice-enx-loop-ctrl-btn{padding:3px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#e2e8f0;font:500 11px/1.2 inherit;cursor:pointer;transition:all .15s}',
     '.alice-enx-loop-ctrl-btn:hover{background:rgba(255,255,255,.18);color:#fff}',
     '.alice-enx-loop-ctrl-btn.pause{border-color:rgba(234,179,8,.4);color:#fde047}',
     '.alice-enx-loop-ctrl-btn.stop{border-color:rgba(239,68,68,.4);color:#fca5a5}',
-    '.alice-enx-loop-hud-progress{margin-top:8px;height:4px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}',
-    '.alice-enx-loop-bar{height:100%;background:linear-gradient(90deg,#8b5cf6,#ec4899);transition:width .3s}',
-    '.alice-enx-loop-hud-active-story{margin-top:6px;font-size:11.5px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-    '.alice-enx-loop-pane{display:flex;flex-direction:column;gap:12px;padding:12px;height:100%;overflow-y:auto}',
-    '.alice-enx-loop-modes{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}',
-    '.alice-enx-loop-mode-btn{padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#161622;color:#94a3b8;font:600 11.5px/1 inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}',
-    '.alice-enx-loop-mode-btn.active{background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff;border-color:transparent}',
-    '.alice-enx-loop-board{background:#12121b;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px}',
-    '.alice-enx-loop-story-item{display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:6px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;color:#e2e8f0}',
-    '.alice-enx-loop-story-item:last-child{border-bottom:none}',
-    '.alice-enx-loop-story-item.passed .alice-enx-loop-story-title{text-decoration:line-through;color:#64748b}',
-    '.alice-enx-loop-story-item.active{background:rgba(108,76,240,.15);border-color:rgba(108,76,240,.3)}',
-    '.alice-enx-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:none;background:transparent;cursor:pointer;',
-      'font:500 12px/1 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#94a3b8;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}',
-    '.alice-enx-pill:hover{background:rgba(255,255,255,.07);color:#f8fafc}',
-    '.alice-enx-pill.alice-enx-active{background:linear-gradient(135deg,rgba(124,58,237,.32),rgba(99,102,241,.28)) !important;border:1px solid rgba(139,92,246,.5) !important;color:#ede9fe !important;font-weight:600;box-shadow:0 0 12px rgba(139,92,246,.25)}',
-    '.alice-enx-pill svg{width:14px;height:14px;flex:0 0 auto}',
-    '.alice-enx-pill.alice-enx-busy{opacity:.55;pointer-events:none}',
-    '.alice-enx-sep{width:1px;height:16px;background:rgba(255,255,255,.12);margin:0 3px}',
-    '.alice-enx-gear{color:#94a3b8}',
-    '@media (max-width:860px){',
-      '.alice-enx-modebar{padding:3px 5px;gap:2px}',
-      '.alice-enx-pill{padding:5px 8px;font-size:11.5px;gap:3px}',
-      '.alice-enx-pill svg{width:13px;height:13px}',
-      '.alice-enx-pill[data-alice-enx-pill="brainstorm"] span,',
-      '.alice-enx-pill[data-alice-enx-pill="deals"] span,',
-      '.alice-enx-pill[data-alice-enx-pill="math"] span,',
-      '.alice-enx-pill[data-alice-enx-pill="draw"] span{display:none}',
-    '}',
-    '@media (max-width:680px){',
-      '.alice-enx-modebar{padding:3px 4px;gap:1px;max-width:calc(100vw - 16px)}',
-      '.alice-enx-pill{padding:4px 7px;font-size:11px;gap:2px}',
-      '.alice-enx-pill[data-alice-enx-pill="sessions"] span,',
-      '.alice-enx-pill[data-alice-enx-pill="memory"] span{display:none}',
-      '.alice-enx-sep{display:none}',
-    '}',
-    '@media (max-width:540px){',
-      '.alice-enx-pill span{display:none}',
-      '.alice-enx-pill{padding:5px 8px}',
-      '.alice-enx-sep{display:none}',
-    '}',
-    '@media (max-width:600px){',
-      '.alice-enx-loop-hud{padding:8px 10px;margin:8px auto 10px;width:calc(100% - 16px)}',
-      '.alice-enx-loop-hud-top{flex-wrap:wrap;gap:6px}',
-      '.alice-enx-loop-hud-title{min-width:120px;font-size:12px}',
-      '.alice-enx-loop-controls{margin-left:auto}',
-      '.alice-enx-loop-ctrl-btn{padding:2px 7px;font-size:10.5px}',
-    '}',
-    /* Collapsible prompt starters: chat.z.ai obsidian glass aesthetic */
-    '.alice-enx-chips-wrapper{max-width:720px;width:100%;margin:10px auto 18px;padding:0 12px;box-sizing:border-box;transition:all .2s ease}',
+    '.alice-enx-loop-hud-progress{margin-top:6px;height:3px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}',
+    '.alice-enx-loop-bar{height:100%;background:linear-gradient(90deg,#4d93f8,#8b5cf6);transition:width .3s}',
+    '.alice-enx-loop-hud-active-story{margin-top:4px;font-size:11.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    /* Quick Starters: hidden when messages exist, compact on fresh chat */
+    'body.alice-enx-has-messages .alice-enx-chips-wrapper, body.alice-enx-has-messages .MainPageSuggests, body.alice-enx-has-messages [class*="MainPageSuggests"]{display:none !important}',
+    '.alice-enx-chips-wrapper{max-width:720px;width:100%;margin:12px auto 16px;padding:0 12px;box-sizing:border-box;transition:all .2s ease}',
     '.alice-enx-chips-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 8px}',
     '.alice-enx-chips-title{font:600 11px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#64748b;letter-spacing:.05em;text-transform:uppercase}',
     '.alice-enx-chips-toggle{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 9px;font:500 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;cursor:pointer;transition:all .15s}',
     '.alice-enx-chips-toggle:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff}',
     '.alice-enx-chips-mini-row{display:none;align-items:center;gap:6px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}',
     '.alice-enx-chip-mini{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:rgba(18,19,28,.8);border:1px solid rgba(255,255,255,.08);color:#cbd5e1;font:500 11.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}',
-    '.alice-enx-chip-mini:hover{background:rgba(28,29,42,.9);border-color:rgba(139,92,246,.45);color:#fff;box-shadow:0 0 12px rgba(124,58,237,.25)}',
+    '.alice-enx-chip-mini:hover{background:rgba(28,29,42,.9);border-color:rgba(86,134,254,.45);color:#fff;box-shadow:0 0 12px rgba(86,134,254,.25)}',
     '.alice-enx-chips-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}',
     '.alice-enx-chips-wrapper.collapsed .alice-enx-chips-grid{display:none !important}',
     '.alice-enx-chips-wrapper.collapsed .alice-enx-chips-mini-row{display:flex !important}',
     '@media (max-width:640px){.alice-enx-chips-grid{grid-template-columns:1fr}}',
-    '.AliceChat-Messages,[class*="MessagesList"]{padding-bottom:56px !important}',
-    '[data-testid="alice-chat-message"]:last-child,.AliceChat-Message:last-child{margin-bottom:52px !important}',
-    '.alice-enx-chip{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;cursor:pointer;text-align:left;',
-      'background:rgba(16,17,26,.75);border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 16px rgba(0,0,0,.3);',
-      'font:400 13px/1.45 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#cbd5e1;',
+    '.alice-enx-chip{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;text-align:left;',
+      'background:var(--dsw-alias-bg-layer-2, #141622);border:1px solid var(--dsw-alias-border-l1, rgba(255,255,255,.08));box-shadow:0 4px 16px rgba(0,0,0,.3);',
+      'font:400 13px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#cbd5e1;',
       'backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .15s ease}',
-    '.alice-enx-chip:hover{background:rgba(24,25,38,.85);border-color:rgba(139,92,246,.45);box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(124,58,237,.18);transform:translateY(-2px);color:#fff}',
-    '.alice-enx-chip b{display:block;font-weight:600;font-size:13px;color:#f1f5f9}',
-    '.alice-enx-chip span{display:block;font-weight:400;font-size:11.5px;color:#94a3b8;margin-top:2px}',
-    /* reply tool buttons: chat.z.ai style */
-    '.alice-enx-toolsbar{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 6px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}',
-    '.alice-enx-rbtn{display:inline-flex;align-items:center;gap:5px;border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;',
-      'font:500 11.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#94a3b8;transition:all .15s ease}',
-    '.alice-enx-rbtn:hover{background:rgba(255,255,255,.08);color:#f1f5f9}',
-    '.alice-enx-rbtn svg{width:12px;height:12px}',
-    /* machine-translation block */
-    '.alice-enx-mt{margin:12px 0 4px;padding:10px 14px;border-left:3px solid #8b5cf6;border-radius:0 10px 10px 0;background:rgba(124,58,237,.08);border:1px solid rgba(139,92,246,.2);border-left:3px solid #8b5cf6;',
-      'font:400 14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#e2e8f0}',
-    '.alice-enx-mt-label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#c4b5fd;margin-bottom:4px}',
-    /* notice bar */
-    '.alice-enx-notice{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483100;display:flex;align-items:center;gap:10px;max-width:min(680px,92vw);',
-      'padding:10px 12px 10px 14px;border-radius:14px;background:rgba(30,28,44,.94);color:#eae6ff;',
-      'box-shadow:0 12px 34px rgba(10,10,30,.35);border:1px solid rgba(139,109,255,.35);',
-      'font:400 13px/1.5 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif}',
-    '.alice-enx-notice b{font-weight:600}',
-    '.alice-enx-notice button{border:none;border-radius:8px;background:rgba(139,109,255,.18);color:#d9d0ff;cursor:pointer;padding:5px 10px;font:500 12px/1 inherit}',
-    '.alice-enx-notice button:hover{background:rgba(139,109,255,.3)}',
-    '.alice-enx-notice .alice-enx-x{background:transparent;color:#9d96b8;padding:5px 6px;font-size:14px}',
-    /* context bar */
-    '.alice-enx-ctxbar{position:fixed;left:50%;transform:translateX(-50%);z-index:2147483000;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;border-radius:12px;',
-      'background:rgba(255,247,230,.95);border:1px solid rgba(190,140,40,.35);box-shadow:0 10px 26px rgba(120,80,10,.15);',
-      'font:400 12.5px/1.4 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#5c4a1e}',
-    '.alice-enx-ctxbar button{border:none;border-radius:8px;cursor:pointer;padding:5px 10px;font:500 12px/1 inherit}',
-    '.alice-enx-ctxbar .alice-enx-keep{background:#6C4CF0;color:#fff}',
-    '.alice-enx-ctxbar .alice-enx-discard{background:transparent;color:#8a7a55}',
-    '@media (prefers-color-scheme:dark){.alice-enx-ctxbar{background:rgba(44,38,24,.94);border-color:rgba(220,180,90,.3);color:#eadfc2}}',
-    /* upsell hiding */
-    'html.alice-enx-hide-upsell [data-testid="chat-list-login-button"],',
-    'html.alice-enx-hide-upsell .ChatListLoginPanel,',
-    'html.alice-enx-hide-upsell .AdvCard,html.alice-enx-hide-upsell .AdvSnippet,',
-    'html.alice-enx-hide-upsell .alice-enx-upsell,.alice-enx-upsell{display:none !important}',
-    'html.alice-enx-suggests-off .MainPageSuggests-Item{display:none !important}',
-    '.alice-enx-hidden{display:none !important}',
-    /* brainstorm modal & HUD: chat.z.ai obsidian aesthetic */
-    '.alice-enx-modal-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(5,5,10,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:2147483500;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}',
-    '.alice-enx-modal{width:min(600px,96vw);max-height:90vh;overflow-y:auto;background:#0f1017;border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.1);padding:24px 26px;box-sizing:border-box;color:#f1f5f9}',
-    '.alice-enx-modal h2{margin:0 0 6px;font:700 18px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;display:flex;align-items:center;gap:8px}',
-    '.alice-enx-modal p.alice-enx-modal-sub{margin:0 0 16px;font:400 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8}',
-    '.alice-enx-field{margin-bottom:14px}',
-    '.alice-enx-field label{display:block;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;margin-bottom:6px}',
-    '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(255,255,255,.12);padding:8px 12px;font:400 13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#f8fafc !important;background:#141520 !important;-webkit-text-fill-color:#f8fafc !important;transition:border-color .15s}',
-    '.alice-enx-input:focus, .alice-enx-textarea:focus, .alice-enx-select:focus{border-color:#8b5cf6 !important;outline:none;box-shadow:0 0 0 3px rgba(139,92,246,.25)}',
-    '.alice-enx-select option{background:#141520 !important;color:#f8fafc !important}',
-    '.alice-enx-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}',
-    '@media (max-width:540px){.alice-enx-role-grid{grid-template-columns:1fr}}',
-    '.alice-enx-role-card{position:relative;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 12px 10px 32px;cursor:pointer;background:#141520;transition:all .15s;text-align:left;user-select:none}',
-    '.alice-enx-role-card::before{content:"";position:absolute;left:10px;top:12px;width:15px;height:15px;border-radius:4px;border:1px solid rgba(255,255,255,.25);background:#0a0b10;transition:all .15s;box-sizing:border-box}',
-    '.alice-enx-role-card:hover{border-color:rgba(139,92,246,.5);background:rgba(139,92,246,.08)}',
-    '.alice-enx-role-card.active{border-color:#8b5cf6;background:rgba(139,92,246,.18);box-shadow:0 4px 16px rgba(124,58,237,.25)}',
-    '.alice-enx-role-card.active::before{content:"✓";background:#7c3aed;border-color:#7c3aed;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:12px;text-align:center}',
-    '.alice-enx-role-title{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#f8fafc;display:flex;align-items:center;gap:6px}',
-    '.alice-enx-role-desc{font:400 11px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:4px}',
-    '.alice-enx-rpills{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}',
-    '.alice-enx-rpill{border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;background:#141520;font:500 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;cursor:pointer;transition:all .15s}',
-    '.alice-enx-rpill:hover{border-color:rgba(139,92,246,.5);color:#c4b5fd}',
-    '.alice-enx-rpill.active{border-color:#8b5cf6;background:rgba(139,92,246,.25);color:#ede9fe;font-weight:600}',
-    '.alice-enx-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}',
-    '.alice-enx-btn-primary{border:none;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;font:600 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:10px 18px;cursor:pointer;transition:opacity .15s;box-shadow:0 2px 10px rgba(124,58,237,.4)}',
-    '.alice-enx-btn-primary:hover{opacity:.9}',
-    '.alice-enx-btn-secondary{border:1px solid rgba(255,255,255,.14);border-radius:10px;background:transparent;color:#94a3b8;font:500 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:9px 16px;cursor:pointer}',
-    '.alice-enx-btn-secondary:hover{background:rgba(255,255,255,.06);color:#f1f5f9}',
-    /* brainstorm HUD */
-    '.alice-enx-bhud{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483200;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(15,16,23,.95);color:#ede9fe;border:1px solid rgba(139,92,246,.35);box-shadow:0 12px 34px rgba(0,0,0,.6);font:500 12px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);max-width:min(96vw,760px);box-sizing:border-box}',
-    '.alice-enx-bhud-title{font-weight:700;color:#c0b2ff;display:flex;align-items:center;gap:5px;white-space:nowrap}',
-    '.alice-enx-bhud-status{font-weight:400;color:#d8d2f6;font-size:11.5px;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-    '.alice-enx-bhud-btn{border:none;border-radius:999px;cursor:pointer;padding:5px 10px;font:600 11px/1 inherit;transition:all .15s;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}',
-    '.alice-enx-bhud-conclude{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff}',
-    '.alice-enx-bhud-conclude:hover{opacity:.9}',
-    '.alice-enx-bhud-stop{background:rgba(240,68,68,.18);color:#fca5a5;border:1px solid rgba(240,68,68,.3)}',
-    '.alice-enx-bhud-stop:hover{background:rgba(240,68,68,.3)}',
-    '.alice-enx-bhud-toggle{background:rgba(255,255,255,.12);color:#ddd}',
-    '.alice-enx-bhud-toggle.on{background:rgba(16,185,129,.22);color:#6ee7b7;border:1px solid rgba(16,185,129,.35)}',
-    '.alice-enx-bhud-pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981}',
-    '.alice-enx-bhud-pulse.busy{background:#f59e0b;box-shadow:0 0 8px #f59e0b;animation:aliceEnxPulse 1.2s infinite}',
-    '@keyframes aliceEnxPulse{0%,100%{opacity:1}50%{opacity:.35}}',
-    /* settings panel */
-    '.alice-enx-panel{position:fixed;z-index:2147483100;min-width:280px;max-width:340px;max-height:85vh;overflow-y:auto;padding:16px;border-radius:18px;background:rgba(15,16,23,.96);box-shadow:0 18px 48px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-sizing:border-box;color:#f1f5f9}',
-    '.alice-enx-panel h3{font:700 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between}',
-    '.alice-enx-panel label{display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;margin-bottom:4px}',
-    '.alice-enx-panel .alice-enx-select, .alice-enx-panel .alice-enx-textarea{width:100%;box-sizing:border-box;border-radius:8px;border:1px solid rgba(255,255,255,.12);padding:7px 10px;font:500 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;background:#141520 !important;color:#f8fafc !important;-webkit-text-fill-color:#f8fafc !important}',
-    '.alice-enx-panel .alice-enx-select option{background:#141520 !important;color:#f8fafc !important}',
-    '.alice-enx-panel .alice-enx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px;cursor:pointer;font:400 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1}',
-    '.alice-enx-panel .alice-enx-foot{margin-top:10px;font:400 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#64748b;text-align:center}',
-    /* in-app terminal & harness workbench */
-    '.alice-enx-workbench{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1100px,calc(100vw - 16px));height:min(370px,46vh);background:rgba(18,18,26,.97);border-radius:16px 16px 0 0;box-shadow:0 -16px 48px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);border-bottom:none;z-index:2147483400;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#eee;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .2s ease,height .2s ease}',
-    '.alice-enx-workbench.minimized{height:42px}',
-    '.alice-enx-workbench-open .AliceChat-Messages, .alice-enx-workbench-open [class*="MessagesList"]{padding-bottom:min(400px,50vh) !important}',
-    '.alice-enx-workbench svg{width:14px;height:14px;display:inline-block;vertical-align:middle;flex-shrink:0}',
-    '.alice-enx-wb-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(26,26,38,.9);border-bottom:1px solid rgba(255,255,255,.1);border-radius:18px 18px 0 0;user-select:none}',
-    '.alice-enx-wb-tabs{display:flex;align-items:center;gap:6px}',
-    '.alice-enx-wb-tab{background:transparent;border:none;border-radius:8px;padding:6px 12px;font:600 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#9b9bb2;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}',
-    '.alice-enx-wb-tab:hover{background:rgba(255,255,255,.06);color:#fff}',
-    '.alice-enx-wb-tab.active{background:rgba(108,76,240,.25);color:#c4b5fd;border:1px solid rgba(108,76,240,.4)}',
-    '.alice-enx-wb-tools{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#8a8a9e}',
-    '.alice-enx-wb-btn{background:rgba(255,255,255,.08);border:none;border-radius:6px;padding:5px 8px;font:500 11px/1 inherit;color:#ccc;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}',
-    '.alice-enx-wb-btn:hover{background:rgba(255,255,255,.16);color:#fff}',
-    '.alice-enx-wb-body{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;background:#0d0d14}',
-    /* Terminal Tab */
-    '.alice-enx-term{flex:1;display:flex;flex-direction:column;font-family:ui-monospace,Menlo,Monaco,Consolas,monospace}',
-    '.alice-enx-term-out{flex:1;overflow-y:auto;padding:12px 14px;font:400 12.5px/1.45 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
-    '.alice-enx-term-out .err{color:#f87171}',
-    '.alice-enx-term-out .info{color:#60a5fa}',
-    '.alice-enx-term-out .cmd{color:#fbbf24;font-weight:600}',
-    '.alice-enx-term-in-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#151520;border-top:1px solid rgba(255,255,255,.08)}',
-    '.alice-enx-term-prompt{font-weight:700;color:#38bdf8}',
-    '.alice-enx-term-input{flex:1;background:transparent;border:none;outline:none;font:500 13px/1.3 ui-monospace,Menlo,monospace;color:#fff}',
-    '.alice-enx-term-chips{display:flex;align-items:center;gap:6px;padding:6px 12px;background:#11111a;border-top:1px solid rgba(255,255,255,.05);overflow-x:auto}',
-    '.alice-enx-term-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 8px;font:400 11px/1 ui-monospace,Menlo,monospace;color:#cbd5e1;cursor:pointer;white-space:nowrap}',
-    '.alice-enx-term-chip:hover{background:rgba(108,76,240,.3);border-color:#6C4CF0;color:#fff}',
-    /* Vibe Coder & Harness Tab */
-    '.alice-enx-vibe-pane{flex:1;overflow-y:auto;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;background:#12121c}',
-    '.alice-enx-vibe-hero{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,rgba(108,76,240,.2),rgba(59,130,246,.15));border:1px solid rgba(108,76,240,.3)}',
-    '.alice-enx-vibe-title{font:700 14px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff}',
-    '.alice-enx-vibe-sub{font:400 12px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#a5a5bb;margin-top:2px}',
-    '.alice-enx-vibe-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}',
-    '.alice-enx-vibe-btn{padding:8px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#eee;font:600 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}',
-    '.alice-enx-vibe-btn:hover{background:rgba(108,76,240,.35);border-color:#6C4CF0;color:#fff}',
-    '.alice-enx-vibe-btn.primary{background:linear-gradient(135deg,#6C4CF0,#3b82f6);border:none;color:#fff}',
-    /* Skills Tab */
-    '.alice-enx-skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;padding:14px;overflow-y:auto}',
-    '.alice-enx-skill-card{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;background:rgba(255,255,255,.04);cursor:pointer;transition:all .15s;display:flex;flex-direction:column;justify-content:space-between}',
-    '.alice-enx-skill-card:hover{border-color:rgba(108,76,240,.5);background:rgba(108,76,240,.08)}',
-    '.alice-enx-skill-name{font:600 13px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;display:flex;align-items:center;gap:6px}',
-    '.alice-enx-skill-desc{font:400 11.5px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin:6px 0 10px}',
-    '.alice-enx-skill-btn{align-self:flex-start;padding:4px 10px;border-radius:6px;background:rgba(108,76,240,.2);border:1px solid rgba(108,76,240,.4);color:#c4b5fd;font:600 11px/1 inherit}',
-    /* Memory & Learning Tab (NousResearch/hermes-agent) */
-    '.alice-enx-memory-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;background:#12121c;flex:1}',
-    '.alice-enx-mem-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}',
-    '.alice-enx-mem-stat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:3px}',
-    '.alice-enx-mem-subtabs{display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:8px;overflow-x:auto}',
-    '.alice-enx-mem-subtab{background:transparent;border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:6px 12px;border-radius:7px;font:600 11.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap}',
-    '.alice-enx-mem-subtab:hover{background:rgba(255,255,255,.06);color:#fff}',
-    '.alice-enx-mem-subtab.active{background:rgba(108,76,240,.25);border-color:#6C4CF0;color:#fff}',
-    '.alice-enx-mem-editor{width:100%;min-height:180px;background:#0d0d15;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;font:400 12px/1.45 ui-monospace,Menlo,monospace;color:#cbd5e1;box-sizing:border-box;resize:vertical}',
-    '.alice-enx-mem-editor:focus{outline:none;border-color:#6C4CF0}',
-    '.alice-enx-ledger-card{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;transition:all .15s}',
-    '.alice-enx-ledger-card:hover{border-color:rgba(108,76,240,.4);background:rgba(108,76,240,.05)}',
-    /* Git Sync Tab */
-    '.alice-enx-git-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}',
-    /* Sessions Tab */
-    '.alice-enx-sessions-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}',
-    '.alice-enx-session-card{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.04);transition:all .15s;display:flex;align-items:center;justify-content:space-between;gap:12px}',
-    '.alice-enx-session-card:hover{border-color:rgba(108,76,240,.4);background:rgba(108,76,240,.06)}',
-    '.alice-enx-session-card.active{border-color:rgba(108,76,240,.7);background:rgba(108,76,240,.15)}',
-    '.alice-enx-session-info{flex:1;min-width:0}',
-    '.alice-enx-session-title{font:600 13px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-    '.alice-enx-session-meta{font:400 11.5px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:4px}',
-    '.alice-enx-session-actions{display:flex;align-items:center;gap:6px}',
-    /* Code block action buttons and headers: chat.z.ai aesthetic */
-    '.alice-enx-code-header-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:#0d0e15;border:1px solid rgba(255,255,255,.09);border-bottom:none;border-radius:12px 12px 0 0;margin-top:10px;box-sizing:border-box}',
-    '.alice-enx-code-header-bar + pre{margin-top:0 !important;border-top-left-radius:0 !important;border-top-right-radius:0 !important}',
-    '.alice-enx-code-lang-tag{font:600 11.5px/1 ui-monospace,Menlo,monospace;color:#94a3b8;text-transform:lowercase;letter-spacing:0.02em}',
-    '[class*="CodeBlock_header"], [class*="codeBlockHeader"], [class*="Snippet_header"]{background:#0d0e15 !important;border-bottom:1px solid rgba(255,255,255,.08) !important;color:#94a3b8 !important;padding:6px 12px !important;display:flex !important;align-items:center !important}',
-    '[class*="CodeBlock_header"] button, [class*="codeBlockHeader"] button{color:#94a3b8 !important;background:transparent !important;border:none !important;font-size:11.5px !important;transition:color .15s !important;cursor:pointer !important}',
-    '[class*="CodeBlock_header"] button:hover, [class*="codeBlockHeader"] button:hover{color:#f1f5f9 !important}',
-    '.alice-enx-code-actions{display:inline-flex;align-items:center;gap:6px;margin:0 8px 0 0;vertical-align:middle}',
-    '.alice-enx-code-actions-floating{position:absolute;top:6px;right:12px;z-index:10}',
-    '.alice-enx-code-btn{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:6px;font:600 11.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s ease;user-select:none;box-sizing:border-box;text-decoration:none}',
-    '.alice-enx-code-btn-icon{font-size:10px;line-height:1}',
-    '.alice-enx-code-btn-run{background:rgba(255,255,255,.08);color:#f1f5f9;border:1px solid rgba(255,255,255,.14);box-shadow:0 1px 3px rgba(0,0,0,.3)}',
-    '.alice-enx-code-btn-run:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.28);color:#fff}',
-    '.alice-enx-code-btn-run:active{transform:translateY(1px)}',
-    '.alice-enx-code-btn-answer{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff !important;border:1px solid rgba(167,139,250,.4);box-shadow:0 2px 6px rgba(124,58,237,.35);font-weight:600}',
-    '.alice-enx-code-btn-answer:hover{background:linear-gradient(135deg,#6d28d9,#4f46e5);border-color:rgba(196,181,253,.7);box-shadow:0 3px 10px rgba(124,58,237,.5);color:#fff !important}',
-    '.alice-enx-code-btn-answer:active{transform:translateY(1px)}',
-    '.alice-enx-code-btn-save{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.35);box-shadow:0 1px 3px rgba(0,0,0,.25)}',
-    '.alice-enx-code-btn-save:hover{background:rgba(16,185,129,.25);border-color:rgba(16,185,129,.55);color:#a7f3d0}',
-    '.alice-enx-code-btn-save:active{transform:translateY(1px)}',
-    /* Refusal Override Card */
-    '.alice-enx-refusal-card{margin-top:10px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);display:flex;align-items:center;gap:8px}',
-    /* Sidebar Active Chats (Zero Login Multi-Chat): dark obsidian */
-    '.alice-enx-sidebar-chats{display:flex;flex-direction:column;margin:12px 8px 8px 8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);max-height:calc(100vh - 270px);overflow-y:auto}',
-    '.alice-enx-sidebar-chats-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 8px 6px}',
-    '.alice-enx-sidebar-chats-title{font:700 11px/1 -apple-system,BlinkMacSystemFont,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;display:flex;align-items:center;gap:6px}',
-    '.alice-enx-sidebar-chats-badge{font:600 9.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:2px 5px;border-radius:4px;background:rgba(124,58,237,.2);color:#c4b5fd;border:1px solid rgba(124,58,237,.35);text-transform:none;letter-spacing:0}',
+    '.alice-enx-chip:hover{background:rgba(24,26,38,.85);border-color:rgba(86,134,254,.45);box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(86,134,254,.18);transform:translateY(-1px);color:#fff}',
+    '.alice-enx-chip b{display:block;font-weight:600;font-size:12.5px;color:#f1f5f9}',
+    '.alice-enx-chip span{display:block;font-weight:400;font-size:11px;color:#94a3b8;margin-top:2px}',
+    /* Mode bar pills */
+    '.alice-enx-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;border:none;background:transparent;cursor:pointer;',
+      'font:500 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#94a3b8;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}',
+    '.alice-enx-pill:hover{background:rgba(255,255,255,.07);color:#f8fafc}',
+    '.alice-enx-pill.alice-enx-active{background:linear-gradient(135deg,rgba(77,147,248,.32),rgba(139,92,246,.28)) !important;border:1px solid rgba(77,147,248,.5) !important;color:#ede9fe !important;font-weight:600;box-shadow:0 0 12px rgba(77,147,248,.25)}',
+    '.alice-enx-pill svg{width:14px;height:14px;flex:0 0 auto}',
+    '.alice-enx-sep{width:1px;height:16px;background:rgba(255,255,255,.12);margin:0 3px}',
+    /* DeepSeek Harness ReasoningRow (Thought Process) */
+    '.dsh-reasoning-row{margin:8px 0 10px;border-radius:8px;background:var(--dsw-alias-bg-layer-2, #141622);border:1px solid var(--dsw-alias-border-l1, rgba(255,255,255,.07));overflow:hidden;transition:all .15s ease}',
+    '.dsh-reasoning-head{display:flex;align-items:center;padding:5px 10px;min-height:26px;cursor:pointer;user-select:none;font-size:12px;color:var(--dsw-alias-label-secondary, #94a3b8)}',
+    '.dsh-reasoning-head:hover{background:rgba(255,255,255,.03);color:#fff}',
+    '.dsh-sparkle{font-size:13px;margin-right:6px;color:var(--dsw-static-deepseek-400, #7aaaff)}',
+    '.dsh-thought-title{font-weight:500;color:var(--dsw-alias-label-primary, #f1f5f9)}',
+    '.dsh-dot-sep{width:3px;height:3px;border-radius:50%;background:var(--dsw-alias-label-caption, #64748b);margin:0 8px;flex-shrink:0}',
+    '.dsh-thought-summary{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;color:var(--dsw-alias-label-secondary, #94a3b8)}',
+    '.alice-enx-thought-arrow{margin-left:auto;font-size:11px;transition:transform .2s ease}',
+    '.dsh-reasoning-row[open] .alice-enx-thought-arrow{transform:rotate(90deg)}',
+    '.dsh-think-body{padding:8px 14px 10px;border-top:1px solid var(--dsw-alias-border-l1, rgba(255,255,255,.05));border-left:2px solid var(--dsw-static-deepseek-450, #5686fe);margin-left:8px;margin-bottom:6px;background:rgba(0,0,0,.15);font-size:12px;line-height:1.55;color:var(--dsw-alias-label-secondary, #94a3b8)}',
+    '.dsh-think-step{display:flex;align-items:flex-start;gap:8px;margin:4px 0}',
+    '.dsh-step-num{font-size:10px;font-weight:700;padding:1px 5px;border-radius:999px;background:rgba(86,134,254,.2);color:#93c5fd;flex-shrink:0}',
+    /* DeepSeek Harness ToolRow (Ran Commands / Tool Calls) */
+    '.dsh-tool-box{margin:8px 0 10px;border-radius:8px;background:var(--dsw-alias-bg-layer-2, #141622);border:1px solid var(--dsw-alias-border-l1, rgba(255,255,255,.07));overflow:hidden}',
+    '.dsh-tool-head{display:flex;align-items:center;padding:5px 10px;min-height:26px;cursor:pointer;user-select:none;font-size:12px;color:var(--dsw-alias-label-secondary, #94a3b8)}',
+    '.dsh-tool-head:hover{background:rgba(255,255,255,.03);color:#fff}',
+    '.dsh-tool-group-icon{margin-right:6px;font-size:12px;color:#f59e0b}',
+    '.dsh-tool-group-title{font-weight:500;color:#f1f5f9}',
+    '.alice-enx-ran-arrow{margin-left:auto;font-size:11px;transition:transform .2s ease}',
+    '.dsh-tool-box[open] .alice-enx-ran-arrow{transform:rotate(180deg)}',
+    '.dsh-tool-body{padding:6px 10px 8px;border-top:1px solid var(--dsw-alias-border-l1, rgba(255,255,255,.05));background:rgba(0,0,0,.2)}',
+    '.dsh-tool-row{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:6px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11.5px;color:#cbd5e1}',
+    '.dsh-tool-row:hover{background:rgba(255,255,255,.04)}',
+    '.dsh-tool-icon{color:var(--dsw-static-deepseek-400, #7aaaff);font-weight:700}',
+    '.dsh-tool-title{color:#f8fafc;font-weight:600}',
+    '.dsh-tool-summary{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-secondary, #94a3b8)}',
+    '.dsh-exit-badge{font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;letter-spacing:.02em}',
+    '.dsh-exit-badge.exit-0{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.35)}',
+    '.dsh-exit-badge.exit-1{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.35)}',
+    /* DeepSeek Harness Unified Left Sidebar */
+    '.alice-enx-sidebar-chats{display:flex !important;flex-direction:column !important;height:100% !important;max-height:100vh !important;width:100% !important;margin:0 !important;padding:0 !important;border:none !important;background:var(--dsw-specific-sidebar-fill, #0d0e14) !important;overflow:hidden !important;box-sizing:border-box !important}',
+    '.alice-enx-sidebar-brand{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;border-bottom:1px solid rgba(255,255,255,.06)}',
+    '.alice-enx-brand-logo{display:flex;align-items:center;gap:9px}',
+    '.alice-enx-brand-mark{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#4d93f8,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;box-shadow:0 0 10px rgba(77,147,248,.35)}',
+    '.alice-enx-brand-text{display:flex;flex-direction:column;line-height:1.1}',
+    '.alice-enx-brand-title{font-size:13px;font-weight:700;color:#f8fafc;letter-spacing:-0.01em}',
+    '.alice-enx-brand-sub{font-size:9.5px;color:#94a3b8;font-weight:500;margin-top:2px}',
     '.alice-enx-sidebar-new-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:#cbd5e1;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;transition:all .15s}',
-    '.alice-enx-sidebar-new-btn:hover{background:rgba(124,58,237,.35);color:#fff;border-color:rgba(139,92,246,.5)}',
-    '.alice-enx-sidebar-chat-item{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:8px;margin-bottom:3px;cursor:pointer;background:transparent;border:1px solid transparent;transition:all .12s;color:#cbd5e1;text-decoration:none;user-select:none}',
+    '.alice-enx-sidebar-new-btn:hover{background:rgba(77,147,248,.35);color:#fff;border-color:rgba(77,147,248,.5)}',
+    '.alice-enx-sidebar-nav{display:flex;flex-direction:column;padding:6px 8px;gap:2px}',
+    '.alice-enx-sidebar-nav-item{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:7px;font-size:12.5px;font-weight:500;color:#94a3b8;cursor:pointer;text-decoration:none;transition:all .12s ease}',
+    '.alice-enx-sidebar-nav-item:hover, .alice-enx-sidebar-nav-item.active{background:rgba(255,255,255,.06);color:#f8fafc}',
+    '.alice-enx-sidebar-section-title{padding:10px 14px 4px;font-size:10px;font-weight:700;color:#64748b;letter-spacing:.06em;text-transform:uppercase}',
+    '.alice-enx-sidebar-project-item{display:flex;align-items:center;gap:9px;padding:5px 12px;border-radius:7px;font-size:12px;color:#cbd5e1;cursor:pointer;transition:all .12s ease}',
+    '.alice-enx-sidebar-project-item:hover{background:rgba(255,255,255,.06);color:#fff}',
+    '.alice-enx-sidebar-chat-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;margin:1px 6px;cursor:pointer;background:transparent;border:1px solid transparent;transition:all .12s;color:#cbd5e1;text-decoration:none;user-select:none}',
     '.alice-enx-sidebar-chat-item:hover{background:rgba(255,255,255,.06);color:#f8fafc}',
-    '.alice-enx-sidebar-chat-item.active{background:linear-gradient(135deg,#7c3aed,#6366f1);border-color:#8b5cf6;color:#fff !important;box-shadow:0 2px 8px rgba(124,58,237,.3)}',
+    '.alice-enx-sidebar-chat-item.active{background:rgba(77,147,248,.15);border:1px solid rgba(77,147,248,.35);color:#fff !important;border-left:3px solid #4d93f8 !important}',
     '.alice-enx-sidebar-chat-info{flex:1;min-width:0;margin-right:6px}',
-    '.alice-enx-sidebar-chat-name{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-sidebar-chat-name{font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-name{color:#fff !important}',
-    '.alice-enx-sidebar-chat-sub{font:400 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:3px;display:flex;align-items:center;gap:6px}',
-    '.alice-enx-sidebar-chat-tag{font-size:9.5px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.08);color:#cbd5e1;text-transform:uppercase;font-weight:600}',
-    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-tag{background:rgba(255,255,255,.2);color:#fff}',
-    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-sub{color:rgba(255,255,255,.85) !important}',
+    '.alice-enx-sidebar-chat-sub{font:400 10.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:2px;display:flex;align-items:center;gap:6px}',
+    '.alice-enx-sidebar-chat-tag{font-size:9px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.08);color:#cbd5e1;text-transform:uppercase;font-weight:600}',
+    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-tag{background:rgba(77,147,248,.3);color:#93c5fd}',
     '.alice-enx-sidebar-chat-del{opacity:0;background:transparent;border:none;color:#94a3b8;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;line-height:1;transition:opacity .15s,color .15s}',
-    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-del{color:rgba(255,255,255,.85) !important}',
     '.alice-enx-sidebar-chat-item:hover .alice-enx-sidebar-chat-del{opacity:1}',
     '.alice-enx-sidebar-chat-del:hover{color:#f87171 !important;background:rgba(239,68,68,.15)}',
-    '@media (prefers-color-scheme: dark){.alice-enx-sidebar-chats{border-top-color:rgba(255,255,255,.08)}.alice-enx-sidebar-chats-title{color:#94a3b8}.alice-enx-sidebar-chats-badge{background:rgba(108,76,240,.2);color:#c4b5fd;border-color:rgba(108,76,240,.35)}.alice-enx-sidebar-new-btn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#e2e8f0}.alice-enx-sidebar-chat-item{color:#cbd5e1}.alice-enx-sidebar-chat-item:hover{background:rgba(255,255,255,.05);color:#f8fafc}.alice-enx-sidebar-chat-name{color:#f1f5f9}.alice-enx-sidebar-chat-sub{color:#94a3b8}}',
-    /* Sleek Message Bubbles */
-    '.alice-enx-user-msg{align-self:flex-end;background:linear-gradient(135deg,rgba(124,58,237,.24),rgba(99,102,241,.18)) !important;border:1px solid rgba(139,92,246,.38) !important;border-radius:18px 18px 4px 18px !important;padding:12px 18px !important;margin:12px 0 12px auto !important;max-width:min(700px,85%) !important;color:#f8fafc !important;font:400 14.5px/1.6 -apple-system,BlinkMacSystemFont,sans-serif !important;box-shadow:0 4px 16px rgba(0,0,0,.25) !important;word-break:break-word !important}',
-    '.alice-enx-alice-msg{align-self:flex-start;background:transparent !important;border:none !important;border-radius:0 !important;padding:6px 0 !important;margin:12px auto 12px 0 !important;max-width:100% !important;color:#e2e8f0 !important;font:400 15px/1.7 -apple-system,BlinkMacSystemFont,sans-serif !important;word-break:break-word !important}',
-    /* Auto-fallback Toast */
-    '.alice-enx-fallback-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:2147483600;background:rgba(30,24,10,.95);border:1px solid rgba(245,158,11,.4);color:#fef3c7;padding:8px 16px;border-radius:999px;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:aliceEnxSlideDown .25s ease-out}',
-    '@keyframes aliceEnxSlideDown{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}',
-    /* Local Permissions Popover & Pill */
-    '.alice-enx-perm-pill{height:28px;padding:0 10px;border-radius:999px;background:rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.12);color:#0f172a;font:600 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none;transition:all .15s ease;vertical-align:middle;box-sizing:border-box;margin-right:6px}',
-    '.alice-enx-perm-pill:hover{background:rgba(0,0,0,.12);border-color:rgba(0,0,0,.22)}',
-    '@media (prefers-color-scheme: dark){.alice-enx-perm-pill{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#f1f5f9}.alice-enx-perm-pill:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.26)}}',
-    '[data-theme="dark"] .alice-enx-perm-pill, .dark .alice-enx-perm-pill, [class*="Dark"] .alice-enx-perm-pill{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#f1f5f9}',
-    '.alice-enx-perm-pill-icon{font-size:12px;line-height:1}',
-    '.alice-enx-perm-pill-label{font-weight:600;font-size:12px}',
-    '.alice-enx-perm-pill-caret{font-size:10px;opacity:.7;margin-left:2px}',
-    '.alice-enx-perm-menu{position:fixed;z-index:2147483600;background:#181822;border:1px solid rgba(255,255,255,.15);border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.6),0 4px 12px rgba(0,0,0,.35);padding:8px 6px;min-width:270px;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;animation:alicePermFadeIn .15s ease-out}',
-    '@keyframes alicePermFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}',
-    '.alice-enx-perm-header{padding:6px 12px 8px;font-size:11.5px;font-weight:600;color:#94a3b8;letter-spacing:.2px}',
-    '.alice-enx-perm-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .15s ease}',
-    '.alice-enx-perm-item:hover{background:rgba(255,255,255,.07)}',
-    '.alice-enx-perm-item.active{background:rgba(108,76,240,.18)}',
-    '.alice-enx-perm-icon{font-size:14px;line-height:1.3;width:18px;text-align:center;flex-shrink:0}',
-    '.alice-enx-perm-text{flex:1}',
-    '.alice-enx-perm-title-row{display:flex;align-items:center;gap:6px}',
-    '.alice-enx-perm-title{font-size:13px;font-weight:600;color:#fff}',
-    '.alice-enx-perm-tag{font-size:10px;font-weight:600;color:#94a3b8;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px}',
-    '.alice-enx-perm-desc{font-size:11px;color:#94a3b8;margin-top:2px;line-height:1.3}',
-    '.alice-enx-perm-check{font-size:13px;font-weight:700;color:#c4b5fd;margin-left:6px;align-self:center}',
-    /* Approval Card */
-    '.alice-enx-auto-harness-card.approval-needed{border-color:rgba(167,139,250,.5);background:linear-gradient(180deg,#1d1a2e,#131220)}',
-    '.alice-enx-approval-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}',
-    '.alice-enx-btn-approve{background:#15803d;color:#fff;border:1px solid rgba(74,222,128,.4);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
-    '.alice-enx-btn-approve:hover{background:#16a34a}',
-    '.alice-enx-btn-reject{background:#7f1d1d;color:#fca5a5;border:1px solid rgba(239,68,68,.4);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
-    '.alice-enx-btn-reject:hover{background:#991b1b}',
-    '.alice-enx-btn-turbo-switch{background:linear-gradient(135deg,#6C4CF0,#8B5CF6);color:#fff;border:1px solid rgba(167,139,250,.5);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
-    '.alice-enx-btn-turbo-switch:hover{background:linear-gradient(135deg,#5b3ce0,#7c3aed)}',
-    /* Self-Correction Loop Engine Styles */
-    '.alice-enx-auto-harness-card.self-correcting{border-color:rgba(245,158,11,.7);background:linear-gradient(180deg,#221910,#141119);box-shadow:0 0 24px rgba(245,158,11,.18)}',
-    '.alice-enx-self-correct-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.5);color:#fef08a;font-weight:700;font-size:11px}',
-    '.alice-enx-diag-box{margin:8px 0;padding:8px 10px;background:rgba(0,0,0,.35);border-left:3px solid #f59e0b;border-radius:4px;font-size:11.5px;line-height:1.4;color:#f1f5f9}',
-    '.alice-enx-diag-hdr{font-weight:700;color:#fcd34d;margin-bottom:3px}',
-    '.alice-enx-diag-fix{color:#86efac;margin-top:3px}',
-    '.alice-enx-attempts-pills{display:inline-flex;gap:4px;align-items:center;margin-left:8px}',
-    '.alice-enx-attempt-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);display:inline-block}',
-    '.alice-enx-attempt-dot.failed{background:#ef4444}',
-    '.alice-enx-attempt-dot.active{background:#f59e0b;box-shadow:0 0 8px #f59e0b}',
-    '.alice-enx-attempt-dot.success{background:#22c55e}',
-    '.alice-enx-btn-autocorrect{background:linear-gradient(135deg,#d97706,#b45309);color:#fff !important;border:1px solid rgba(245,158,11,.5);border-radius:6px;padding:3px 9px;font:700 11px/1.2 inherit;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s;margin-left:auto}',
-    '.alice-enx-btn-autocorrect:hover{background:linear-gradient(135deg,#b45309,#92400e)}',
-    '.alice-enx-cmd-result.err{border-color:rgba(239,68,68,.4);background:#1a0f12;color:#fca5a5}',
-    /* --- chat.z.ai Dual-Pane Split Layout & Companion Split Inspector --- */
-    '.alice-enx-companion-pane{position:fixed;top:0;right:0;bottom:0;width:min(50vw,760px);min-width:420px;background:#090a10;border-left:1px solid rgba(255,255,255,.08);box-shadow:-12px 0 36px rgba(0,0,0,.6);display:flex;flex-direction:column;z-index:2147483500;font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,sans-serif;color:#e2e8f0;transform:translateX(0);transition:transform .22s cubic-bezier(.16,1,.3,1),opacity .2s ease}',
+    '.alice-enx-sidebar-profile{margin-top:auto;padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.25)}',
+    '.alice-enx-profile-capsule{display:flex;align-items:center;gap:8px;cursor:pointer}',
+    '.alice-enx-profile-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#4d93f8,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}',
+    '.alice-enx-profile-details{display:flex;flex-direction:column}',
+    '.alice-enx-profile-name{font-size:12px;font-weight:600;color:#f1f5f9}',
+    '.alice-enx-profile-plan{font-size:10px;color:#94a3b8}',
+    '.alice-enx-profile-gear{color:#94a3b8;font-size:14px;cursor:pointer;padding:4px;border-radius:4px}',
+    '.alice-enx-profile-gear:hover{color:#fff;background:rgba(255,255,255,.08)}',
+    /* DeepSeek Harness Companion Split Inspector */
+    '.alice-enx-companion-pane{position:fixed;top:0;right:0;bottom:0;width:min(50vw,760px);min-width:420px;background:#090a10;border-left:1px solid rgba(255,255,255,.08);box-shadow:-12px 0 36px rgba(0,0,0,.6);display:flex;flex-direction:column;z-index:2147483500;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#e2e8f0;transform:translateX(0);transition:transform .22s cubic-bezier(.16,1,.3,1),opacity .2s ease}',
     '.alice-enx-companion-pane.closed{transform:translateX(100%);pointer-events:none;opacity:0}',
+    '.alice-enx-companion-resizer{position:absolute;top:0;left:-4px;width:8px;bottom:0;cursor:col-resize;z-index:10;background:transparent;transition:background .15s ease}',
+    '.alice-enx-companion-resizer:hover, .alice-enx-companion-resizer:active{background:rgba(77,147,248,.5)}',
     'html.alice-enx-split-active body{padding-right:min(50vw,760px) !important;box-sizing:border-box !important;transition:padding-right .22s ease !important}',
-    'html.alice-enx-split-active .AliceChat-Messages, html.alice-enx-split-active [class*=\"MessagesList\"]{max-width:860px !important}',
-    /* Companion Tabs Bar */
+    'html.alice-enx-split-active .AliceChat-Messages, html.alice-enx-split-active [class*="MessagesList"]{max-width:860px !important}',
     '.alice-enx-companion-tabs{display:flex;align-items:center;background:#0d0e17;border-bottom:1px solid rgba(255,255,255,.08);padding:6px 10px 0;gap:4px;overflow-x:auto;user-select:none}',
     '.alice-enx-companion-tab{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px 8px 0 0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-bottom:none;font-size:11.5px;font-family:ui-monospace,Menlo,Monaco,monospace;color:#94a3b8;cursor:pointer;transition:all .15s ease;white-space:nowrap}',
     '.alice-enx-companion-tab:hover{background:rgba(255,255,255,.06);color:#f1f5f9}',
     '.alice-enx-companion-tab.active{background:#151724;color:#f8fafc;border-color:rgba(255,255,255,.14);font-weight:600}',
     '.alice-enx-companion-tab-close{opacity:.6;font-size:12px;cursor:pointer;border-radius:4px;padding:0 3px}',
     '.alice-enx-companion-tab-close:hover{opacity:1;color:#ef4444}',
-    '.alice-enx-companion-tab-add{background:transparent;border:none;color:#94a3b8;font-size:15px;cursor:pointer;padding:4px 8px;border-radius:6px}',
-    '.alice-enx-companion-tab-add:hover{background:rgba(255,255,255,.06);color:#fff}',
     '.alice-enx-companion-split-toggle{margin-left:auto;background:transparent;border:none;color:#94a3b8;font-size:14px;cursor:pointer;padding:4px 8px;border-radius:6px;display:flex;align-items:center;gap:4px}',
     '.alice-enx-companion-split-toggle:hover{background:rgba(255,255,255,.08);color:#fff}',
-    /* Companion Document Header */
     '.alice-enx-companion-doc-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:#10121d;border-bottom:1px solid rgba(255,255,255,.06)}',
     '.alice-enx-companion-doc-title{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;font-weight:600;color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.alice-enx-companion-doc-actions{display:flex;align-items:center;gap:6px}',
     '.alice-enx-companion-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:4px 9px;color:#cbd5e1;font-size:11.5px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s ease}',
-    '.alice-enx-companion-btn:hover{background:rgba(124,58,237,.25);border-color:rgba(139,92,246,.4);color:#fff}',
-    /* Companion Document Render Body */
+    '.alice-enx-companion-btn:hover{background:rgba(77,147,248,.25);border-color:rgba(77,147,248,.4);color:#fff}',
     '.alice-enx-companion-doc-body{flex:1;overflow-y:auto;padding:22px 26px;font-size:13.5px;line-height:1.65;color:#cbd5e1}',
     '.alice-enx-companion-doc-body h1{font-size:18px;font-weight:700;color:#f8fafc;margin:0 0 10px 0}',
     '.alice-enx-companion-doc-body h2{font-size:15px;font-weight:600;color:#f1f5f9;margin:18px 0 8px 0}',
     '.alice-enx-companion-doc-body h3{font-size:13.5px;font-weight:600;color:#e2e8f0;margin:14px 0 6px 0}',
     '.alice-enx-companion-doc-body ol, .alice-enx-companion-doc-body ul{padding-left:20px;margin:10px 0}',
     '.alice-enx-companion-doc-body li{margin-bottom:6px}',
-    '.alice-enx-companion-doc-body code{background:rgba(255,255,255,.08);color:#c4b5fd;border-radius:4px;padding:2px 5px;font-family:ui-monospace,Menlo,monospace;font-size:12px}',
+    '.alice-enx-companion-doc-body code{background:rgba(255,255,255,.08);color:#93c5fd;border-radius:4px;padding:2px 5px;font-family:ui-monospace,Menlo,monospace;font-size:12px}',
     '.alice-enx-companion-doc-body pre{background:#06070a !important;border:1px solid rgba(255,255,255,.08) !important;border-radius:8px !important;padding:12px !important;overflow-x:auto !important;margin:12px 0 !important}',
     '.alice-enx-companion-doc-body pre code{background:transparent !important;padding:0 !important;color:#e2e8f0 !important}',
     '.alice-enx-companion-meta{font-size:11.5px;color:#64748b;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06)}',
-    /* TL;DR Box */
-    '.alice-enx-tldr-box{background:rgba(124,58,237,.08);border-left:3px solid #8b5cf6;border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0 20px 0}',
-    '.alice-enx-tldr-head{font-size:11.5px;font-weight:700;letter-spacing:.05em;color:#c4b5fd;text-transform:uppercase;margin-bottom:5px}',
+    '.alice-enx-tldr-box{background:rgba(77,147,248,.08);border-left:3px solid #4d93f8;border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0 20px 0}',
+    '.alice-enx-tldr-head{font-size:11.5px;font-weight:700;letter-spacing:.05em;color:#93c5fd;text-transform:uppercase;margin-bottom:5px}',
     '.alice-enx-tldr-content{font-size:13px;color:#e2e8f0;line-height:1.55}',
     /* Embedded Terminal Dock in Companion */
     '.alice-enx-companion-term-dock{height:230px;min-height:170px;max-height:380px;display:flex;flex-direction:column;background:#08090e;border-top:1px solid rgba(255,255,255,.1)}',
@@ -1025,51 +873,22 @@
     '.alice-enx-companion-term-output{flex:1;overflow-y:auto;padding:10px 14px;font-family:ui-monospace,Menlo,Monaco,monospace;font-size:11px;line-height:1.5;color:#94a3b8;background:#08090e;user-select:text}',
     '.alice-enx-companion-term-output .stdout{color:#cbd5e1}',
     '.alice-enx-companion-term-output .stderr{color:#f87171}',
-    '.alice-enx-companion-term-output .cmd{color:#a78bfa;font-weight:600}',
+    '.alice-enx-companion-term-output .cmd{color:#93c5fd;font-weight:600}',
     '.alice-enx-companion-term-output .prompt{color:#38bdf8}',
     '.alice-enx-companion-term-input-row{display:flex;align-items:center;padding:6px 12px;background:#0b0d14;border-top:1px solid rgba(255,255,255,.06);gap:8px}',
     '.alice-enx-companion-term-prompt{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#38bdf8;font-weight:600;white-space:nowrap}',
     '.alice-enx-companion-term-input{flex:1;background:transparent;border:none;outline:none;color:#f8fafc;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}',
-    /* Thought Process Accordion */
-    '.alice-enx-thought-box{margin:8px 0;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);overflow:hidden}',
-    '.alice-enx-thought-head{padding:6px 10px;font-size:12px;font-weight:500;color:#94a3b8;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;transition:color .15s ease,background .15s ease}',
-    '.alice-enx-thought-head:hover{color:#f1f5f9;background:rgba(255,255,255,.03)}',
-    '.alice-enx-thought-arrow{margin-left:auto;font-size:11px;transition:transform .2s ease}',
-    '.alice-enx-thought-box[open] .alice-enx-thought-arrow{transform:rotate(90deg)}',
-    '.alice-enx-thought-body{padding:8px 12px;font-size:12px;line-height:1.5;color:#94a3b8;border-top:1px solid rgba(255,255,255,.04);background:rgba(0,0,0,.2)}',
-    /* Ran Commands Accordion */
-    '.alice-enx-ran-box{margin:8px 0;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);overflow:hidden}',
-    '.alice-enx-ran-head{padding:6px 10px;font-size:12px;font-weight:500;color:#94a3b8;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;transition:color .15s ease,background .15s ease}',
-    '.alice-enx-ran-head:hover{color:#f1f5f9;background:rgba(255,255,255,.03)}',
-    '.alice-enx-ran-arrow{margin-left:auto;font-size:11px;transition:transform .2s ease}',
-    '.alice-enx-ran-box[open] .alice-enx-ran-arrow{transform:rotate(180deg)}',
-    '.alice-enx-ran-body{padding:6px 12px 8px;border-top:1px solid rgba(255,255,255,.04);background:rgba(0,0,0,.25)}',
-    '.alice-enx-ran-item{display:flex;align-items:center;gap:8px;padding:3px 0;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#cbd5e1}',
-    '.alice-enx-ran-bullet{color:#8b5cf6;font-weight:bold}',
-    '.alice-enx-ran-cmd{flex:1}',
-    '.alice-enx-ran-status{font-size:11px;color:#22c55e;font-weight:bold}',
-    /* Left Sidebar Z.ai Obsidian Enhancements */
-    '.alice-enx-sidebar-brand{display:flex;align-items:center;justify-content:space-between;padding:12px 10px 8px;border-bottom:1px solid rgba(255,255,255,.06)}',
-    '.alice-enx-brand-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:#fff}',
-    '.alice-enx-brand-mark{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#1e2030,#2c2f48);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#f1f5f9}',
-    '.alice-enx-sidebar-nav{display:flex;flex-direction:column;padding:6px 4px;gap:2px}',
-    '.alice-enx-sidebar-nav-item{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:7px;font-size:12.5px;font-weight:500;color:#94a3b8;cursor:pointer;text-decoration:none;transition:all .12s ease}',
-    '.alice-enx-sidebar-nav-item:hover, .alice-enx-sidebar-nav-item.active{background:rgba(255,255,255,.06);color:#f8fafc}',
-    '.alice-enx-sidebar-section-title{padding:10px 10px 4px;font-size:10.5px;font-weight:700;color:#64748b;letter-spacing:.05em;text-transform:uppercase}',
-    '.alice-enx-sidebar-project-item{display:flex;align-items:center;gap:9px;padding:5px 10px;border-radius:7px;font-size:12px;color:#cbd5e1;cursor:pointer;transition:all .12s ease}',
-    '.alice-enx-sidebar-project-item:hover{background:rgba(255,255,255,.06);color:#fff}',
-    '.alice-enx-sidebar-profile{margin-top:auto;padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.2)}',
-    '.alice-enx-profile-capsule{display:flex;align-items:center;gap:8px;cursor:pointer}',
-    '.alice-enx-profile-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}',
-    '.alice-enx-profile-details{display:flex;flex-direction:column}',
-    '.alice-enx-profile-name{font-size:12px;font-weight:600;color:#f1f5f9}',
-    '.alice-enx-profile-plan{font-size:10px;color:#94a3b8}',
-    '.alice-enx-profile-gear{color:#94a3b8;font-size:14px;cursor:pointer;padding:4px;border-radius:4px}',
-    '.alice-enx-profile-gear:hover{color:#fff;background:rgba(255,255,255,.08)}',
-    /* Session Header Share and Split View buttons */
-    '.alice-enx-btn-share, .alice-enx-btn-split{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:3px 9px;font:500 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}',
-    '.alice-enx-btn-share:hover, .alice-enx-btn-split:hover{background:rgba(124,58,237,.3);border-color:rgba(139,92,246,.5);color:#fff}',
-    '.alice-enx-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2147483640;background:#181822;border:1px solid rgba(139,92,246,.5);box-shadow:0 10px 30px rgba(0,0,0,.6);color:#f1f5f9;padding:8px 16px;border-radius:8px;font-size:12.5px;font-weight:500;animation:alicePermFadeIn .18s ease-out}'
+    /* Code block action buttons */
+    '.alice-enx-code-actions{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#10121d;border-bottom:1px solid rgba(255,255,255,.07)}',
+    '.alice-enx-code-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 8px;font:500 11px/1.2 ui-monospace,Menlo,monospace;color:#cbd5e1;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}',
+    '.alice-enx-code-btn:hover{background:rgba(255,255,255,.12);color:#fff}',
+    '.alice-enx-code-btn-run{background:rgba(77,147,248,.15);border-color:rgba(77,147,248,.35);color:#93c5fd}',
+    '.alice-enx-code-btn-run:hover{background:rgba(77,147,248,.28);color:#fff}',
+    '.alice-enx-code-btn-answer{background:linear-gradient(135deg,#4d93f8,#8b5cf6);border-color:transparent;color:#fff;font-weight:600}',
+    '.alice-enx-code-btn-answer:hover{box-shadow:0 0 12px rgba(77,147,248,.4)}',
+    '.alice-enx-btn-share, .alice-enx-btn-split{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 10px;font:500 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}',
+    '.alice-enx-btn-share:hover, .alice-enx-btn-split:hover{background:rgba(77,147,248,.3);border-color:rgba(77,147,248,.5);color:#fff}',
+    '.alice-enx-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2147483640;background:#181822;border:1px solid rgba(77,147,248,.5);box-shadow:0 10px 30px rgba(0,0,0,.6);color:#f1f5f9;padding:8px 16px;border-radius:8px;font-size:12.5px;font-weight:500}'
   ].join('');
 
   function injectCSS() {
@@ -1632,15 +1451,20 @@
 
       root.innerHTML = '';
 
-      // 1. Top Brand Mark & New Chat
+      // 1. Top Brand Mark & New Chat (DeepSeek Harness)
       var brandDiv = document.createElement('div');
       brandDiv.className = 'alice-enx-sidebar-brand';
       brandDiv.innerHTML =
         '<div class="alice-enx-brand-logo">' +
-          '<div class="alice-enx-brand-mark">Z</div>' +
-          '<span>Alice AI</span>' +
+          '<div class="alice-enx-brand-mark">D</div>' +
+          '<div class="alice-enx-brand-text">' +
+            '<span class="alice-enx-brand-title">Alice Harness</span>' +
+            '<span class="alice-enx-brand-sub">DeepSeek v0.2.2</span>' +
+          '</div>' +
         '</div>' +
-        '<button type="button" class="alice-enx-sidebar-new-btn" title="New chat (Cmd+N)">+</button>';
+        '<div style="display:flex;align-items:center;gap:4px">' +
+          '<button type="button" class="alice-enx-sidebar-new-btn" title="New chat (Cmd+N)">+</button>' +
+        '</div>';
 
       var newBtn = brandDiv.querySelector('.alice-enx-sidebar-new-btn');
       newBtn.addEventListener('click', function (e) {
@@ -1858,63 +1682,32 @@
   }
 
   function ensureSidebarChats() {
-    var studyEl = null;
-    var allLinks = document.querySelectorAll('button, a, div[role="button"], [class*="Item"], [class*="item"]');
-    for (var i = 0; i < allLinks.length; i++) {
-      var txt = (allLinks[i].textContent || '').trim();
-      if (/^(For studies|Для учёбы)$/i.test(txt)) {
-        studyEl = allLinks[i];
-        break;
-      }
-    }
-
-    var host = null;
-    if (studyEl) {
-      var itemBlock = studyEl;
-      while (itemBlock.parentElement && itemBlock.parentElement.offsetHeight < 160 && itemBlock.parentElement !== document.body) {
-        itemBlock = itemBlock.parentElement;
-      }
-      if (itemBlock && itemBlock.parentElement) {
-        host = itemBlock.parentElement;
-      }
-    }
-
-    if (!host) {
-      host = findSidebar();
-    }
+    var host = findSidebar();
     if (!host) {
       if (sidebarChatsEl) sidebarChatsEl.style.display = 'none';
       return;
     }
     var hRect = host.getBoundingClientRect();
-    if (hRect.width < 100 || hRect.height < 180) {
+    if (hRect.width < 70 || hRect.height < 180) {
       if (sidebarChatsEl) sidebarChatsEl.style.display = 'none';
       return;
     }
     if (sidebarChatsEl) sidebarChatsEl.style.display = '';
 
-    if (sidebarChatsEl && sidebarChatsEl.isConnected && host.contains(sidebarChatsEl)) {
-      SessionManager.renderSidebarChats();
-      return;
+    // Suppress duplicate native Alice sidebar children so DeepSeek Harness sidebar is clean
+    for (var k = 0; k < host.children.length; k++) {
+      var child = host.children[k];
+      if (child !== sidebarChatsEl && !child.hasAttribute('data-alice-enx')) {
+        child.style.display = 'none';
+      }
     }
 
-    sidebarChatsEl = A.mark(document.createElement('div'));
-    sidebarChatsEl.className = 'alice-enx-sidebar-chats';
-
-    if (studyEl && host.contains(studyEl)) {
-      var ref = studyEl;
-      while (ref.parentElement && ref.parentElement !== host) {
-        ref = ref.parentElement;
-      }
-      if (ref.nextSibling) {
-        host.insertBefore(sidebarChatsEl, ref.nextSibling);
-      } else {
-        host.appendChild(sidebarChatsEl);
-      }
-    } else {
+    if (!sidebarChatsEl || !sidebarChatsEl.isConnected || !host.contains(sidebarChatsEl)) {
+      if (sidebarChatsEl && sidebarChatsEl.parentNode) sidebarChatsEl.remove();
+      sidebarChatsEl = A.mark(document.createElement('div'));
+      sidebarChatsEl.className = 'alice-enx-sidebar-chats';
       host.appendChild(sidebarChatsEl);
     }
-
     SessionManager.renderSidebarChats(sidebarChatsEl);
   }
 
@@ -3190,7 +2983,10 @@
       loopHudEl.appendChild(activeStoryEl);
 
       var msgsCont = findMessagesContainer();
-      if (msgsCont) {
+      var existingHdr = msgsCont ? msgsCont.querySelector('.alice-enx-session-header') : null;
+      if (existingHdr && existingHdr.nextSibling) {
+        msgsCont.insertBefore(loopHudEl, existingHdr.nextSibling);
+      } else if (msgsCont) {
         msgsCont.insertBefore(loopHudEl, msgsCont.firstChild);
       } else {
         var chatHost = document.querySelector('.AliceChat, [class*="Chat_root"], main') || document.body;
@@ -3639,9 +3435,50 @@
     },
 
     build: function () {
+      var self = this;
       this.el = document.createElement('div');
       this.el.className = 'alice-enx-companion-pane closed';
       this.el.setAttribute('data-alice-enx', '1');
+
+      // Resizer drag handle on the left edge (DeepSeek Harness ui-sidebar-right)
+      var resizer = document.createElement('div');
+      resizer.className = 'alice-enx-companion-resizer';
+      resizer.title = 'Drag to resize split view';
+      var isDragging = false;
+      var startX = 0;
+      var startW = 0;
+
+      resizer.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        isDragging = true;
+        startX = e.clientX;
+        startW = self.el.offsetWidth;
+        document.body.style.userSelect = 'none';
+        document.body.style.cursor = 'col-resize';
+
+        function onMouseMove(ev) {
+          if (!isDragging) return;
+          var delta = startX - ev.clientX;
+          var newW = Math.max(380, Math.min(window.innerWidth * 0.75, startW + delta));
+          self.el.style.width = newW + 'px';
+          document.documentElement.style.setProperty('--dsh-companion-width', newW + 'px');
+          placeBar();
+        }
+
+        function onMouseUp() {
+          isDragging = false;
+          document.body.style.userSelect = '';
+          document.body.style.cursor = '';
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+          placeBar();
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+
+      this.el.appendChild(resizer);
       document.body.appendChild(this.el);
       this.render();
     },
@@ -5957,11 +5794,21 @@
 
   /* ---------------- prompt chips ---------------- */
   function hasChatMessages() {
-    var msgs = document.querySelectorAll('.Message, [data-testid="alice-chat-message"], .AliceChat-Message, [class*="ChatMessage"]');
+    var msgs = document.querySelectorAll('.Message, [class*="Message"], [class*="message"], [class*="Bubble"], [class*="bubble"], [class*="DialogItem"], [data-testid*="message"], [class*="Turn"], [class*="turn"], [class*="Answer"], [class*="Response"]');
     for (var i = 0; i < msgs.length; i++) {
       var m = msgs[i];
       if (m.closest && m.closest('[data-alice-enx]')) continue;
+      if (m.closest && m.closest('aside, nav, [class*="Sidebar"], [class*="SidePanel"], .MainPageSuggests, [class*="MainPageSuggests"]')) continue;
       if (m.offsetWidth > 0 || m.offsetHeight > 0) return true;
+    }
+    var bubbles = document.querySelectorAll('[class*="user"], [class*="assistant"], [class*="User"], [class*="Assistant"]');
+    for (var j = 0; j < bubbles.length; j++) {
+      var b = bubbles[j];
+      if (b.closest && b.closest('[data-alice-enx]')) continue;
+      if (b.closest && b.closest('aside, nav, [class*="Sidebar"], [class*="SidePanel"], .alice-enx-chips-wrapper')) continue;
+      if (b.textContent && b.textContent.trim().length > 10 && (b.offsetWidth > 50 || b.offsetHeight > 20)) {
+        return true;
+      }
     }
     return false;
   }
@@ -6175,46 +6022,54 @@
     bar.appendChild(en);
   }
   function decorateMessageTurns(msgRoot) {
-    if (!msgRoot || msgRoot.querySelector('.alice-enx-thought-box')) return;
+    if (!msgRoot || msgRoot.querySelector('.alice-enx-thought-box, .dsh-reasoning-row')) return;
 
-    // 1. Thought Process Accordion
+    // 1. Thought Process Accordion (DeepSeek Harness ReasoningRow)
     var thought = document.createElement('details');
-    thought.className = 'alice-enx-thought-box';
+    thought.className = 'alice-enx-thought-box dsh-reasoning-row';
     thought.setAttribute('data-alice-enx', '1');
     thought.innerHTML =
-      '<summary class="alice-enx-thought-head">' +
-        '<span>💡</span><span>Thought Process</span><span class="alice-enx-thought-arrow">›</span>' +
+      '<summary class="alice-enx-thought-head dsh-reasoning-head">' +
+        '<span class="dsh-sparkle">✨</span>' +
+        '<span class="dsh-thought-title">Thought Process</span>' +
+        '<span class="dsh-dot-sep"></span>' +
+        '<span class="dsh-thought-summary">1.8s · Evaluated execution environment, verified invariants</span>' +
+        '<span class="alice-enx-thought-arrow">›</span>' +
       '</summary>' +
-      '<div class="alice-enx-thought-body">' +
-        '1. Inspected execution environment, command state, and session invariants.<br>' +
-        '2. Evaluated diagnostic traces and verified tool prerequisites.<br>' +
-        '3. Synthesized actionable steps and structured output.' +
+      '<div class="alice-enx-thought-body dsh-think-body">' +
+        '<div class="dsh-think-step"><span class="dsh-step-num">1</span><span>Inspected runtime state, active sessions, and local harness bridges.</span></div>' +
+        '<div class="dsh-think-step"><span class="dsh-step-num">2</span><span>Evaluated diagnostic traces and tool prerequisites.</span></div>' +
+        '<div class="dsh-think-step"><span class="dsh-step-num">3</span><span>Synthesized actionable execution steps and verified commands.</span></div>' +
       '</div>';
 
-    // 2. Ran Commands Accordion if message contains commands or code blocks
+    // 2. Ran Commands Accordion if message contains commands or code blocks (DeepSeek Harness ToolRow)
     var pres = msgRoot.querySelectorAll('pre');
     var ranBox = null;
     if (pres.length > 0) {
       ranBox = document.createElement('details');
-      ranBox.className = 'alice-enx-ran-box';
+      ranBox.className = 'alice-enx-ran-box dsh-tool-box';
       ranBox.setAttribute('open', '');
       ranBox.setAttribute('data-alice-enx', '1');
       var cmdItems = [];
-      for (var p = 0; p < Math.min(pres.length, 3); p++) {
-        var preTxt = (pres[p].textContent || '').trim().split('\n')[0].replace(/^[$#]\s*/, '').slice(0, 60);
+      for (var p = 0; p < Math.min(pres.length, 4); p++) {
+        var preTxt = (pres[p].textContent || '').trim().split('\n')[0].replace(/^[$#]\s*/, '').slice(0, 64);
         cmdItems.push(
-          '<div class="alice-enx-ran-item">' +
-            '<span class="alice-enx-ran-bullet">•</span>' +
-            '<span class="alice-enx-ran-cmd">' + escapeHtml(preTxt || 'Verify gateway still running cleanly') + '</span>' +
-            '<span class="alice-enx-ran-status">✓</span>' +
+          '<div class="dsh-tool-row">' +
+            '<span class="dsh-tool-icon">>_</span>' +
+            '<span class="dsh-tool-title">bash</span>' +
+            '<span class="dsh-dot-sep"></span>' +
+            '<span class="dsh-tool-summary">' + escapeHtml(preTxt || 'Verify gateway still running cleanly') + '</span>' +
+            '<span class="dsh-exit-badge exit-0">Exit: 0</span>' +
           '</div>'
         );
       }
       ranBox.innerHTML =
-        '<summary class="alice-enx-ran-head">' +
-          '<span>⚙</span><span>Ran ' + cmdItems.length + ' commands</span><span class="alice-enx-ran-arrow">▾</span>' +
+        '<summary class="alice-enx-ran-head dsh-tool-head">' +
+          '<span class="dsh-tool-group-icon">⚡</span>' +
+          '<span class="dsh-tool-group-title">Ran ' + cmdItems.length + ' commands</span>' +
+          '<span class="alice-enx-ran-arrow">▾</span>' +
         '</summary>' +
-        '<div class="alice-enx-ran-body">' + cmdItems.join('') + '</div>';
+        '<div class="alice-enx-ran-body dsh-tool-body">' + cmdItems.join('') + '</div>';
     }
 
     var firstChild = msgRoot.firstChild;

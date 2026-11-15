@@ -103,6 +103,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         viewMenu.addItem(withTitle: "Zoom Out", action: #selector(zoomOut), keyEquivalent: "-")
         viewMenu.addItem(NSMenuItem.separator())
         viewMenu.addItem(withTitle: "Toggle Terminal & Harness", action: #selector(toggleWorkbench), keyEquivalent: "j")
+        let splitItem = NSMenuItem(title: "Toggle Companion Split Inspector", action: #selector(toggleSplitView), keyEquivalent: "\\")
+        splitItem.keyEquivalentModifierMask = [.command]
+        viewMenu.addItem(splitItem)
         viewMenu.addItem(withTitle: "Toggle Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f")
 
         // 5. Harness & Agent Menu (ZCode & DeepSeek DSH)
@@ -318,6 +321,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openGitSyncTab() {
         MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('git');", completionHandler: nil)
+    }
+
+    @objc private func toggleSplitView() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.CompanionSplitInspector ? window.CompanionSplitInspector.toggle() : null;", completionHandler: nil)
     }
 
     @objc private func dispatchCodeQuery() {
