@@ -845,6 +845,29 @@
     '.alice-enx-code-btn-save:active{transform:translateY(1px)}',
     /* Refusal Override Card */
     '.alice-enx-refusal-card{margin-top:10px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);display:flex;align-items:center;gap:8px}',
+    /* Sidebar Active Chats (Zero Login Multi-Chat) */
+    '.alice-enx-sidebar-chats{display:flex;flex-direction:column;margin:12px 8px 8px 8px;padding-top:12px;border-top:1px solid rgba(0,0,0,.08);max-height:calc(100vh - 270px);overflow-y:auto}',
+    '.alice-enx-sidebar-chats-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 8px 6px}',
+    '.alice-enx-sidebar-chats-title{font:700 11px/1 -apple-system,BlinkMacSystemFont,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:flex;align-items:center;gap:6px}',
+    '.alice-enx-sidebar-chats-badge{font:600 9.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:2px 5px;border-radius:4px;background:rgba(108,76,240,.12);color:#6C4CF0;border:1px solid rgba(108,76,240,.25);text-transform:none;letter-spacing:0}',
+    '.alice-enx-sidebar-new-btn{background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.12);border-radius:6px;color:#334155;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;transition:all .15s}',
+    '.alice-enx-sidebar-new-btn:hover{background:rgba(108,76,240,.4);color:#fff;border-color:rgba(108,76,240,.6)}',
+    '.alice-enx-sidebar-chat-item{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:8px;margin-bottom:3px;cursor:pointer;background:transparent;border:1px solid transparent;transition:all .12s;color:#334155;text-decoration:none;user-select:none}',
+    '.alice-enx-sidebar-chat-item:hover{background:rgba(0,0,0,.05);color:#0f172a}',
+    '.alice-enx-sidebar-chat-item.active{background:linear-gradient(135deg,#6C4CF0,#7c3aed);border-color:#6C4CF0;color:#fff !important;box-shadow:0 2px 8px rgba(108,76,240,.3)}',
+    '.alice-enx-sidebar-chat-info{flex:1;min-width:0;margin-right:6px}',
+    '.alice-enx-sidebar-chat-name{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-name{color:#fff !important}',
+    '.alice-enx-sidebar-chat-sub{font:400 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#64748b;margin-top:2px}',
+    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-sub{color:rgba(255,255,255,.85) !important}',
+    '.alice-enx-sidebar-chat-del{opacity:0;background:transparent;border:none;color:#94a3b8;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;line-height:1;transition:opacity .15s,color .15s}',
+    '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-del{color:rgba(255,255,255,.85) !important}',
+    '.alice-enx-sidebar-chat-item:hover .alice-enx-sidebar-chat-del{opacity:1}',
+    '.alice-enx-sidebar-chat-del:hover{color:#f87171 !important;background:rgba(239,68,68,.15)}',
+    '@media (prefers-color-scheme: dark){.alice-enx-sidebar-chats{border-top-color:rgba(255,255,255,.08)}.alice-enx-sidebar-chats-title{color:#94a3b8}.alice-enx-sidebar-chats-badge{background:rgba(108,76,240,.2);color:#c4b5fd;border-color:rgba(108,76,240,.35)}.alice-enx-sidebar-new-btn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#e2e8f0}.alice-enx-sidebar-chat-item{color:#cbd5e1}.alice-enx-sidebar-chat-item:hover{background:rgba(255,255,255,.05);color:#f8fafc}.alice-enx-sidebar-chat-name{color:#f1f5f9}.alice-enx-sidebar-chat-sub{color:#94a3b8}}',
+    /* Restored Message Bubbles */
+    '.alice-enx-user-msg{align-self:flex-end;background:rgba(108,76,240,.2);border:1px solid rgba(108,76,240,.4);border-radius:16px 16px 4px 16px;padding:12px 16px;margin:10px 0 10px auto;max-width:82%;color:#f1f5f9;font:400 14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;word-break:break-word}',
+    '.alice-enx-alice-msg{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px 16px 16px 4px;padding:14px 18px;margin:10px auto 10px 0;max-width:88%;color:#e2e8f0;font:400 14px/1.55 -apple-system,BlinkMacSystemFont,sans-serif;word-break:break-word}',
     /* Auto-fallback Toast */
     '.alice-enx-fallback-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:2147483600;background:rgba(30,24,10,.95);border:1px solid rgba(245,158,11,.4);color:#fef3c7;padding:8px 16px;border-radius:999px;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:aliceEnxSlideDown .25s ease-out}',
     '@keyframes aliceEnxSlideDown{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}',
@@ -1117,7 +1140,9 @@
     getSessions: function () {
       try {
         var raw = localStorage.getItem(this.STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
+        var list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) list = [];
+        return list;
       } catch (e) {
         return [];
       }
@@ -1131,7 +1156,11 @@
 
     getActiveId: function () {
       try {
-        return localStorage.getItem(this.ACTIVE_KEY) || 'session_default';
+        var id = localStorage.getItem(this.ACTIVE_KEY);
+        if (id) return id;
+        var list = this.getSessions();
+        if (list.length > 0) return list[0].id;
+        return 'session_default';
       } catch (e) {
         return 'session_default';
       }
@@ -1143,33 +1172,81 @@
       } catch (e) {}
     },
 
-    snapshotCurrent: function () {
-      var id = this.getActiveId();
-      var recap = harvestRecap();
-      var msgs = [];
-      var msgEls = document.querySelectorAll('.Message:not([data-alice-enx])');
+    init: function () {
+      var list = this.getSessions();
+      if (!list.length) {
+        var def = {
+          id: 'session_default',
+          title: 'Main Chat',
+          created: Date.now(),
+          updated: Date.now(),
+          messageCount: 0,
+          messages: [],
+          recap: '',
+          mode: 'auto'
+        };
+        list.push(def);
+        this.saveSessions(list);
+        this.setActiveId('session_default');
+      }
+    },
+
+    extractMessages: function () {
+      var list = [];
+      var msgEls = document.querySelectorAll('.Message, [data-testid="alice-chat-message"], .AliceChat-Message');
       for (var i = 0; i < msgEls.length; i++) {
         var el = msgEls[i];
-        var isUser = !!(el.querySelector('.Message_from_user, [data-message-role="user"]') || el.classList.contains('Message_from_user'));
-        var txt = (el.innerText || '').trim();
-        if (txt) msgs.push({ role: isUser ? 'user' : 'alice', text: txt.slice(0, 800) });
+        if (el.closest('.alice-enx-workbench, .alice-enx-modal, .alice-enx-sidebar-chats')) continue;
+        var isUser = !!(el.querySelector('.Message_from_user, [data-message-role="user"]') || el.classList.contains('Message_from_user') || el.classList.contains('alice-enx-user-msg'));
+        
+        var clone = el.cloneNode(true);
+        clone.querySelectorAll('[data-alice-enx], .alice-enx-code-actions, .alice-enx-cmd-result, .alice-enx-refusal-card, .alice-enx-toolsbar').forEach(function (n) {
+          n.remove();
+        });
+
+        var text = (clone.innerText || clone.textContent || '').replace(EN_MARKER, '').trim();
+        if (!text) continue;
+
+        list.push({
+          role: isUser ? 'user' : 'alice',
+          text: text,
+          html: clone.innerHTML,
+          timestamp: Date.now()
+        });
       }
+      return list;
+    },
+
+    snapshotCurrent: function () {
+      var id = this.getActiveId();
+      var msgs = this.extractMessages();
+      var recap = harvestRecap();
       var title = 'Chat Session';
+
+      var list = this.getSessions();
+      var existing = list.find(function (s) { return s.id === id; });
+
       if (msgs.length > 0) {
         var firstUser = msgs.find(function (m) { return m.role === 'user'; });
         if (firstUser) {
-          title = firstUser.text.replace(/\n.*/g, '').slice(0, 36);
+          title = firstUser.text.replace(/\n.*/g, '').replace(/^[^\w\s]+/, '').slice(0, 38).trim() || 'Chat Session';
         }
+      } else if (existing && existing.title && existing.title !== 'Chat Session' && !/^New Chat/i.test(existing.title)) {
+        title = existing.title;
       }
-      var list = this.getSessions();
+
       var idx = list.findIndex(function (s) { return s.id === id; });
       var item = {
         id: id,
         title: title,
+        created: existing ? existing.created : Date.now(),
         updated: Date.now(),
         messageCount: msgs.length,
-        recap: recap || ''
+        messages: msgs,
+        recap: recap || '',
+        mode: state.activeHarnessMode || 'auto'
       };
+
       if (idx >= 0) {
         list[idx] = Object.assign(list[idx], item);
       } else {
@@ -1178,46 +1255,104 @@
       this.saveSessions(list);
     },
 
+    autoSaveActiveSession: function () {
+      if (isAliceGenerating()) return;
+      this.snapshotCurrent();
+      this.renderSidebarChats();
+      if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
+    },
+
     createSession: function () {
       this.snapshotCurrent();
       var newId = 'session_' + Date.now();
       var list = this.getSessions();
-      list.unshift({
+      var newSession = {
         id: newId,
         title: 'New Chat ' + (list.length + 1),
+        created: Date.now(),
         updated: Date.now(),
         messageCount: 0,
-        recap: ''
-      });
+        messages: [],
+        recap: '',
+        mode: state.activeHarnessMode || 'auto'
+      };
+      list.unshift(newSession);
       this.saveSessions(list);
       this.setActiveId(newId);
-      clearRecap();
+      state.pendingRecap = null;
 
-      var btn = document.querySelector('[data-testid="new-chat-button"]');
-      if (btn) {
-        try { btn.click(); } catch (e) {}
-      } else if (window.__aliceResetSession) {
-        window.__aliceResetSession();
-      } else {
-        window.location.reload();
+      var container = findMessagesContainer();
+      if (container) {
+        container.innerHTML = '';
       }
+
+      var greets = document.querySelectorAll('.MainPageSuggests, [class*="MainPageSuggests"], [class*="Greeting"], .alice-enx-chips');
+      for (var g = 0; g < greets.length; g++) {
+        greets[g].style.display = '';
+      }
+
+      var ta = document.querySelector('textarea');
+      if (ta) {
+        A.setNativeValue(ta, '');
+        ta.focus();
+      }
+
+      this.renderSidebarChats();
+      if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
     },
 
     switchSession: function (targetId) {
       if (targetId === this.getActiveId()) return;
       this.snapshotCurrent();
       this.setActiveId(targetId);
+
       var list = this.getSessions();
       var target = list.find(function (s) { return s.id === targetId; });
-      if (target && target.recap) {
-        state.pendingRecap = target.recap;
-        try { sessionStorage.setItem('aliceEnxRecap', target.recap); } catch (e) {}
-      }
-      if (window.__aliceResetSession) {
-        window.__aliceResetSession();
+      if (!target) return;
+
+      var container = findMessagesContainer();
+      var greets = document.querySelectorAll('.MainPageSuggests, [class*="MainPageSuggests"], [class*="Greeting"], .alice-enx-chips');
+
+      if (target.messages && target.messages.length > 0) {
+        for (var g = 0; g < greets.length; g++) {
+          greets[g].style.display = 'none';
+        }
+        if (container) {
+          container.innerHTML = '';
+          for (var i = 0; i < target.messages.length; i++) {
+            var m = target.messages[i];
+            var mEl = document.createElement('div');
+            mEl.className = 'Message ' + (m.role === 'user' ? 'Message_from_user alice-enx-user-msg' : 'alice-enx-alice-msg');
+            mEl.setAttribute('data-message-role', m.role);
+            mEl.setAttribute('data-alice-enx-restored', '1');
+            mEl.innerHTML = m.html || ('<div class="Message-Content">' + escapeHtml(m.text) + '</div>');
+            container.appendChild(mEl);
+          }
+          container.scrollTop = container.scrollHeight;
+        }
+        state.pendingRecap = target.recap || buildSessionContext(target.messages);
       } else {
-        window.location.reload();
+        if (container) container.innerHTML = '';
+        for (var g2 = 0; g2 < greets.length; g2++) {
+          greets[g2].style.display = '';
+        }
+        state.pendingRecap = null;
       }
+
+      var ta = document.querySelector('textarea');
+      if (ta) {
+        A.setNativeValue(ta, '');
+        ta.focus();
+      }
+
+      if (target.mode) {
+        setActiveMode(target.mode);
+      }
+
+      ensureReplyTools();
+      ensureChips();
+      this.renderSidebarChats();
+      if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
     },
 
     deleteSession: function (targetId) {
@@ -1229,9 +1364,222 @@
         } else {
           this.createSession();
         }
+      } else {
+        this.renderSidebarChats();
+        if (window.__aliceRefreshSessions) window.__aliceRefreshSessions();
       }
+    },
+
+    nextSession: function () {
+      var list = this.getSessions();
+      if (list.length < 2) return;
+      var curId = this.getActiveId();
+      var idx = list.findIndex(function (s) { return s.id === curId; });
+      var nextIdx = (idx + 1) % list.length;
+      this.switchSession(list[nextIdx].id);
+    },
+
+    prevSession: function () {
+      var list = this.getSessions();
+      if (list.length < 2) return;
+      var curId = this.getActiveId();
+      var idx = list.findIndex(function (s) { return s.id === curId; });
+      var prevIdx = (idx - 1 + list.length) % list.length;
+      this.switchSession(list[prevIdx].id);
+    },
+
+    renderSidebarChats: function (host) {
+      var root = host || sidebarChatsEl;
+      if (!root || !root.isConnected) return;
+
+      var sessions = this.getSessions();
+      var activeId = this.getActiveId();
+
+      root.innerHTML = '';
+
+      var head = document.createElement('div');
+      head.className = 'alice-enx-sidebar-chats-head';
+
+      var titleDiv = document.createElement('div');
+      titleDiv.className = 'alice-enx-sidebar-chats-title';
+      titleDiv.innerHTML = '<span>Active Chats</span><span class="alice-enx-sidebar-chats-badge">No Login</span>';
+
+      var newBtn = document.createElement('button');
+      newBtn.className = 'alice-enx-sidebar-new-btn';
+      newBtn.type = 'button';
+      newBtn.title = 'New chat (Cmd+N)';
+      newBtn.innerHTML = '+';
+      newBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        SessionManager.createSession();
+      });
+
+      head.appendChild(titleDiv);
+      head.appendChild(newBtn);
+      root.appendChild(head);
+
+      var listCont = document.createElement('div');
+      listCont.style.cssText = 'display:flex;flex-direction:column;';
+
+      sessions.forEach(function (s) {
+        var item = document.createElement('div');
+        item.className = 'alice-enx-sidebar-chat-item' + (s.id === activeId ? ' active' : '');
+        item.setAttribute('data-session-id', s.id);
+
+        var info = document.createElement('div');
+        info.className = 'alice-enx-sidebar-chat-info';
+
+        var name = document.createElement('div');
+        name.className = 'alice-enx-sidebar-chat-name';
+        name.textContent = s.title || 'Untitled Chat';
+
+        var sub = document.createElement('div');
+        sub.className = 'alice-enx-sidebar-chat-sub';
+        var count = s.messageCount || (s.messages ? s.messages.length : 0);
+        sub.textContent = count + ' msgs';
+
+        info.appendChild(name);
+        info.appendChild(sub);
+        item.appendChild(info);
+
+        var del = document.createElement('button');
+        del.className = 'alice-enx-sidebar-chat-del';
+        del.type = 'button';
+        del.title = 'Close chat';
+        del.innerHTML = '×';
+        del.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          SessionManager.deleteSession(s.id);
+        });
+        item.appendChild(del);
+
+        item.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          SessionManager.switchSession(s.id);
+        });
+
+        listCont.appendChild(item);
+      });
+
+      root.appendChild(listCont);
     }
   };
+  window.SessionManager = SessionManager;
+
+  function buildSessionContext(messages) {
+    if (!messages || !messages.length) return '';
+    var recent = messages.slice(-6);
+    var lines = [];
+    for (var i = 0; i < recent.length; i++) {
+      var m = recent[i];
+      var sender = m.role === 'user' ? 'User' : 'Alice';
+      var text = (m.text || '').replace(/\s+/g, ' ').trim();
+      if (text.length > 300) text = text.slice(0, 300) + '...';
+      lines.push(sender + ': ' + text);
+    }
+    return lines.join('\n');
+  }
+
+  function findMessagesContainer() {
+    var c = document.querySelector('.AliceChat-Messages, [class*="MessagesList"], [class*="Chat_messages"], [class*="ChatMessages"], .MessagesList');
+    if (c) return c;
+    var existingMsg = document.querySelector('.Message, [data-testid="alice-chat-message"]');
+    if (existingMsg && existingMsg.parentElement) return existingMsg.parentElement;
+    var ta = document.querySelector('textarea');
+    if (ta) {
+      var form = ta.closest('form, .StandaloneInput-Container, [class*="InputContainer"]') || ta.parentElement;
+      if (form && form.parentElement) {
+        var prev = form.previousElementSibling;
+        if (prev && prev.offsetHeight > 100) return prev;
+        return form.parentElement;
+      }
+    }
+    return document.querySelector('.AliceChat, [class*="Chat_root"], main');
+  }
+
+  var sidebarChatsEl = null;
+  function findSidebar() {
+    var candidates = document.querySelectorAll('aside, nav, [class*="Sidebar"], [class*="sidebar"], [class*="Navigation"], [class*="SidePanel"], [class*="Menu"]');
+    for (var i = 0; i < candidates.length; i++) {
+      var c = candidates[i];
+      var rect = c.getBoundingClientRect();
+      if (rect.left < 60 && rect.width >= 120 && rect.width <= 380 && rect.height >= 260) {
+        return c;
+      }
+    }
+    // Fallback: search for elements with "New chat", "Studio", "For studies", or "Settings"
+    var all = document.querySelectorAll('button, a, div[role="button"], span, p');
+    for (var j = 0; j < all.length; j++) {
+      var el = all[j];
+      var txt = (el.textContent || '').trim();
+      if (/^(New chat|Новый чат|Studio|Студия|For studies|Для учёбы)$/i.test(txt)) {
+        var cur = el.parentElement;
+        while (cur && cur !== document.body) {
+          var r = cur.getBoundingClientRect();
+          if (r.left < 60 && r.width >= 120 && r.width <= 380 && r.height >= 260) {
+            return cur;
+          }
+          cur = cur.parentElement;
+        }
+      }
+    }
+    return document.querySelector('aside, [class*="Sidebar"], [class*="sidebar"], [class*="SidePanel"]');
+  }
+
+  function ensureSidebarChats() {
+    var studyEl = null;
+    var allLinks = document.querySelectorAll('button, a, div[role="button"], [class*="Item"], [class*="item"]');
+    for (var i = 0; i < allLinks.length; i++) {
+      var txt = (allLinks[i].textContent || '').trim();
+      if (/^(For studies|Для учёбы)$/i.test(txt)) {
+        studyEl = allLinks[i];
+        break;
+      }
+    }
+
+    var host = null;
+    if (studyEl) {
+      var itemBlock = studyEl;
+      while (itemBlock.parentElement && itemBlock.parentElement.offsetHeight < 160 && itemBlock.parentElement !== document.body) {
+        itemBlock = itemBlock.parentElement;
+      }
+      if (itemBlock && itemBlock.parentElement) {
+        host = itemBlock.parentElement;
+      }
+    }
+
+    if (!host) {
+      host = findSidebar();
+    }
+    if (!host) return;
+
+    if (sidebarChatsEl && sidebarChatsEl.isConnected && host.contains(sidebarChatsEl)) {
+      SessionManager.renderSidebarChats();
+      return;
+    }
+
+    sidebarChatsEl = A.mark(document.createElement('div'));
+    sidebarChatsEl.className = 'alice-enx-sidebar-chats';
+
+    if (studyEl && host.contains(studyEl)) {
+      var ref = studyEl;
+      while (ref.parentElement && ref.parentElement !== host) {
+        ref = ref.parentElement;
+      }
+      if (ref.nextSibling) {
+        host.insertBefore(sidebarChatsEl, ref.nextSibling);
+      } else {
+        host.appendChild(sidebarChatsEl);
+      }
+    } else {
+      host.appendChild(sidebarChatsEl);
+    }
+
+    SessionManager.renderSidebarChats(sidebarChatsEl);
+  }
 
   function newChat() {
     SessionManager.createSession();
@@ -4792,6 +5140,21 @@
     return changed;
   }
   document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'n' && !e.shiftKey) {
+      e.preventDefault();
+      SessionManager.createSession();
+      return;
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === ']') {
+      e.preventDefault();
+      SessionManager.nextSession();
+      return;
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === '[') {
+      e.preventDefault();
+      SessionManager.prevSession();
+      return;
+    }
     if (e.key !== 'Enter' || e.shiftKey || e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
     var t = e.target;
     if (!t || !t.matches || !t.matches('textarea')) return;
@@ -4799,7 +5162,25 @@
     beforeSend(t);
   }, true);
   document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('button[aria-label="Отправить"],button[aria-label="Send"],[data-testid="oknyx"]') : null;
+    var target = e.target;
+    if (!target) return;
+
+    // Intercept native "New chat" button clicks to route to SessionManager without reload or login
+    var newChatBtn = target.closest('button[aria-label="Новый чат"], button[aria-label="New chat"], [data-testid="chat-list-new-chat-button"], [data-testid="new-chat-button"]');
+    if (!newChatBtn && target.closest('aside, nav, [class*="Sidebar"], [class*="sidebar"]')) {
+      var btnOrA = target.closest('button, a, [role="button"]');
+      if (btnOrA && /^(Новый чат|New chat)$/i.test(A.norm(btnOrA.textContent || ''))) {
+        newChatBtn = btnOrA;
+      }
+    }
+    if (newChatBtn && !newChatBtn.closest('[data-alice-enx]')) {
+      e.preventDefault();
+      e.stopPropagation();
+      SessionManager.createSession();
+      return;
+    }
+
+    var btn = target.closest ? target.closest('button[aria-label="Отправить"],button[aria-label="Send"],[data-testid="oknyx"]') : null;
     if (!btn) return;
     if (btn.getAttribute('aria-label') === 'Алиса, начни слушать' || (btn.textContent || '').indexOf('слушать') > -1) return;
     var ta = document.querySelector('textarea');
@@ -6118,15 +6499,18 @@
       ensureReplyTools();
       ensureChips();
       ensurePermissionsPill();
+      ensureSidebarChats();
       stashToPending();
       scanUpsells();
       scanNotices();
       RefusalInterceptor.checkAndHeal();
       checkAutoHarnessRun();
+      SessionManager.autoSaveActiveSession();
     }, 250);
   });
   function boot() {
     injectCSS();
+    SessionManager.init();
     HermesMemoryStore.init();
     LearningLedger.init();
     LearnedSkillsStore.init();
@@ -6135,8 +6519,8 @@
     buildModeBar();
     document.documentElement.classList.toggle('alice-enx-hide-upsell', !!S.hideUpsell);
     document.documentElement.classList.toggle('alice-enx-suggests-off', !!S.chips);
-    setTimeout(function () { ensureChips(); ensureReplyTools(); ensurePermissionsPill(); scanUpsells(); }, 600);
-    setTimeout(function () { ensureReplyTools(); ensurePermissionsPill(); }, 1200);
+    setTimeout(function () { ensureChips(); ensureReplyTools(); ensurePermissionsPill(); ensureSidebarChats(); scanUpsells(); }, 600);
+    setTimeout(function () { ensureReplyTools(); ensurePermissionsPill(); ensureSidebarChats(); }, 1200);
     mo2.observe(document.documentElement, { childList: true, subtree: true });
     stashToPending();
   }

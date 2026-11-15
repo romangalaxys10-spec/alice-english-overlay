@@ -31,6 +31,9 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         userContent.add(self, name: "aliceBridge")
 
         webView = WKWebView(frame: .zero, configuration: configuration)
+        if #available(macOS 13.3, *) {
+            webView.isInspectable = true
+        }
         webView.navigationDelegate = self
         webView.uiDelegate = self
         webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15"
@@ -130,11 +133,19 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     func newChat() {
-        webView.evaluateJavaScript("window.__aliceSetMode('newChat');") { [weak self] _, error in
+        webView.evaluateJavaScript("window.SessionManager ? window.SessionManager.createSession() : window.__aliceSetMode('newChat');") { [weak self] _, error in
             if error != nil {
                 self?.loadInitialPage()
             }
         }
+    }
+
+    func nextChat() {
+        webView.evaluateJavaScript("window.SessionManager && window.SessionManager.nextSession();", completionHandler: nil)
+    }
+
+    func prevChat() {
+        webView.evaluateJavaScript("window.SessionManager && window.SessionManager.prevSession();", completionHandler: nil)
     }
 
     func setMode(_ mode: String) {
@@ -206,7 +217,7 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
             }
         } else if type == "resetSession",
                   let reqId = body["id"] as? String {
-            self.resetAnonymousSession()
+            // Keep cookies intact to prevent Yandex login modals from popping up
             self.sendCallback(id: reqId, ok: true, data: ["status": "reset"], error: nil)
         }
     }

@@ -59,6 +59,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.addItem(fileMenuItem)
 
         fileMenu.addItem(withTitle: "New Chat", action: #selector(newChat), keyEquivalent: "n")
+        fileMenu.addItem(withTitle: "Next Chat", action: #selector(nextChat), keyEquivalent: "]")
+        fileMenu.addItem(withTitle: "Previous Chat", action: #selector(prevChat), keyEquivalent: "[")
         let resetSessionItem = NSMenuItem(title: "Reset Anonymous Session", action: #selector(resetAnonymousSession), keyEquivalent: "r")
         resetSessionItem.keyEquivalentModifierMask = [.command, .shift]
         fileMenu.addItem(resetSessionItem)
@@ -240,6 +242,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func newChat() {
         MainWindowController.shared.newChatClicked()
+    }
+
+    @objc private func nextChat() {
+        MainWindowController.shared.webViewController.nextChat()
+    }
+
+    @objc private func prevChat() {
+        MainWindowController.shared.webViewController.prevChat()
     }
 
     @objc private func resetAnonymousSession() {
