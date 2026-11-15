@@ -806,6 +806,18 @@
     '.alice-enx-skill-name{font:600 13px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;display:flex;align-items:center;gap:6px}',
     '.alice-enx-skill-desc{font:400 11.5px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin:6px 0 10px}',
     '.alice-enx-skill-btn{align-self:flex-start;padding:4px 10px;border-radius:6px;background:rgba(108,76,240,.2);border:1px solid rgba(108,76,240,.4);color:#c4b5fd;font:600 11px/1 inherit}',
+    /* Memory & Learning Tab (NousResearch/hermes-agent) */
+    '.alice-enx-memory-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;background:#12121c;flex:1}',
+    '.alice-enx-mem-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}',
+    '.alice-enx-mem-stat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:3px}',
+    '.alice-enx-mem-subtabs{display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:8px;overflow-x:auto}',
+    '.alice-enx-mem-subtab{background:transparent;border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:6px 12px;border-radius:7px;font:600 11.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap}',
+    '.alice-enx-mem-subtab:hover{background:rgba(255,255,255,.06);color:#fff}',
+    '.alice-enx-mem-subtab.active{background:rgba(108,76,240,.25);border-color:#6C4CF0;color:#fff}',
+    '.alice-enx-mem-editor{width:100%;min-height:180px;background:#0d0d15;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;font:400 12px/1.45 ui-monospace,Menlo,monospace;color:#cbd5e1;box-sizing:border-box;resize:vertical}',
+    '.alice-enx-mem-editor:focus{outline:none;border-color:#6C4CF0}',
+    '.alice-enx-ledger-card{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;transition:all .15s}',
+    '.alice-enx-ledger-card:hover{border-color:rgba(108,76,240,.4);background:rgba(108,76,240,.05)}',
     /* Git Sync Tab */
     '.alice-enx-git-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}',
     /* Sessions Tab */
@@ -2767,6 +2779,9 @@
       LoopManager.renderBoard();
       LoopManager.refreshProgressViewer();
     }
+    if (tab === 'memory') {
+      window.__aliceRenderMemoryPane && window.__aliceRenderMemoryPane();
+    }
   }
 
   function refreshGitStatus() {
@@ -2800,6 +2815,382 @@
   }
   window.__aliceTriggerVibeTask = triggerVibeTask;
 
+  /* ---------------- Hermes Curated Memory Store (NousResearch/hermes-agent) ---------------- */
+  var HermesMemoryStore = {
+    memoryPath: '.alice/memory/MEMORY.md',
+    userPath: '.alice/memory/USER.md',
+    memoryContent: '',
+    userContent: '',
+    activeSubTab: 'memory',
+
+    defaultUser: [
+      '# User Profile and Environment',
+      '- OS: macOS (Apple Silicon / Darwin arm64)',
+      '- Shell: zsh / bash',
+      '- System Tools: Homebrew, Python 3, Node.js, git, xcrun',
+      '- Primary Language: English',
+      '- Preference: Direct answers, modular scripts, verified terminal execution, zero-login bypass.'
+    ].join('\n'),
+
+    defaultMemory: [
+      '# Agent Working Memory and Architecture Notes',
+      '- Workspace: alice-english-overlay-extension',
+      '- Harness Service: Native AppKit IPC bridge routes through window.webkit.messageHandlers.aliceBridge',
+      '- Script Execution: Multi-language scripts stage via .alice_scratch.py, .alice_scratch.js, or .alice_scratch.sh',
+      '- Error Correction: Autonomous diagnostic engine catches runtime failures and triggers multi-attempt fixes',
+      '- Permissions: Local Permissions default to Turbo mode for non-blocking local developer workflow.',
+      '',
+      '## Learned Error Resolutions and Workarounds',
+      '- Homebrew Python (PEP 668): Use --break-system-packages or dedicated virtual environment.',
+      '- Permission Denied: Ensure script is executable (chmod +x) or write to user-writable directory.'
+    ].join('\n'),
+
+    init: function () {
+      this.load();
+    },
+
+    load: function (cb) {
+      var self = this;
+      var localMem = localStorage.getItem('alice_hermes_memory');
+      var localUsr = localStorage.getItem('alice_hermes_user');
+      self.memoryContent = localMem || self.defaultMemory;
+      self.userContent = localUsr || self.defaultUser;
+
+      if (window.__aliceReadFile) {
+        window.__aliceReadFile(self.memoryPath, function (res) {
+          if (res && res.ok && typeof res.data === 'string' && res.data.trim()) {
+            self.memoryContent = res.data;
+            try { localStorage.setItem('alice_hermes_memory', res.data); } catch (e) {}
+          } else {
+            if (window.__aliceWriteFile) {
+              window.__aliceWriteFile(self.memoryPath, self.memoryContent, function () {});
+            }
+          }
+          window.__aliceReadFile(self.userPath, function (res2) {
+            if (res2 && res2.ok && typeof res2.data === 'string' && res2.data.trim()) {
+              self.userContent = res2.data;
+              try { localStorage.setItem('alice_hermes_user', res2.data); } catch (e) {}
+            } else {
+              if (window.__aliceWriteFile) {
+                window.__aliceWriteFile(self.userPath, self.userContent, function () {});
+              }
+            }
+            if (cb) cb();
+          });
+        });
+      } else if (cb) {
+        cb();
+      }
+    },
+
+    saveMemory: function (content, cb) {
+      this.memoryContent = content;
+      try { localStorage.setItem('alice_hermes_memory', content); } catch (e) {}
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(this.memoryPath, content, function (res) {
+          if (cb) cb(res && res.ok);
+        });
+      } else if (cb) {
+        cb(true);
+      }
+    },
+
+    saveUser: function (content, cb) {
+      this.userContent = content;
+      try { localStorage.setItem('alice_hermes_user', content); } catch (e) {}
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(this.userPath, content, function (res) {
+          if (cb) cb(res && res.ok);
+        });
+      } else if (cb) {
+        cb(true);
+      }
+    },
+
+    recordLearnedFix: function (entry) {
+      if (!entry || !entry.summary) return;
+      var cat = entry.category || 'Runtime';
+      var summary = entry.summary.replace(/[\n\r]+/g, ' ').trim();
+      var sol = (entry.solution || 'Adjusted script logic').replace(/[\n\r]+/g, ' ').trim();
+      var line = '- Fix for ' + cat + ' (' + summary.slice(0, 80) + '): ' + sol.slice(0, 160);
+      if (this.memoryContent.indexOf(summary.slice(0, 30)) > -1) return;
+      if (this.memoryContent.indexOf('## Learned Error Resolutions') === -1) {
+        this.memoryContent += '\n\n## Learned Error Resolutions and Workarounds\n' + line;
+      } else {
+        this.memoryContent += '\n' + line;
+      }
+      this.saveMemory(this.memoryContent);
+    },
+
+    getPromptContext: function () {
+      var memExcerpt = (this.memoryContent || '').slice(0, 700).trim();
+      var usrExcerpt = (this.userContent || '').slice(0, 350).trim();
+      if (!memExcerpt && !usrExcerpt) return '';
+      return [
+        '[HERMES_MEMORY_CONTEXT]',
+        '# Curated Memory (MEMORY.md):',
+        memExcerpt,
+        '',
+        '# User Profile (USER.md):',
+        usrExcerpt,
+        '[/HERMES_MEMORY_CONTEXT]'
+      ].join('\n');
+    }
+  };
+
+  /* ---------------- Hermes Learning Ledger (NousResearch/hermes-agent) ---------------- */
+  var LearningLedger = {
+    ledgerPath: '.alice/learning/ledger.jsonl',
+    entries: [],
+
+    init: function () {
+      this.load();
+    },
+
+    load: function (cb) {
+      var self = this;
+      try {
+        var raw = localStorage.getItem('alice_learning_ledger');
+        if (raw) self.entries = JSON.parse(raw) || [];
+      } catch (e) {
+        self.entries = [];
+      }
+
+      if (window.__aliceReadFile) {
+        window.__aliceReadFile(self.ledgerPath, function (res) {
+          if (res && res.ok && res.data) {
+            var lines = res.data.split('\n');
+            var parsed = [];
+            for (var i = 0; i < lines.length; i++) {
+              var l = lines[i].trim();
+              if (l) {
+                try { parsed.push(JSON.parse(l)); } catch (err) {}
+              }
+            }
+            if (parsed.length) {
+              self.entries = parsed;
+              try { localStorage.setItem('alice_learning_ledger', JSON.stringify(parsed)); } catch (e) {}
+            }
+          }
+          if (cb) cb();
+        });
+      } else if (cb) {
+        cb();
+      }
+    },
+
+    record: function (item) {
+      if (!item) return;
+      var entry = {
+        id: 'fix_' + Date.now(),
+        timestamp: Date.now(),
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        command: (item.command || '').slice(0, 160),
+        scriptType: item.scriptType || 'bash',
+        errorCategory: item.errorCategory || 'Runtime Error',
+        errorType: item.errorType || 'Error',
+        errorSummary: (item.errorSummary || '').slice(0, 160),
+        solution: (item.solution || '').slice(0, 240),
+        attempts: item.attempts || 1,
+        verified: true
+      };
+      this.entries.unshift(entry);
+      if (this.entries.length > 50) this.entries = this.entries.slice(0, 50);
+      try { localStorage.setItem('alice_learning_ledger', JSON.stringify(this.entries)); } catch (e) {}
+
+      var line = JSON.stringify(entry) + '\n';
+      if (window.__aliceReadFile && window.__aliceWriteFile) {
+        var self = this;
+        window.__aliceReadFile(self.ledgerPath, function (res) {
+          var existing = (res && res.ok && res.data) || '';
+          window.__aliceWriteFile(self.ledgerPath, existing + line, function () {});
+        });
+      }
+    },
+
+    findMatchingFix: function (output, command) {
+      var out = output || '';
+      var cmd = command || '';
+      for (var i = 0; i < this.entries.length; i++) {
+        var e = this.entries[i];
+        if (e.errorType && out.indexOf(e.errorType) > -1) {
+          return e;
+        }
+        if (e.errorSummary && e.errorSummary.length > 6 && out.indexOf(e.errorSummary.slice(0, 36)) > -1) {
+          return e;
+        }
+        if (cmd && e.command && cmd.indexOf(e.command.slice(0, 24)) > -1) {
+          return e;
+        }
+      }
+      return null;
+    },
+
+    clear: function (cb) {
+      this.entries = [];
+      try { localStorage.removeItem('alice_learning_ledger'); } catch (e) {}
+      if (window.__aliceWriteFile) {
+        window.__aliceWriteFile(this.ledgerPath, '', function () {
+          if (cb) cb();
+        });
+      } else if (cb) {
+        cb();
+      }
+    }
+  };
+
+  /* ---------------- Learned Skills Store (.skills/<name>/SKILL.md) ---------------- */
+  var LearnedSkillsStore = {
+    skills: [
+      {
+        id: 'ast_sentinel',
+        name: 'AST Code Sentinel',
+        desc: 'AST vulnerability and cyclomatic complexity scanner.',
+        prompt: 'Act as an AST Code Sentinel. Review the codebase for vulnerabilities, anti-patterns, and complexity spikes.',
+        source: 'builtin'
+      },
+      {
+        id: 'dsh_superagent',
+        name: 'DeepSeek Superagent Harness',
+        desc: 'Autonomous coding loop: Plan, Test probe, Execute, and Heal.',
+        prompt: 'Act as DeepSeek Superagent. Break down this task into structured execution phases, run tests, and verify.',
+        source: 'builtin'
+      },
+      {
+        id: 'computer_use',
+        name: 'Computer Use and Desktop Actions',
+        desc: 'Inspect local directories, open files in Finder, run shell scripts.',
+        prompt: 'Use macOS desktop automation. Read files from the workspace, inspect output, and execute shell scripts.',
+        source: 'builtin'
+      },
+      {
+        id: 'adversarial_test',
+        name: 'Adversarial Test Writer',
+        desc: 'Generates boundary and edge-case tests before writing code.',
+        prompt: 'Write comprehensive adversarial test cases for boundary conditions, null inputs, and concurrency races.',
+        source: 'builtin'
+      },
+      {
+        id: 'macos_hardware_profiler',
+        name: 'Hardware and System Profiler',
+        desc: 'Inspects macOS hardware, CPU cores, RAM, and Apple Silicon chips.',
+        prompt: 'Query exact Mac hardware specifications (system_profiler SPHardwareDataType, RAM, CPU model) using terminal harness.',
+        source: 'builtin'
+      }
+    ],
+
+    init: function () {
+      try {
+        var saved = localStorage.getItem('alice_learned_skills');
+        if (saved) {
+          var parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length) {
+            for (var i = 0; i < parsed.length; i++) {
+              if (!this.skills.some(function (s) { return s.id === parsed[i].id; })) {
+                this.skills.push(parsed[i]);
+              }
+            }
+          }
+        }
+      } catch (e) {}
+    },
+
+    registerSkill: function (id, name, desc, content, prompt) {
+      if (!id) return;
+      var existing = this.skills.find(function (s) { return s.id === id; });
+      if (existing) {
+        existing.name = name || existing.name;
+        existing.desc = desc || existing.desc;
+        existing.content = content || existing.content;
+        existing.prompt = prompt || existing.prompt;
+      } else {
+        this.skills.push({
+          id: id,
+          name: name || id,
+          desc: desc || 'Learned reusable skill.',
+          content: content || '',
+          prompt: prompt || ('Execute learned skill: ' + id),
+          source: 'learned'
+        });
+      }
+      var custom = this.skills.filter(function (s) { return s.source === 'learned'; });
+      try { localStorage.setItem('alice_learned_skills', JSON.stringify(custom)); } catch (e) {}
+    },
+
+    registerFromFile: function (filePath, fileContent) {
+      var m = filePath.match(/\.skills\/([\w-]+)\/SKILL\.md/i);
+      if (!m) return;
+      var skillId = m[1];
+      var name = skillId;
+      var desc = 'Learned skill: ' + skillId;
+      var nameM = fileContent.match(/^name:\s*([^\n\r]+)/m);
+      if (nameM) name = nameM[1].trim();
+      var descM = fileContent.match(/^description:\s*([^\n\r]+)/m);
+      if (descM) desc = descM[1].trim().replace(/^["']|["']$/g, '');
+      var titleM = fileContent.match(/^#\s+([^\n\r]+)/m);
+      if (titleM) name = titleM[1].trim();
+
+      this.registerSkill(skillId, name, desc, fileContent, 'Use skill ' + skillId + ':\n' + fileContent.slice(0, 400));
+    }
+  };
+
+  /* ---------------- Hermes /learn & Dynamic Skill Engine (NousResearch/hermes-agent) ---------------- */
+  var HermesLearnEngine = {
+    buildLearnPrompt: function (userRequest) {
+      var req = (userRequest || '').trim();
+      if (!req) {
+        var msgs = document.querySelectorAll('.Message');
+        var convSnippet = '';
+        if (msgs.length) {
+          var recent = Array.prototype.slice.call(msgs, -4);
+          convSnippet = recent.map(function (m) {
+            var isUser = m.classList.contains('Message_from_user');
+            return (isUser ? 'User: ' : 'Alice: ') + (m.innerText || m.textContent || '').slice(0, 200);
+          }).join('\n');
+        }
+        req = 'the workflow we just went through in this conversation:\n' + (convSnippet || 'recent terminal executions, code fixes, and configuration steps') + '\nReview the steps taken and distill them into a reusable skill.';
+      }
+
+      return [
+        '[/learn] The user wants you to learn a reusable skill from the request below, and save it.',
+        '',
+        'THE REQUEST:',
+        req,
+        '',
+        'Follow the Hermes HARDLINE skill-authoring standards exactly:',
+        'Frontmatter:',
+        '- name: lowercase-hyphenated, <=64 chars, no spaces.',
+        '- description: ONE sentence, <=60 chars, ends with a period. State capability, not implementation.',
+        '- version: 0.1.0',
+        '- author: Alice',
+        '- platforms: [macos]',
+        '- tags: Reusable, Automation, Harness',
+        '',
+        'Body section order:',
+        '1. # <Human Title> then a 2-3 sentence intro: what it does, what it does NOT do.',
+        '2. ## When to Use, bullet list of concrete trigger phrases.',
+        '3. ## Prerequisites, exact env vars, install steps, credentials.',
+        '4. ## How to Run, canonical invocation through the harness.',
+        '5. ## Quick Reference, flat command or endpoint list, no narration.',
+        '6. ## Procedure, numbered steps with copy-paste-exact commands.',
+        '7. ## Pitfalls, known limits, things that look broken but are not.',
+        '8. ## Verification, a single command or check that proves the skill worked.',
+        '',
+        'Output the final skill in a single ```file:.skills/<name>/SKILL.md code block.'
+      ].join('\n');
+    },
+
+    executeLearn: function (userRequest) {
+      var prompt = this.buildLearnPrompt(userRequest);
+      sendAliceMessage(prompt);
+      logTerm('info', '[HermesLearn] Distillation requested: ' + (userRequest || 'current session workflow'));
+    }
+  };
+  window.HermesMemoryStore = HermesMemoryStore;
+  window.LearningLedger = LearningLedger;
+  window.LearnedSkillsStore = LearnedSkillsStore;
+  window.HermesLearnEngine = HermesLearnEngine;
+
   function buildWorkbench() {
     if (workbenchEl && workbenchEl.isConnected) return;
     workbenchEl = document.createElement('div');
@@ -2815,6 +3206,7 @@
     var tabDefs = [
       ['loop', '🔁 Loop Studio', 'loop'],
       ['terminal', '>_ Terminal', 'terminal'],
+      ['memory', '🧠 Memory & Learning', 'brain'],
       ['sessions', '💬 Sessions', 'chat'],
       ['vibe', '⚡ Vibe Coder & Harness', 'code'],
       ['skills', '🛠 Agent Skills', 'spark'],
@@ -3127,32 +3519,7 @@
     skillsPane.setAttribute('data-wb-pane', 'skills');
     skillsPane.style.display = activeWbTab === 'skills' ? 'flex' : 'none';
 
-    var skillsList = [
-      {
-        id: 'ast_sentinel',
-        name: '🛡 Code Sentinel & AST Auditor',
-        desc: 'Audit code for security vulnerabilities, memory leaks, and anti-patterns with automated diff patches.',
-        prompt: 'Act as an AST Code Sentinel. Review the codebase for vulnerabilities, anti-patterns, and complexity spikes.'
-      },
-      {
-        id: 'dsh_superagent',
-        name: '🤖 DeepSeek Superagent Harness',
-        desc: 'Autonomous coding loop: Plan → Write test probe → Execute in terminal → Verify and self-heal.',
-        prompt: 'Act as DeepSeek Superagent. Break down this task into structured execution phases, run tests, and verify.'
-      },
-      {
-        id: 'computer_use',
-        name: '🖥 Computer Use & Desktop Actions',
-        desc: 'Inspect local directories, open files in Finder/browser, run shell scripts, and capture screenshots.',
-        prompt: 'Use macOS desktop automation. Read files from the workspace, inspect output, and execute shell scripts.'
-      },
-      {
-        id: 'adversarial_test',
-        name: '⚔️ Adversarial Test Writer',
-        desc: 'Generates stringent boundary and edge-case tests before writing implementation to prevent regressions.',
-        prompt: 'Write comprehensive adversarial test cases for boundary conditions, null inputs, and concurrency races.'
-      }
-    ];
+    var skillsList = LearnedSkillsStore.skills;
 
     skillsList.forEach(function (sk) {
       var sc = document.createElement('div');
@@ -3177,6 +3544,314 @@
       skillsPane.appendChild(sc);
     });
     body.appendChild(skillsPane);
+
+    // 3.5 Memory & Learning Pane (NousResearch/hermes-agent)
+    var memoryPane = document.createElement('div');
+    memoryPane.className = 'alice-enx-memory-pane';
+    memoryPane.setAttribute('data-wb-pane', 'memory');
+    memoryPane.style.display = activeWbTab === 'memory' ? 'flex' : 'none';
+
+    function renderMemoryPane() {
+      memoryPane.innerHTML = '';
+
+      var statsRow = document.createElement('div');
+      statsRow.className = 'alice-enx-mem-stats';
+
+      var s1 = document.createElement('div');
+      s1.className = 'alice-enx-mem-stat-card';
+      s1.innerHTML = '<span style="font-size:10.5px;color:#94a3b8">Agent Memory</span><span style="font-size:13px;font-weight:700;color:#c4b5fd">MEMORY.md (' + (HermesMemoryStore.memoryContent || '').length + ' chars)</span>';
+      statsRow.appendChild(s1);
+
+      var s2 = document.createElement('div');
+      s2.className = 'alice-enx-mem-stat-card';
+      s2.innerHTML = '<span style="font-size:10.5px;color:#94a3b8">User Profile</span><span style="font-size:13px;font-weight:700;color:#86efac">USER.md (' + (HermesMemoryStore.userContent || '').length + ' chars)</span>';
+      statsRow.appendChild(s2);
+
+      var s3 = document.createElement('div');
+      s3.className = 'alice-enx-mem-stat-card';
+      s3.innerHTML = '<span style="font-size:10.5px;color:#94a3b8">Learning Ledger</span><span style="font-size:13px;font-weight:700;color:#fef08a">' + LearningLedger.entries.length + ' verified lessons</span>';
+      statsRow.appendChild(s3);
+
+      var s4 = document.createElement('div');
+      s4.className = 'alice-enx-mem-stat-card';
+      s4.innerHTML = '<span style="font-size:10.5px;color:#94a3b8">Active Skills</span><span style="font-size:13px;font-weight:700;color:#93c5fd">' + LearnedSkillsStore.skills.length + ' available</span>';
+      statsRow.appendChild(s4);
+
+      memoryPane.appendChild(statsRow);
+
+      var subtabsRow = document.createElement('div');
+      subtabsRow.className = 'alice-enx-mem-subtabs';
+
+      var subtabs = [
+        ['memory', 'Agent Memory (MEMORY.md)'],
+        ['user', 'User Profile (USER.md)'],
+        ['ledger', 'Learning Ledger (' + LearningLedger.entries.length + ')'],
+        ['learn', 'Distill Skill (/learn)']
+      ];
+
+      subtabs.forEach(function (st) {
+        var btn = document.createElement('button');
+        btn.className = 'alice-enx-mem-subtab' + (HermesMemoryStore.activeSubTab === st[0] ? ' active' : '');
+        btn.textContent = st[1];
+        btn.addEventListener('click', function () {
+          HermesMemoryStore.activeSubTab = st[0];
+          renderMemoryPane();
+        });
+        subtabsRow.appendChild(btn);
+      });
+      memoryPane.appendChild(subtabsRow);
+
+      var viewCont = document.createElement('div');
+      viewCont.style.cssText = 'display:flex;flex-direction:column;gap:10px;flex:1;min-height:0';
+
+      if (HermesMemoryStore.activeSubTab === 'memory') {
+        var mDesc = document.createElement('div');
+        mDesc.style.cssText = 'font-size:11.5px;color:#94a3b8;line-height:1.4';
+        mDesc.textContent = 'Agent notes, workspace architecture, and automatically recorded error resolutions from self-correction.';
+        viewCont.appendChild(mDesc);
+
+        var ta = document.createElement('textarea');
+        ta.className = 'alice-enx-mem-editor';
+        ta.value = HermesMemoryStore.memoryContent;
+        viewCont.appendChild(ta);
+
+        var actRow = document.createElement('div');
+        actRow.style.cssText = 'display:flex;gap:8px;align-items:center';
+
+        var saveBtn = document.createElement('button');
+        saveBtn.className = 'alice-enx-btn-primary';
+        saveBtn.textContent = '💾 Save MEMORY.md';
+        saveBtn.addEventListener('click', function () {
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Saving...';
+          HermesMemoryStore.saveMemory(ta.value, function () {
+            saveBtn.disabled = false;
+            saveBtn.textContent = '✓ Saved MEMORY.md';
+            setTimeout(function () { saveBtn.textContent = '💾 Save MEMORY.md'; }, 2000);
+            renderMemoryPane();
+          });
+        });
+        actRow.appendChild(saveBtn);
+
+        var pruneBtn = document.createElement('button');
+        pruneBtn.className = 'alice-enx-wb-btn';
+        pruneBtn.textContent = '🧹 Prune Duplicates';
+        pruneBtn.addEventListener('click', function () {
+          var lines = ta.value.split('\n');
+          var seen = {};
+          var dedup = [];
+          for (var i = 0; i < lines.length; i++) {
+            var l = lines[i];
+            if (l.trim().indexOf('- Fix for') === 0 && seen[l.trim()]) continue;
+            if (l.trim()) seen[l.trim()] = true;
+            dedup.push(l);
+          }
+          ta.value = dedup.join('\n');
+          HermesMemoryStore.saveMemory(ta.value, function () {
+            renderMemoryPane();
+          });
+        });
+        actRow.appendChild(pruneBtn);
+
+        var reloadBtn = document.createElement('button');
+        reloadBtn.className = 'alice-enx-wb-btn';
+        reloadBtn.textContent = '🔄 Reload from Disk';
+        reloadBtn.addEventListener('click', function () {
+          HermesMemoryStore.load(function () {
+            renderMemoryPane();
+          });
+        });
+        actRow.appendChild(reloadBtn);
+
+        viewCont.appendChild(actRow);
+      } else if (HermesMemoryStore.activeSubTab === 'user') {
+        var uDesc = document.createElement('div');
+        uDesc.style.cssText = 'font-size:11.5px;color:#94a3b8;line-height:1.4';
+        uDesc.textContent = 'User profile, machine hardware specs, and environment context injected into Alice prompt context.';
+        viewCont.appendChild(uDesc);
+
+        var uTa = document.createElement('textarea');
+        uTa.className = 'alice-enx-mem-editor';
+        uTa.value = HermesMemoryStore.userContent;
+        viewCont.appendChild(uTa);
+
+        var uActRow = document.createElement('div');
+        uActRow.style.cssText = 'display:flex;gap:8px;align-items:center';
+
+        var uSaveBtn = document.createElement('button');
+        uSaveBtn.className = 'alice-enx-btn-primary';
+        uSaveBtn.textContent = '💾 Save USER.md';
+        uSaveBtn.addEventListener('click', function () {
+          uSaveBtn.disabled = true;
+          uSaveBtn.textContent = 'Saving...';
+          HermesMemoryStore.saveUser(uTa.value, function () {
+            uSaveBtn.disabled = false;
+            uSaveBtn.textContent = '✓ Saved USER.md';
+            setTimeout(function () { uSaveBtn.textContent = '💾 Save USER.md'; }, 2000);
+            renderMemoryPane();
+          });
+        });
+        uActRow.appendChild(uSaveBtn);
+
+        var detectBtn = document.createElement('button');
+        detectBtn.className = 'alice-enx-wb-btn';
+        detectBtn.textContent = '⚡ Auto-Detect Mac Specs';
+        detectBtn.addEventListener('click', function () {
+          detectBtn.disabled = true;
+          detectBtn.textContent = 'Detecting...';
+          runTerminalCommand('sysctl -n machdep.cpu.brand_string 2>/dev/null || uname -m; system_profiler SPHardwareDataType 2>/dev/null | grep -E "Model Name|Processor|Total Number of Cores|Memory:"', function (ok, out) {
+            detectBtn.disabled = false;
+            detectBtn.textContent = '⚡ Auto-Detect Mac Specs';
+            if (ok && out) {
+              var specs = out.trim();
+              var lines = [
+                '# User Profile and Environment',
+                '- OS: macOS (Darwin ' + (navigator.platform || 'arm64') + ')',
+                '- Shell: zsh / bash',
+                '- Hardware Specs:\n  ' + specs.split('\n').join('\n  '),
+                '- Primary Language: English',
+                '- Preference: Direct answers, modular scripts, verified terminal execution, zero-login bypass.'
+              ].join('\n');
+              uTa.value = lines;
+              HermesMemoryStore.saveUser(lines, function () {
+                renderMemoryPane();
+              });
+            }
+          });
+        });
+        uActRow.appendChild(detectBtn);
+
+        viewCont.appendChild(uActRow);
+      } else if (HermesMemoryStore.activeSubTab === 'ledger') {
+        var lHead = document.createElement('div');
+        lHead.style.cssText = 'display:flex;justify-content:space-between;align-items:center';
+        lHead.innerHTML = '<span style="font-size:12px;font-weight:600;color:#fef08a">Self-Learning Ledger (.alice/learning/ledger.jsonl)</span>';
+
+        var clearBtn = document.createElement('button');
+        clearBtn.className = 'alice-enx-wb-btn';
+        clearBtn.style.cssText = 'padding:3px 8px;font-size:11px;color:#fca5a5';
+        clearBtn.textContent = '🗑 Clear Ledger';
+        clearBtn.addEventListener('click', function () {
+          if (confirm('Clear all learned self-correction entries?')) {
+            LearningLedger.clear(function () {
+              renderMemoryPane();
+            });
+          }
+        });
+        lHead.appendChild(clearBtn);
+        viewCont.appendChild(lHead);
+
+        var listCont = document.createElement('div');
+        listCont.style.cssText = 'overflow-y:auto;display:flex;flex-direction:column;gap:8px;flex:1';
+
+        if (!LearningLedger.entries.length) {
+          var empty = document.createElement('div');
+          empty.style.cssText = 'padding:20px;text-align:center;color:#94a3b8;font-size:12px';
+          empty.textContent = 'No learned lessons recorded yet. As self-corrections succeed, lessons are automatically logged here.';
+          listCont.appendChild(empty);
+        } else {
+          LearningLedger.entries.forEach(function (e) {
+            var card = document.createElement('div');
+            card.className = 'alice-enx-ledger-card';
+            card.innerHTML =
+              '<div style="display:flex;align-items:center;justify-content:space-between">' +
+                '<span style="font:700 11px/1 inherit;color:#fef08a;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);padding:2px 6px;border-radius:4px">' + escapeHtml(e.errorCategory) + '</span>' +
+                '<span style="font-size:10.5px;color:#86efac;background:rgba(34,197,94,.12);padding:2px 6px;border-radius:4px">✓ Solved in ' + e.attempts + ' attempt' + (e.attempts > 1 ? 's' : '') + '</span>' +
+                '<span style="font-size:10px;color:#64748b">' + escapeHtml(e.date || '') + '</span>' +
+              '</div>' +
+              '<div style="font:400 11px ui-monospace,Menlo,monospace;color:#93c5fd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">$ ' + escapeHtml(e.command || '') + '</div>' +
+              '<div style="font-size:11.5px;color:#f1f5f9;background:rgba(0,0,0,.3);padding:6px 8px;border-radius:6px;border-left:3px solid #22c55e">💡 <b>Verified Fix:</b> ' + escapeHtml(e.solution || '') + '</div>';
+            listCont.appendChild(card);
+          });
+        }
+        viewCont.appendChild(listCont);
+      } else if (HermesMemoryStore.activeSubTab === 'learn') {
+        var lHero = document.createElement('div');
+        lHero.style.cssText = 'background:linear-gradient(135deg,rgba(108,76,240,.2),rgba(59,130,246,.15));border:1px solid rgba(108,76,240,.3);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px';
+        lHero.innerHTML =
+          '<div style="font:700 13px inherit;color:#fff">Distill Reusable Skill (/learn)</div>' +
+          '<div style="font-size:11.5px;color:#a5a5bb">Author standard Hermes SKILL.md packages to .skills/<name>/SKILL.md from conversations, terminal workflows, or documentation.</div>';
+
+        var inRow = document.createElement('div');
+        inRow.style.cssText = 'display:flex;gap:8px;align-items:center';
+
+        var learnInput = document.createElement('input');
+        learnInput.className = 'alice-enx-input';
+        learnInput.placeholder = 'Enter skill topic, or leave blank to distill what we just did...';
+        inRow.appendChild(learnInput);
+
+        var doLearnBtn = document.createElement('button');
+        doLearnBtn.className = 'alice-enx-btn-primary';
+        doLearnBtn.textContent = '🧠 Distill Skill';
+        doLearnBtn.addEventListener('click', function () {
+          var val = (learnInput.value || '').trim();
+          HermesLearnEngine.executeLearn(val);
+          learnInput.value = '';
+          switchWorkbenchTab('terminal');
+        });
+        inRow.appendChild(doLearnBtn);
+
+        lHero.appendChild(inRow);
+        viewCont.appendChild(lHero);
+
+        var skillsHead = document.createElement('div');
+        skillsHead.style.cssText = 'font:700 12px inherit;color:#c4b5fd;margin-top:4px';
+        skillsHead.textContent = 'Available Skills (' + LearnedSkillsStore.skills.length + ')';
+        viewCont.appendChild(skillsHead);
+
+        var sGrid = document.createElement('div');
+        sGrid.className = 'alice-enx-skills-grid';
+        sGrid.style.cssText = 'padding:0;gap:8px';
+
+        LearnedSkillsStore.skills.forEach(function (sk) {
+          var card = document.createElement('div');
+          card.className = 'alice-enx-skill-card';
+          var top = document.createElement('div');
+          var nameRow = document.createElement('div');
+          nameRow.className = 'alice-enx-skill-name';
+          nameRow.innerHTML = escapeHtml(sk.name) + (sk.source === 'learned' ? ' <span style="font-size:9.5px;color:#86efac;background:rgba(34,197,94,.15);padding:1px 5px;border-radius:3px">Learned</span>' : '');
+          var descRow = document.createElement('div');
+          descRow.className = 'alice-enx-skill-desc';
+          descRow.textContent = sk.desc;
+          top.appendChild(nameRow);
+          top.appendChild(descRow);
+          card.appendChild(top);
+
+          var btnRow = document.createElement('div');
+          btnRow.style.cssText = 'display:flex;gap:6px;align-items:center';
+
+          var actBtn = document.createElement('button');
+          actBtn.className = 'alice-enx-skill-btn';
+          actBtn.textContent = 'Activate Skill';
+          actBtn.addEventListener('click', function () {
+            triggerVibeTask(sk.prompt);
+          });
+          btnRow.appendChild(actBtn);
+
+          if (sk.content) {
+            var viewBtn = document.createElement('button');
+            viewBtn.className = 'alice-enx-wb-btn';
+            viewBtn.style.padding = '3px 8px';
+            viewBtn.textContent = 'View';
+            viewBtn.addEventListener('click', function () {
+              alert(sk.content);
+            });
+            btnRow.appendChild(viewBtn);
+          }
+
+          card.appendChild(btnRow);
+          sGrid.appendChild(card);
+        });
+
+        viewCont.appendChild(sGrid);
+      }
+
+      memoryPane.appendChild(viewCont);
+    }
+
+    renderMemoryPane();
+    window.__aliceRenderMemoryPane = renderMemoryPane;
+    body.appendChild(memoryPane);
 
     // 4. Git Sync Pane
     var gitPane = document.createElement('div');
@@ -3725,6 +4400,7 @@
     if (pMode === 'turbo') permBtn.classList.add('alice-enx-active');
     modeBar.appendChild(permBtn);
     modeBar.appendChild(pill('loop', 'Loop', 'loop', function () { openLoopModal(); }, 'Autonomous Loop Agent Studio'));
+    modeBar.appendChild(pill('memory', 'Memory', 'brain', function () { toggleWorkbench('memory'); }, 'Persistent curated memory and self-learning ledger'));
     modeBar.appendChild(pill('sessions', 'Sessions', 'chat', function () { toggleWorkbench('sessions'); }, 'Switch or create anonymous chat sessions'));
     modeBar.appendChild(pill('brainstorm', 'Brainstorm', 'users', function () { openBrainstormModal(); }, 'Autonomous brainstorm and role-play studio'));
     modeBar.appendChild(pill('draw', 'Draw', 'palette', function () { toolMode('draw'); }, 'Image generation mode'));
@@ -4023,6 +4699,18 @@
       ta.value = '';
       return false;
     }
+    if (/^\/learn\b/i.test(v)) {
+      var learnMatch = v.match(/^\/learn\s*(.*)/i);
+      var learnArg = learnMatch ? learnMatch[1].trim() : '';
+      HermesLearnEngine.executeLearn(learnArg);
+      ta.value = '';
+      return false;
+    }
+    if (/^\/memory\b/i.test(v)) {
+      toggleWorkbench('memory');
+      ta.value = '';
+      return false;
+    }
     if (/^\/(ram|specs|sysinfo)\b/i.test(v)) {
       v = 'Query my Mac hardware specifications (RAM, CPU cores, machine model, macOS version) using your autonomous terminal harness.';
     } else if (/^\/sh\s+(.+)/i.test(v)) {
@@ -4050,6 +4738,10 @@
     var isObservation = v.indexOf('[Harness Tool Observation') > -1 || v.indexOf('[Harness Tool Error') > -1 || v.indexOf('[Harness Self-Correction') > -1;
     if (S.vibeCoding && !toolBlocksInjection() && !isObservation && v.indexOf('```bash') === -1) {
       parts.push('When providing shell commands or file modifications, format them in standard ```bash or ```file:path/to/file code blocks.');
+    }
+    var memContext = HermesMemoryStore.getPromptContext();
+    if (memContext && !isObservation && v.indexOf('[HERMES_MEMORY_CONTEXT]') === -1) {
+      parts.push(memContext);
     }
     if (S.customInstructions && typeof S.customInstructions === 'string' && S.customInstructions.trim()) {
       var ci = S.customInstructions.trim();
@@ -4088,6 +4780,7 @@
   /* ---------------- prompt chips ---------------- */
   var STARTERS = [
     ['🔁 Autonomous loop agent', 'Launch an autonomous multi-step loop for coding, research, QA, or design.'],
+    ['🧠 Distill reusable skill', '/learn distill the workflow and commands into a reusable SKILL.md package'],
     ['⚡ Check Mac specs', 'Check my exact Mac hardware specs (RAM, CPU, model, macOS) using your terminal harness.'],
     ['🛠 Run code & test', 'Create a small Python script to benchmark CPU arithmetic and run it with your harness.'],
     ['Explain something simply', 'Explain how neural networks learn, in simple words'],
@@ -4372,6 +5065,18 @@
   /* ---------------- Hermes Diagnostic & Self-Correction Engine (NousResearch/hermes-agent) ---------------- */
   var HermesEngine = {
     diagnose: function (command, exitCode, output, scriptType) {
+      var diag = this._performDiagnosis(command, exitCode, output, scriptType);
+      if (exitCode !== 0 && diag && diag.category !== 'Success') {
+        var prior = LearningLedger.findMatchingFix(output || '', command || '');
+        if (prior && prior.solution) {
+          diag.priorFix = prior.solution;
+          diag.fix = '💡 Learned Strategy from Ledger: ' + prior.solution + ' (Default: ' + diag.fix + ')';
+        }
+      }
+      return diag;
+    },
+
+    _performDiagnosis: function (command, exitCode, output, scriptType) {
       if (exitCode === 0) {
         return { category: 'Success', type: 'CleanExit', summary: 'Process exited with code 0', fix: 'No fix needed.' };
       }
@@ -4865,6 +5570,28 @@
         'Please present the final factual results to the user and confirm task completion.';
       sendAliceMessage(obsText);
       logTerm('stdout', '[SelfCorrection] Succeeded on attempt ' + attemptNum + ' for: ' + cmd);
+
+      // Record learned lesson into Hermes Learning Ledger and Curated Memory
+      if (this.state.history && this.state.history.length > 0) {
+        var firstFail = this.state.history[0];
+        LearningLedger.record({
+          command: cmd || this.state.originalCmd,
+          scriptType: this.state.scriptType,
+          errorCategory: (firstFail.diag && firstFail.diag.category) || 'Runtime Error',
+          errorType: (firstFail.diag && firstFail.diag.type) || 'Error',
+          errorSummary: (firstFail.diag && firstFail.diag.summary) || '',
+          solution: (firstFail.diag && firstFail.diag.fix) || 'Adjusted script logic',
+          attempts: attemptNum,
+          verified: true
+        });
+        HermesMemoryStore.recordLearnedFix({
+          category: (firstFail.diag && firstFail.diag.category) || 'Runtime',
+          summary: (firstFail.diag && firstFail.diag.summary) || '',
+          command: cmd || this.state.originalCmd,
+          solution: (firstFail.diag && firstFail.diag.fix) || 'Adjusted script logic'
+        });
+      }
+
       this.reset();
     },
 
@@ -4916,13 +5643,16 @@
           }).join('\n') + '\n';
       }
 
-      return '[Harness Self-Correction Loop — Attempt ' + this.state.attempt + ' of ' + this.maxAttempts + ']:\n' +
+      var priorLine = diag.priorFix ? ('• Past Verified Fix (from Ledger): ' + diag.priorFix + '\n') : '';
+
+      return '[Harness Self-Correction Loop: Attempt ' + this.state.attempt + ' of ' + this.maxAttempts + ']:\n' +
         '🚨 Execution failed with exit code ' + code + '.\n' +
         'Failed Target: `' + (cmd || this.state.filePath) + '`\n\n' +
         'Root Cause Diagnosis:\n' +
         '• Category: ' + diag.category + '\n' +
         '• Issue: ' + diag.summary + '\n' +
         '• Resolution Strategy: ' + diag.fix + '\n' +
+        priorLine +
         historyLines + '\n' +
         'Raw Error Output:\n```\n' + outText.slice(-1500) + '\n```\n\n' +
         'Self-Correction Directive:\n' +
@@ -5066,6 +5796,9 @@
           if (autoHarnessHalted) return;
           if (res.ok) {
             logTerm('stdout', '[FileSystem] Created file: ' + filePath + ' (' + fileContent.length + ' bytes)');
+            if (/\.skills\/[\w-]+\/SKILL\.md/i.test(filePath)) {
+              LearnedSkillsStore.registerFromFile(filePath, fileContent);
+            }
             card.className = 'alice-enx-auto-harness-card success';
             card.innerHTML =
               '<div class="alice-enx-auto-harness-hdr">' +
@@ -5238,6 +5971,9 @@
   });
   function boot() {
     injectCSS();
+    HermesMemoryStore.init();
+    LearningLedger.init();
+    LearnedSkillsStore.init();
     A.startObserver();
     A.translateDocument();
     buildModeBar();

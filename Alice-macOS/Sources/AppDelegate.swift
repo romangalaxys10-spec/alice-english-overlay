@@ -129,6 +129,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         skillsItem.keyEquivalentModifierMask = [.command, .control]
         harnessMenu.addItem(skillsItem)
 
+        let memoryItem = NSMenuItem(title: "Open Memory & Learning", action: #selector(openMemoryTab), keyEquivalent: "m")
+        memoryItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(memoryItem)
+
+        let learnItem = NSMenuItem(title: "Distill Reusable Skill (/learn)...", action: #selector(distillSkillAction), keyEquivalent: "k")
+        learnItem.keyEquivalentModifierMask = [.command, .shift]
+        harnessMenu.addItem(learnItem)
+
         let gitItem = NSMenuItem(title: "GitHub Real-Time Sync", action: #selector(openGitSyncTab), keyEquivalent: "g")
         gitItem.keyEquivalentModifierMask = [.command, .control]
         harnessMenu.addItem(gitItem)
@@ -288,6 +296,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openSkillsTab() {
         MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('skills');", completionHandler: nil)
+    }
+
+    @objc private func openMemoryTab() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('memory');", completionHandler: nil)
+    }
+
+    @objc private func distillSkillAction() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('memory'); setTimeout(function(){ if (window.HermesMemoryStore) HermesMemoryStore.activeSubTab = 'learn'; if (window.__aliceRenderMemoryPane) window.__aliceRenderMemoryPane(); }, 100);", completionHandler: nil)
     }
 
     @objc private func openGitSyncTab() {
