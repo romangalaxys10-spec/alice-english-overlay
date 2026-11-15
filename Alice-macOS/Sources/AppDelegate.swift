@@ -137,6 +137,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         testItem.keyEquivalentModifierMask = [.command, .control]
         harnessMenu.addItem(testItem)
 
+        let permItem = NSMenuItem(title: "Toggle Local Permissions Menu", action: #selector(togglePermissionsMenuAction), keyEquivalent: "p")
+        permItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(permItem)
+
         harnessMenu.addItem(NSMenuItem.separator())
         let finderItem = NSMenuItem(title: "Open Workspace in Finder", action: #selector(openWorkspaceFinder), keyEquivalent: "o")
         finderItem.keyEquivalentModifierMask = [.command, .control]
@@ -292,6 +296,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func dispatchCodeQuery() {
         MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceTriggerVibeTask && window.__aliceTriggerVibeTask('Show a short bash code snippet to check disk space');", completionHandler: nil)
+    }
+
+    @objc private func togglePermissionsMenuAction() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("""
+        (function() {
+            var pill = document.querySelector('.alice-enx-perm-pill') || document.querySelector('.alice-enx-perm-btn');
+            if (pill) {
+                pill.click();
+            } else if (window.__aliceTogglePermissionsMenu) {
+                window.__aliceTogglePermissionsMenu();
+            }
+        })();
+        """, completionHandler: nil)
     }
 
     @objc private func openWorkspaceFinder() {

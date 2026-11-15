@@ -68,7 +68,8 @@
     modeBar: true,
     autoFallback: true,
     vibeCoding: true,
-    harnessAutoRun: true
+    harnessAutoRun: true,
+    localPermissions: 'turbo'
   };
   var settings = Object.assign({}, DEFAULTS);
   var listeners = [];
@@ -832,7 +833,37 @@
     '.alice-enx-code-btn-save:active{transform:translateY(1px)}',
     /* Auto-fallback Toast */
     '.alice-enx-fallback-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:2147483600;background:rgba(30,24,10,.95);border:1px solid rgba(245,158,11,.4);color:#fef3c7;padding:8px 16px;border-radius:999px;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:aliceEnxSlideDown .25s ease-out}',
-    '@keyframes aliceEnxSlideDown{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}'
+    '@keyframes aliceEnxSlideDown{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}',
+    /* Local Permissions Popover & Pill */
+    '.alice-enx-perm-pill{height:28px;padding:0 10px;border-radius:999px;background:rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.12);color:#0f172a;font:600 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none;transition:all .15s ease;vertical-align:middle;box-sizing:border-box;margin-right:6px}',
+    '.alice-enx-perm-pill:hover{background:rgba(0,0,0,.12);border-color:rgba(0,0,0,.22)}',
+    '@media (prefers-color-scheme: dark){.alice-enx-perm-pill{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#f1f5f9}.alice-enx-perm-pill:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.26)}}',
+    '[data-theme="dark"] .alice-enx-perm-pill, .dark .alice-enx-perm-pill, [class*="Dark"] .alice-enx-perm-pill{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#f1f5f9}',
+    '.alice-enx-perm-pill-icon{font-size:12px;line-height:1}',
+    '.alice-enx-perm-pill-label{font-weight:600;font-size:12px}',
+    '.alice-enx-perm-pill-caret{font-size:10px;opacity:.7;margin-left:2px}',
+    '.alice-enx-perm-menu{position:fixed;z-index:2147483600;background:#181822;border:1px solid rgba(255,255,255,.15);border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.6),0 4px 12px rgba(0,0,0,.35);padding:8px 6px;min-width:270px;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;animation:alicePermFadeIn .15s ease-out}',
+    '@keyframes alicePermFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}',
+    '.alice-enx-perm-header{padding:6px 12px 8px;font-size:11.5px;font-weight:600;color:#94a3b8;letter-spacing:.2px}',
+    '.alice-enx-perm-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .15s ease}',
+    '.alice-enx-perm-item:hover{background:rgba(255,255,255,.07)}',
+    '.alice-enx-perm-item.active{background:rgba(108,76,240,.18)}',
+    '.alice-enx-perm-icon{font-size:14px;line-height:1.3;width:18px;text-align:center;flex-shrink:0}',
+    '.alice-enx-perm-text{flex:1}',
+    '.alice-enx-perm-title-row{display:flex;align-items:center;gap:6px}',
+    '.alice-enx-perm-title{font-size:13px;font-weight:600;color:#fff}',
+    '.alice-enx-perm-tag{font-size:10px;font-weight:600;color:#94a3b8;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px}',
+    '.alice-enx-perm-desc{font-size:11px;color:#94a3b8;margin-top:2px;line-height:1.3}',
+    '.alice-enx-perm-check{font-size:13px;font-weight:700;color:#c4b5fd;margin-left:6px;align-self:center}',
+    /* Approval Card */
+    '.alice-enx-auto-harness-card.approval-needed{border-color:rgba(167,139,250,.5);background:linear-gradient(180deg,#1d1a2e,#131220)}',
+    '.alice-enx-approval-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}',
+    '.alice-enx-btn-approve{background:#15803d;color:#fff;border:1px solid rgba(74,222,128,.4);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
+    '.alice-enx-btn-approve:hover{background:#16a34a}',
+    '.alice-enx-btn-reject{background:#7f1d1d;color:#fca5a5;border:1px solid rgba(239,68,68,.4);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
+    '.alice-enx-btn-reject:hover{background:#991b1b}',
+    '.alice-enx-btn-turbo-switch{background:linear-gradient(135deg,#6C4CF0,#8B5CF6);color:#fff;border:1px solid rgba(167,139,250,.5);border-radius:6px;padding:5px 12px;font:600 12px/1.2 inherit;cursor:pointer;transition:all .15s}',
+    '.alice-enx-btn-turbo-switch:hover{background:linear-gradient(135deg,#5b3ce0,#7c3aed)}'
   ].join('');
 
   function injectCSS() {
@@ -841,6 +872,67 @@
     st.textContent = CSS;
     (document.head || document.documentElement).appendChild(st);
   }
+
+  /* ---------------- Local Permissions & Execution Modes (Antigravity / ZCode) ---------------- */
+  var PERM_MODES = {
+    review: {
+      id: 'review',
+      icon: '👁',
+      name: 'Request Review',
+      desc: 'Every command requires approval.',
+      badge: 'Review'
+    },
+    default: {
+      id: 'default',
+      icon: '🔒',
+      name: 'Default',
+      desc: 'Ask before sensitive operations.',
+      badge: 'Default'
+    },
+    auto: {
+      id: 'auto',
+      icon: '🛡',
+      name: 'Auto',
+      desc: 'Automatically decide if commands run.',
+      badge: 'Auto'
+    },
+    turbo: {
+      id: 'turbo',
+      icon: '⚡',
+      name: 'Turbo',
+      desc: 'Run all commands without restrictions.',
+      badge: 'Turbo',
+      isDefault: true
+    }
+  };
+
+  function getPermissionsMode() {
+    return (S && S.localPermissions) || (A && A.settings && A.settings.localPermissions) || 'turbo';
+  }
+
+  function setPermissionsMode(mode) {
+    if (!PERM_MODES[mode]) mode = 'turbo';
+    A.applySettings({ localPermissions: mode });
+    updatePermissionsPill();
+    closePermissionsMenu();
+    refreshPills();
+  }
+
+  function isSensitiveCommand(cmd) {
+    if (!cmd) return false;
+    var c = cmd.trim();
+    if (/\b(?:sudo|dd|mkfs)\b/i.test(c)) return true;
+    if (/\brm\s+(?:-[a-zA-Z]*r[a-zA-Z]*f?|-[a-zA-Z]*f[a-zA-Z]*r?|--recursive)\b/i.test(c)) return true;
+    if (/\bchmod\s+(?:-R\s+)?(?:777|000)\b/i.test(c)) return true;
+    if (/\bchown\s+-R\b/i.test(c)) return true;
+    if (/\bgit\s+(?:reset\s+--hard|clean\s+-[a-zA-Z]*f|push\s+-[a-zA-Z]*f|push\s+--force)\b/i.test(c)) return true;
+    if (/\b(?:killall|pkill)\b/i.test(c) && !/node|python|alice/i.test(c)) return true;
+    if (/(?:>|>>)\s*(?:\/etc\/|\/var\/|\/System\/|\/Library\/|~?\/\.ssh\/)/i.test(c)) return true;
+    return false;
+  }
+
+  var permissionsPillEl = null;
+  var permissionsMenuEl = null;
 
   /* ---------------- icons ---------------- */
   function svg(paths, vb) {
@@ -1175,6 +1267,13 @@
       var p = pillEls[id];
       if (p) p.btn.classList[isActiveMode(id) ? 'add' : 'remove']('alice-enx-active');
     });
+    if (pillEls['perm']) {
+      var pMode = getPermissionsMode ? getPermissionsMode() : 'turbo';
+      var pInfo = (typeof PERM_MODES !== 'undefined' && PERM_MODES[pMode]) ? PERM_MODES[pMode] : { badge: 'Turbo' };
+      var span = pillEls['perm'].btn.querySelector('span:not(.alice-enx-pill-icon)');
+      if (span) span.textContent = pInfo.badge;
+      pillEls['perm'].btn.classList.toggle('alice-enx-active', pMode === 'turbo');
+    }
   }
   setInterval(refreshPills, 900);
 
@@ -3503,18 +3602,13 @@
     modeBar.appendChild(pill('expert', 'Expert', 'brain', function () { switchIntelligence('expert'); }, 'Expert intelligence (deeper reasoning)'));
     modeBar.appendChild(pill('code', 'Code', 'code', function () { toggleWorkbench('vibe'); }, 'ZCode and DeepSeek vibe coding harness'));
     modeBar.appendChild(pill('terminal', 'Terminal', 'terminal', function () { toggleWorkbench('terminal'); }, 'In-app local terminal'));
-    var agentBtn = pill('agent', S.harnessAutoRun ? 'Agent: ON' : 'Agent: OFF', 'spark', function () {
-      var nextVal = !S.harnessAutoRun;
-      A.applySettings({ harnessAutoRun: nextVal });
-      agentBtn.innerHTML = '';
-      agentBtn.appendChild(svg(ICONS.spark));
-      var t = document.createElement('span');
-      t.textContent = nextVal ? 'Agent: ON' : 'Agent: OFF';
-      agentBtn.appendChild(t);
-      agentBtn.classList.toggle('alice-enx-active', nextVal);
-    }, 'Toggle autonomous computer and terminal agent loop');
-    if (S.harnessAutoRun) agentBtn.classList.add('alice-enx-active');
-    modeBar.appendChild(agentBtn);
+    var pMode = getPermissionsMode();
+    var pInfo = PERM_MODES[pMode] || PERM_MODES.turbo;
+    var permBtn = pill('perm', pInfo.badge, 'spark', function (btn) {
+      togglePermissionsMenu(btn);
+    }, 'Local Permissions: Turbo, Auto, Default, or Request Review');
+    if (pMode === 'turbo') permBtn.classList.add('alice-enx-active');
+    modeBar.appendChild(permBtn);
     modeBar.appendChild(pill('loop', 'Loop', 'loop', function () { openLoopModal(); }, 'Autonomous Loop Agent Studio'));
     modeBar.appendChild(pill('sessions', 'Sessions', 'chat', function () { toggleWorkbench('sessions'); }, 'Switch or create anonymous chat sessions'));
     modeBar.appendChild(pill('brainstorm', 'Brainstorm', 'users', function () { openBrainstormModal(); }, 'Autonomous brainstorm and role-play studio'));
@@ -4215,13 +4309,246 @@
     }
   };
 
+
+
+  function closePermissionsMenu() {
+    if (permissionsMenuEl && permissionsMenuEl.isConnected) {
+      permissionsMenuEl.remove();
+      permissionsMenuEl = null;
+    }
+  }
+
+  function togglePermissionsMenu(anchorEl) {
+    if (permissionsMenuEl && permissionsMenuEl.isConnected) {
+      closePermissionsMenu();
+      return;
+    }
+    openPermissionsMenu(anchorEl);
+  }
+
+  function openPermissionsMenu(anchorEl) {
+    closePermissionsMenu();
+    var current = getPermissionsMode();
+
+    var menu = document.createElement('div');
+    menu.className = 'alice-enx-perm-menu';
+    menu.setAttribute('data-alice-enx', '1');
+
+    var hdr = document.createElement('div');
+    hdr.className = 'alice-enx-perm-header';
+    hdr.textContent = 'Local Permissions';
+    menu.appendChild(hdr);
+
+    var list = ['review', 'default', 'auto', 'turbo'];
+    list.forEach(function (mKey) {
+      var item = PERM_MODES[mKey];
+      var row = document.createElement('div');
+      row.className = 'alice-enx-perm-item' + (current === mKey ? ' active' : '');
+
+      var iconSpan = document.createElement('span');
+      iconSpan.className = 'alice-enx-perm-icon';
+      iconSpan.textContent = item.icon;
+      row.appendChild(iconSpan);
+
+      var textCol = document.createElement('div');
+      textCol.className = 'alice-enx-perm-text';
+
+      var titleRow = document.createElement('div');
+      titleRow.className = 'alice-enx-perm-title-row';
+
+      var titleSpan = document.createElement('span');
+      titleSpan.className = 'alice-enx-perm-title';
+      titleSpan.textContent = item.name;
+      titleRow.appendChild(titleSpan);
+
+      if (item.isDefault) {
+        var defBadge = document.createElement('span');
+        defBadge.className = 'alice-enx-perm-tag';
+        defBadge.innerHTML = 'Default <span style="font-size:10px;opacity:.8">ⓘ</span>';
+        titleRow.appendChild(defBadge);
+      }
+      textCol.appendChild(titleRow);
+
+      var descSpan = document.createElement('div');
+      descSpan.className = 'alice-enx-perm-desc';
+      descSpan.textContent = item.desc;
+      textCol.appendChild(descSpan);
+
+      row.appendChild(textCol);
+
+      if (current === mKey) {
+        var checkSpan = document.createElement('span');
+        checkSpan.className = 'alice-enx-perm-check';
+        checkSpan.textContent = '✓';
+        row.appendChild(checkSpan);
+      }
+
+      row.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setPermissionsMode(mKey);
+      });
+
+      menu.appendChild(row);
+    });
+
+    document.body.appendChild(menu);
+    permissionsMenuEl = menu;
+
+    if (anchorEl && anchorEl.getBoundingClientRect) {
+      var rect = anchorEl.getBoundingClientRect();
+      menu.style.bottom = Math.max(10, Math.round(window.innerHeight - rect.top + 8)) + 'px';
+      var menuWidth = 280;
+      var left = rect.left;
+      if (left + menuWidth > window.innerWidth - 16) {
+        left = Math.max(16, rect.right - menuWidth);
+      }
+      menu.style.left = Math.round(left) + 'px';
+    } else {
+      menu.style.bottom = '80px';
+      menu.style.right = '40px';
+    }
+
+    setTimeout(function () {
+      function onDocClick(e) {
+        if (!menu.contains(e.target) && e.target !== anchorEl && (!anchorEl || !anchorEl.contains(e.target))) {
+          closePermissionsMenu();
+          document.removeEventListener('click', onDocClick);
+        }
+      }
+      document.addEventListener('click', onDocClick);
+    }, 10);
+  }
+
+  function updatePermissionsPill() {
+    if (!permissionsPillEl) return;
+    var mode = getPermissionsMode();
+    var info = PERM_MODES[mode] || PERM_MODES.turbo;
+    permissionsPillEl.innerHTML =
+      '<span class="alice-enx-perm-pill-icon">' + info.icon + '</span>' +
+      '<span class="alice-enx-perm-pill-label">' + info.badge + '</span>' +
+      '<span class="alice-enx-perm-pill-caret">⌃</span>';
+    permissionsPillEl.setAttribute('title', 'Local Permissions: ' + info.name + ' (' + info.desc + ')');
+  }
+
+  function ensurePermissionsPill() {
+    if (permissionsPillEl && permissionsPillEl.isConnected) return;
+    var micBtn = document.querySelector('[data-testid="button-dictation-button"]');
+    var sendBtn = document.querySelector('button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"]');
+    var target = micBtn || sendBtn;
+    if (!target || !target.parentNode) return;
+
+    var pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'alice-enx-perm-pill';
+    pill.setAttribute('data-alice-enx', '1');
+    permissionsPillEl = pill;
+    updatePermissionsPill();
+
+    pill.addEventListener('click', function (e) {
+      e.stopPropagation();
+      togglePermissionsMenu(pill);
+    });
+
+    target.parentNode.insertBefore(pill, target);
+  }
+
+  window.__aliceOpenPermissionsMenu = function () {
+    var pill = document.querySelector('.alice-enx-perm-pill') || document.querySelector('.alice-enx-perm-btn');
+    openPermissionsMenu(pill);
+  };
+  window.__aliceTogglePermissionsMenu = function () {
+    var pill = document.querySelector('.alice-enx-perm-pill') || document.querySelector('.alice-enx-perm-btn');
+    togglePermissionsMenu(pill);
+  };
+
   /* ---------------- Autonomous Harness Agent Loop ---------------- */
   var autoHarnessTurnCount = 0;
   var autoHarnessFailCount = 0;
   var autoHarnessHalted = false;
 
+  function renderApprovalCard(cmd, isFile, filePath, fileContent, targetPre, msgRoot, reason) {
+    msgRoot.setAttribute('data-harness-auto-ran', '1');
+
+    var card = document.createElement('div');
+    card.className = 'alice-enx-auto-harness-card approval-needed';
+    card.setAttribute('data-alice-enx', '1');
+    card.innerHTML =
+      '<div class="alice-enx-auto-harness-hdr">' +
+        '<span class="alice-enx-perm-pill-icon">🛡</span>' +
+        '<span class="alice-enx-auto-harness-lbl">Approval Required: ' + escapeHtml(reason) + '</span>' +
+      '</div>' +
+      '<div class="alice-enx-auto-harness-cmd"><code>$ ' + escapeHtml(cmd ? cmd.slice(0, 160) : ('write ' + filePath)) + '</code></div>' +
+      '<div class="alice-enx-approval-actions">' +
+        '<button class="alice-enx-btn-approve" type="button">✓ Approve and Run</button>' +
+        '<button class="alice-enx-btn-reject" type="button">✕ Reject</button>' +
+        '<button class="alice-enx-btn-turbo-switch" type="button">⚡ Switch to Turbo (Always Run)</button>' +
+      '</div>';
+
+    var approveBtn = card.querySelector('.alice-enx-btn-approve');
+    var rejectBtn = card.querySelector('.alice-enx-btn-reject');
+    var turboBtn = card.querySelector('.alice-enx-btn-turbo-switch');
+
+    approveBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      card.remove();
+      proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot);
+    });
+
+    rejectBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      card.className = 'alice-enx-auto-harness-card stopped';
+      card.innerHTML =
+        '<div class="alice-enx-auto-harness-hdr">' +
+          '<span class="alice-enx-err-icon">✕</span>' +
+          '<span class="alice-enx-auto-harness-lbl">Command Execution Rejected by User</span>' +
+        '</div>';
+      sendAliceMessage('[Harness User Decision]: User declined execution of command: `' + (cmd || filePath) + '`. Please propose an alternative approach or ask the user how they wish to proceed.');
+    });
+
+    turboBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setPermissionsMode('turbo');
+      card.remove();
+      proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot);
+    });
+
+    if (targetPre && targetPre.parentNode) {
+      targetPre.parentNode.insertBefore(card, targetPre.nextSibling);
+    } else {
+      msgRoot.appendChild(card);
+    }
+  }
+
   function executeAutoTool(cmd, isFile, filePath, fileContent, targetPre, msgRoot) {
-    if (autoHarnessHalted || autoHarnessTurnCount >= 8) return;
+    if (autoHarnessHalted || autoHarnessTurnCount >= 12) return;
+
+    var mode = getPermissionsMode();
+
+    var needsApproval = false;
+    var reason = '';
+    if (mode === 'review') {
+      needsApproval = true;
+      reason = 'Request Review Mode: Every command requires approval.';
+    } else if (mode === 'default' || mode === 'auto') {
+      if (!isFile && isSensitiveCommand(cmd)) {
+        needsApproval = true;
+        reason = 'Sensitive operation detected: ' + (cmd.match(/\b(sudo|rm|dd|chmod|git reset|git clean)\w*/i) || ['Command'])[0];
+      } else if (isFile && (/^\/(?:etc|System|Library|usr)/i.test(filePath) || /\.ssh\b/i.test(filePath))) {
+        needsApproval = true;
+        reason = 'Sensitive file write target: ' + filePath;
+      }
+    }
+
+    if (needsApproval) {
+      renderApprovalCard(cmd, isFile, filePath, fileContent, targetPre, msgRoot, reason);
+      return;
+    }
+
+    proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot);
+  }
+
+  function proceedWithAutoExecution(cmd, isFile, filePath, fileContent, targetPre, msgRoot) {
+    if (autoHarnessHalted || autoHarnessTurnCount >= 12) return;
     autoHarnessTurnCount++;
     msgRoot.setAttribute('data-harness-auto-ran', '1');
 
@@ -4259,6 +4586,7 @@
           var elapsed = Date.now() - startTime;
           if (autoHarnessHalted) return;
           if (res.ok) {
+            logTerm('stdout', '[FileSystem] Created file: ' + filePath + ' (' + fileContent.length + ' bytes)');
             card.className = 'alice-enx-auto-harness-card success';
             card.innerHTML =
               '<div class="alice-enx-auto-harness-hdr">' +
@@ -4267,6 +4595,7 @@
               '</div>';
             sendAliceMessage('[Harness Tool Observation (File System)]:\nSuccessfully created and wrote file: `' + filePath + '`.\nPlease continue with the next step or confirm completion to the user.');
           } else {
+            logTerm('err', '[FileSystem] Write failed: ' + filePath + ': ' + (res.error || 'Unknown error'));
             card.className = 'alice-enx-auto-harness-card error';
             card.innerHTML =
               '<div class="alice-enx-auto-harness-hdr">' +
@@ -4310,7 +4639,7 @@
           sendAliceMessage(maskMsg);
           return;
         }
-        var obsText = '[Harness Tool Observation for: `' + cmd + '` (exit code 0)]:\n```\n' + (outText || '(no output, process completed successfully)') + '\n```\nPlease synthesize the final factual answer for the user based on this live output.';
+        var obsText = '[Harness Tool Observation for: `' + cmd + '` (exit code 0)]:\n```\n' + (outText || '(no output, process completed successfully)') + '\n```\nPlease synthesize the final factual answer or proceed with the next task step.';
         sendAliceMessage(obsText);
       } else {
         autoHarnessFailCount++;
@@ -4368,6 +4697,7 @@
       mo2Timer = null;
       ensureReplyTools();
       ensureChips();
+      ensurePermissionsPill();
       stashToPending();
       scanUpsells();
       scanNotices();
@@ -4381,8 +4711,8 @@
     buildModeBar();
     document.documentElement.classList.toggle('alice-enx-hide-upsell', !!S.hideUpsell);
     document.documentElement.classList.toggle('alice-enx-suggests-off', !!S.chips);
-    setTimeout(function () { ensureChips(); ensureReplyTools(); scanUpsells(); }, 600);
-    setTimeout(function () { ensureReplyTools(); }, 1200);
+    setTimeout(function () { ensureChips(); ensureReplyTools(); ensurePermissionsPill(); scanUpsells(); }, 600);
+    setTimeout(function () { ensureReplyTools(); ensurePermissionsPill(); }, 1200);
     mo2.observe(document.documentElement, { childList: true, subtree: true });
     stashToPending();
   }
