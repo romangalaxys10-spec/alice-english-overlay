@@ -1,7 +1,7 @@
 import Cocoa
 import WebKit
 
-final class MainWindowController: NSWindowController {
+final class MainWindowController: NSWindowController, NSWindowDelegate {
     static let shared = MainWindowController()
 
     let webViewController = WebViewController()
@@ -20,7 +20,8 @@ final class MainWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        window.minSize = NSSize(width: 580, height: 500)
+        window.minSize = NSSize(width: 480, height: 400)
+        window.collectionBehavior = [.fullScreenPrimary]
         window.title = "Alice AI"
         window.titleVisibility = .visible
         window.setFrameAutosaveName("AliceMainWindowFrame_v4")
@@ -28,13 +29,18 @@ final class MainWindowController: NSWindowController {
 
         super.init(window: window)
 
+        window.delegate = self
         window.contentViewController = webViewController
+    }
+
+    func windowDidResize(_ notification: Notification) {
+        webViewController.webView?.evaluateJavaScript("window.__aliceOnWindowResize ? window.__aliceOnWindowResize() : null;") { _, _ in }
     }
 
     func ensureOptimalSize() {
         guard let window = self.window, let screen = window.screen ?? NSScreen.main else { return }
         let visible = screen.visibleFrame
-        if window.frame.width < 960 || window.frame.height < 720 {
+        if window.frame.width < 480 || window.frame.height < 400 || !visible.intersects(window.frame) {
             let targetW = min(1200, max(1060, visible.width * 0.78))
             let targetH = min(840, max(760, visible.height * 0.84))
             let targetRect = NSRect(

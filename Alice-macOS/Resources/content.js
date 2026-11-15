@@ -563,9 +563,9 @@
   var CSS = [
     '.alice-enx-root{all:initial}',
     '*[data-alice-enx]{font-family:-apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;box-sizing:border-box}',
-    '.alice-enx-modebar{position:fixed;z-index:200;display:flex;align-items:center;gap:2px;padding:5px;border-radius:999px;',
-      'background:rgba(255,255,255,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);',
-      'border:1px solid rgba(20,20,30,.09);box-shadow:0 10px 30px rgba(10,10,30,.13);max-width:min(94vw,700px);overflow-x:auto;scrollbar-width:none;box-sizing:border-box}',
+    '.alice-enx-modebar{position:fixed;z-index:200;display:flex;align-items:center;gap:2px;padding:4px 6px;border-radius:999px;',
+      'background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);',
+      'border:1px solid rgba(20,20,30,.09);box-shadow:0 10px 30px rgba(10,10,30,.13);max-width:calc(100vw - 24px);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;box-sizing:border-box}',
     'iframe[src*="passport.yandex"], [class*="PassportModal"], [class*="LoginModal"], .AuthPopup {display:none !important;pointer-events:none !important;visibility:hidden !important}',
     '.alice-enx-cmd-result{margin:6px 0 10px;padding:8px 12px;background:#0d0d14;border:1px solid rgba(74,222,128,.35);border-radius:8px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
     '.alice-enx-auto-harness-card{margin:8px 0 12px;padding:10px 14px;border-radius:10px;background:#13131c;border:1px solid rgba(108,76,240,.35);font-family:ui-monospace,Menlo,monospace;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:all .2s}',
@@ -625,15 +625,33 @@
       '.alice-enx-pill{color:#c9c9d2}.alice-enx-pill:hover{background:rgba(139,109,255,.14);color:#e8e8ee}',
       '.alice-enx-pill.alice-enx-active{background:rgba(139,109,255,.20);color:#c0b2ff}',
       '.alice-enx-sep{background:rgba(255,255,255,.14)}.alice-enx-gear{color:#8f8f9c}}',
-    '@media (max-width:680px){',
-      '.alice-enx-modebar{padding:3px 5px;gap:1px;max-width:96vw}',
+    '@media (max-width:860px){',
+      '.alice-enx-modebar{padding:3px 5px;gap:2px}',
       '.alice-enx-pill{padding:5px 8px;font-size:11.5px;gap:3px}',
-      '.alice-enx-pill svg{width:12px;height:12px}',
+      '.alice-enx-pill svg{width:13px;height:13px}',
+      '.alice-enx-pill[data-alice-enx-pill="brainstorm"] span,',
+      '.alice-enx-pill[data-alice-enx-pill="deals"] span,',
+      '.alice-enx-pill[data-alice-enx-pill="math"] span,',
+      '.alice-enx-pill[data-alice-enx-pill="draw"] span{display:none}',
     '}',
-    '@media (max-width:490px){',
-      '.alice-enx-pill span{display:none}',
-      '.alice-enx-pill{padding:6px 9px}',
+    '@media (max-width:680px){',
+      '.alice-enx-modebar{padding:3px 4px;gap:1px;max-width:calc(100vw - 16px)}',
+      '.alice-enx-pill{padding:4px 7px;font-size:11px;gap:2px}',
+      '.alice-enx-pill[data-alice-enx-pill="sessions"] span,',
+      '.alice-enx-pill[data-alice-enx-pill="memory"] span{display:none}',
       '.alice-enx-sep{display:none}',
+    '}',
+    '@media (max-width:540px){',
+      '.alice-enx-pill span{display:none}',
+      '.alice-enx-pill{padding:5px 8px}',
+      '.alice-enx-sep{display:none}',
+    '}',
+    '@media (max-width:600px){',
+      '.alice-enx-loop-hud{padding:8px 10px;margin:8px auto 10px;width:calc(100% - 16px)}',
+      '.alice-enx-loop-hud-top{flex-wrap:wrap;gap:6px}',
+      '.alice-enx-loop-hud-title{min-width:120px;font-size:12px}',
+      '.alice-enx-loop-controls{margin-left:auto}',
+      '.alice-enx-loop-ctrl-btn{padding:2px 7px;font-size:10.5px}',
     '}',
     /* Collapsible prompt starters */
     '.alice-enx-chips-wrapper{max-width:720px;width:100%;margin:10px auto 18px;padding:0 12px;box-sizing:border-box;transition:all .2s ease}',
@@ -778,8 +796,9 @@
       '.alice-enx-panel .alice-enx-foot{color:#888898}',
     '}',
     /* in-app terminal & harness workbench */
-    '.alice-enx-workbench{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1100px,98vw);height:370px;background:rgba(18,18,26,.97);border-radius:18px 18px 0 0;box-shadow:0 -16px 48px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);border-bottom:none;z-index:2147483400;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#eee;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .2s ease,height .2s ease}',
-    '.alice-enx-workbench.minimized{height:46px}',
+    '.alice-enx-workbench{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1100px,calc(100vw - 16px));height:min(370px,46vh);background:rgba(18,18,26,.97);border-radius:16px 16px 0 0;box-shadow:0 -16px 48px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);border-bottom:none;z-index:2147483400;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#eee;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .2s ease,height .2s ease}',
+    '.alice-enx-workbench.minimized{height:42px}',
+    '.alice-enx-workbench-open .AliceChat-Messages, .alice-enx-workbench-open [class*="MessagesList"]{padding-bottom:min(400px,50vh) !important}',
     '.alice-enx-workbench svg{width:14px;height:14px;display:inline-block;vertical-align:middle;flex-shrink:0}',
     '.alice-enx-wb-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(26,26,38,.9);border-bottom:1px solid rgba(255,255,255,.1);border-radius:18px 18px 0 0;user-select:none}',
     '.alice-enx-wb-tabs{display:flex;align-items:center;gap:6px}',
@@ -843,7 +862,7 @@
     '.alice-enx-session-actions{display:flex;align-items:center;gap:6px}',
     /* Code block action buttons and badges */
     '.alice-enx-code-actions{display:inline-flex;align-items:center;gap:6px;margin:0 8px 0 0;vertical-align:middle}',
-    '.alice-enx-code-actions-floating{position:absolute;top:8px;right:8px;z-index:10}',
+    '.alice-enx-code-actions-floating{position:absolute;top:6px;left:70px;z-index:10}',
     '.alice-enx-code-btn{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:6px;font:600 11.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s ease;user-select:none;box-sizing:border-box;text-decoration:none}',
     '.alice-enx-code-btn-icon{font-size:10px;line-height:1}',
     '.alice-enx-code-btn-run{background:#181824;color:#f1f5f9;border:1px solid rgba(255,255,255,.18);box-shadow:0 1px 3px rgba(0,0,0,.3)}',
@@ -1567,7 +1586,16 @@
     if (!host) {
       host = findSidebar();
     }
-    if (!host) return;
+    if (!host) {
+      if (sidebarChatsEl) sidebarChatsEl.style.display = 'none';
+      return;
+    }
+    var hRect = host.getBoundingClientRect();
+    if (hRect.width < 100 || hRect.height < 180) {
+      if (sidebarChatsEl) sidebarChatsEl.style.display = 'none';
+      return;
+    }
+    if (sidebarChatsEl) sidebarChatsEl.style.display = '';
 
     if (sidebarChatsEl && sidebarChatsEl.isConnected && host.contains(sidebarChatsEl)) {
       SessionManager.renderSidebarChats();
@@ -3126,11 +3154,19 @@
     if (!workbenchEl || !workbenchEl.isConnected) {
       buildWorkbench();
     }
+    if (!initialTab && !workbenchEl.classList.contains('alice-enx-hidden') && !workbenchEl.classList.contains('minimized')) {
+      workbenchEl.classList.add('alice-enx-hidden');
+      document.documentElement.classList.remove('alice-enx-workbench-open');
+      placeBar();
+      return;
+    }
     if (initialTab) {
       switchWorkbenchTab(initialTab);
     }
     workbenchEl.classList.remove('alice-enx-hidden');
     workbenchEl.classList.remove('minimized');
+    document.documentElement.classList.add('alice-enx-workbench-open');
+    placeBar();
     if (activeWbTab === 'terminal') {
       setTimeout(function () {
         var inp = document.getElementById('alice-enx-term-input');
@@ -3651,6 +3687,9 @@
     minBtn.title = 'Minimize';
     minBtn.addEventListener('click', function () {
       workbenchEl.classList.toggle('minimized');
+      var isMin = workbenchEl.classList.contains('minimized');
+      document.documentElement.classList.toggle('alice-enx-workbench-open', !isMin);
+      placeBar();
     });
     tools.appendChild(minBtn);
 
@@ -3660,6 +3699,8 @@
     closeBtn.title = 'Close Workbench';
     closeBtn.addEventListener('click', function () {
       workbenchEl.classList.add('alice-enx-hidden');
+      document.documentElement.classList.remove('alice-enx-workbench-open');
+      placeBar();
     });
     tools.appendChild(closeBtn);
 
@@ -4844,8 +4885,31 @@
     if (!r || r.width === 0 || r.top < 40) { modeBar.style.display = 'none'; return; }
     modeBar.style.display = 'inline-flex';
 
-    var centerX = Math.round(r.left + r.width / 2);
-    modeBar.style.left = centerX + 'px';
+    // Safe horizontal bounds relative to sidebar and screen margins
+    var safeLeft = 12;
+    var sidebar = findSidebar();
+    if (sidebar && sidebar.offsetWidth > 60) {
+      var sRect = sidebar.getBoundingClientRect();
+      if (sRect.right > 0 && sRect.right < window.innerWidth * 0.45) {
+        safeLeft = Math.max(12, Math.round(sRect.right + 12));
+      }
+    }
+    var safeRight = Math.round(window.innerWidth - 12);
+    var maxAvailable = Math.max(240, safeRight - safeLeft);
+    modeBar.style.maxWidth = maxAvailable + 'px';
+
+    var targetCenterX = Math.round(r.left + r.width / 2);
+    var barW = modeBar.offsetWidth || 500;
+    var halfW = barW / 2;
+
+    if (targetCenterX - halfW < safeLeft) {
+      targetCenterX = Math.round(safeLeft + halfW);
+    }
+    if (targetCenterX + halfW > safeRight) {
+      targetCenterX = Math.round(safeRight - halfW);
+    }
+
+    modeBar.style.left = targetCenterX + 'px';
     modeBar.style.transform = 'translateX(-50%)';
 
     var ta = document.querySelector('textarea');
@@ -4856,16 +4920,33 @@
         inputTop = Math.max(r.top, taRect.top - 18);
       }
     }
-    var bottom = Math.max(10, Math.round(window.innerHeight - inputTop + 8));
+
+    var normalBottom = Math.max(10, Math.round(window.innerHeight - inputTop + 8));
+
+    // Dynamic adjustment when workbench is open
+    var wbHeight = 0;
+    if (workbenchEl && workbenchEl.isConnected && !workbenchEl.classList.contains('alice-enx-hidden')) {
+      if (!workbenchEl.classList.contains('minimized')) {
+        wbHeight = workbenchEl.offsetHeight || Math.round(window.innerHeight * 0.45);
+      } else {
+        wbHeight = 44;
+      }
+    }
+    var bottom = wbHeight > 0 ? Math.max(normalBottom, wbHeight + 10) : normalBottom;
     modeBar.style.bottom = bottom + 'px';
 
     if (ctxBar && ctxBar.isConnected) {
-      ctxBar.style.left = centerX + 'px';
+      ctxBar.style.left = targetCenterX + 'px';
       ctxBar.style.transform = 'translateX(-50%)';
+      ctxBar.style.maxWidth = maxAvailable + 'px';
       var mb = modeBar.getBoundingClientRect();
       ctxBar.style.bottom = (bottom + (mb.height || 36) + 8) + 'px';
     }
   }
+  window.__aliceOnWindowResize = function () {
+    placeBar();
+    ensureSidebarChats();
+  };
   window.addEventListener('resize', placeBar);
   window.addEventListener('scroll', placeBar, true);
   if (typeof ResizeObserver !== 'undefined') {
