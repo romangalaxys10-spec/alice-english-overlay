@@ -108,6 +108,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         harnessMenuItem.submenu = harnessMenu
         mainMenu.addItem(harnessMenuItem)
 
+        let loopItem = NSMenuItem(title: "Open Autonomous Loop Studio", action: #selector(openLoopTab), keyEquivalent: "l")
+        loopItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(loopItem)
+
+        let loopModalItem = NSMenuItem(title: "Launch Autonomous Loop Modal...", action: #selector(openLoopModalAction), keyEquivalent: "l")
+        loopModalItem.keyEquivalentModifierMask = [.command, .shift]
+        harnessMenu.addItem(loopModalItem)
+
         let termItem = NSMenuItem(title: "Toggle Terminal Drawer", action: #selector(openTerminalTab), keyEquivalent: "t")
         termItem.keyEquivalentModifierMask = [.command, .control]
         harnessMenu.addItem(termItem)
@@ -251,6 +259,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func toggleWorkbench() {
         MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench();", completionHandler: nil)
+    }
+
+    @objc private func openLoopTab() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('loop');", completionHandler: nil)
+    }
+
+    @objc private func openLoopModalAction() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceOpenLoopModal && window.__aliceOpenLoopModal();", completionHandler: nil)
     }
 
     @objc private func openTerminalTab() {

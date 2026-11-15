@@ -223,6 +223,56 @@ final class HarnessService {
                 } else {
                     completion(false, nil, "Missing path parameter")
                 }
+            case "saveLoopState":
+                if let stateStr = params["state"] as? String {
+                    self.writeFile(path: ".alice/loop_state.json", content: stateStr) { ok, bytes, err in
+                        completion(ok, ["bytes": bytes], err)
+                    }
+                } else {
+                    completion(false, nil, "Missing state parameter")
+                }
+            case "loadLoopState":
+                self.readFile(path: ".alice/loop_state.json") { ok, content, err in
+                    completion(ok, ["state": content], err)
+                }
+            case "appendProgress":
+                if let text = params["text"] as? String {
+                    let fullPath = self.workspacePath + "/.alice/progress.txt"
+                    let url = URL(fileURLWithPath: fullPath)
+                    do {
+                        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+                        if let fileHandle = try? FileHandle(forWritingTo: url) {
+                            fileHandle.seekToEndOfFile()
+                            if let data = text.data(using: .utf8) {
+                                fileHandle.write(data)
+                            }
+                            try fileHandle.close()
+                        } else {
+                            try text.write(to: url, atomically: true, encoding: .utf8)
+                        }
+                        completion(true, "Appended to progress.txt", nil)
+                    } catch {
+                        completion(false, nil, error.localizedDescription)
+                    }
+                } else {
+                    completion(false, nil, "Missing text parameter")
+                }
+            case "readProgress":
+                self.readFile(path: ".alice/progress.txt") { ok, content, err in
+                    completion(ok, ["progress": content], err)
+                }
+            case "savePRD":
+                if let prdStr = params["prd"] as? String {
+                    self.writeFile(path: ".alice/prd.json", content: prdStr) { ok, bytes, err in
+                        completion(ok, ["bytes": bytes], err)
+                    }
+                } else {
+                    completion(false, nil, "Missing prd parameter")
+                }
+            case "readPRD":
+                self.readFile(path: ".alice/prd.json") { ok, content, err in
+                    completion(ok, ["prd": content], err)
+                }
             default:
                 completion(false, nil, "Unknown computer action: \(action)")
             }

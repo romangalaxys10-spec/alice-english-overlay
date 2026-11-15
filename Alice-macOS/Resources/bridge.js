@@ -91,7 +91,13 @@
     openApp: function (name, cb) { window.__aliceComputerUse('openApp', { name: name }, cb); },
     screencapture: function (path, cb) { window.__aliceComputerUse('screencapture', { path: path }, cb); },
     notify: function (title, msg, cb) { window.__aliceComputerUse('notify', { title: title, message: msg }, cb); },
-    readClipboard: function (cb) { window.__aliceComputerUse('readClipboard', {}, cb); }
+    readClipboard: function (cb) { window.__aliceComputerUse('readClipboard', {}, cb); },
+    saveLoopState: function (state, cb) { window.__aliceComputerUse('saveLoopState', { state: typeof state === 'string' ? state : JSON.stringify(state, null, 2) }, cb); },
+    loadLoopState: function (cb) { window.__aliceComputerUse('loadLoopState', {}, cb); },
+    appendProgress: function (text, cb) { window.__aliceComputerUse('appendProgress', { text: text }, cb); },
+    readProgress: function (cb) { window.__aliceComputerUse('readProgress', {}, cb); },
+    savePRD: function (prd, cb) { window.__aliceComputerUse('savePRD', { prd: typeof prd === 'string' ? prd : JSON.stringify(prd, null, 2) }, cb); },
+    readPRD: function (cb) { window.__aliceComputerUse('readPRD', {}, cb); }
   };
 
   // Polyfill Chrome Extension runtime API for content.js

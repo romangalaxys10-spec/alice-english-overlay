@@ -565,8 +565,6 @@
     '.alice-enx-modebar{position:fixed;z-index:200;display:flex;align-items:center;gap:2px;padding:5px;border-radius:999px;',
       'background:rgba(255,255,255,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);',
       'border:1px solid rgba(20,20,30,.09);box-shadow:0 10px 30px rgba(10,10,30,.13);max-width:min(94vw,700px);overflow-x:auto;scrollbar-width:none;box-sizing:border-box}',
-    'html:has([role="dialog"]) .alice-enx-modebar, body:has([role="dialog"]) .alice-enx-modebar,',
-    'html:has([class*="Modal-Content"]) .alice-enx-modebar, body:has([class*="Modal-Content"]) .alice-enx-modebar{display:none !important}',
     'iframe[src*="passport.yandex"], [class*="PassportModal"], [class*="LoginModal"], .AuthPopup {display:none !important;pointer-events:none !important;visibility:hidden !important}',
     '.alice-enx-cmd-result{margin:6px 0 10px;padding:8px 12px;background:#0d0d14;border:1px solid rgba(74,222,128,.35);border-radius:8px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
     '.alice-enx-auto-harness-card{margin:8px 0 12px;padding:10px 14px;border-radius:10px;background:#13131c;border:1px solid rgba(108,76,240,.35);font-family:ui-monospace,Menlo,monospace;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:all .2s}',
@@ -589,6 +587,28 @@
     '@keyframes alicePulse{0%,100%{transform:scale(0.85);opacity:0.6}50%{transform:scale(1.25);opacity:1}}',
     '.alice-enx-check{color:#4ade80;font-weight:700}',
     '.alice-enx-err-icon{color:#ef4444;font-weight:700}',
+    /* Autonomous Loop Agent HUD & Studio */
+    '.alice-enx-loop-hud{position:sticky;top:10px;z-index:150;margin:10px auto 14px;max-width:850px;width:calc(100% - 24px);padding:10px 14px;border-radius:12px;background:rgba(20,20,32,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(139,92,246,.35);box-shadow:0 8px 24px rgba(0,0,0,.45);font-family:-apple-system,BlinkMacSystemFont,sans-serif}',
+    '.alice-enx-loop-hud-top{display:flex;align-items:center;gap:8px}',
+    '.alice-enx-loop-hud-title{font-weight:700;font-size:13px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-loop-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(139,92,246,.25);color:#c4b5fd;border:1px solid rgba(139,92,246,.4)}',
+    '.alice-enx-loop-controls{display:flex;gap:6px}',
+    '.alice-enx-loop-ctrl-btn{padding:3px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#e2e8f0;font:500 11px/1.2 inherit;cursor:pointer;transition:all .15s}',
+    '.alice-enx-loop-ctrl-btn:hover{background:rgba(255,255,255,.18);color:#fff}',
+    '.alice-enx-loop-ctrl-btn.pause{border-color:rgba(234,179,8,.4);color:#fde047}',
+    '.alice-enx-loop-ctrl-btn.stop{border-color:rgba(239,68,68,.4);color:#fca5a5}',
+    '.alice-enx-loop-hud-progress{margin-top:8px;height:4px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}',
+    '.alice-enx-loop-bar{height:100%;background:linear-gradient(90deg,#8b5cf6,#ec4899);transition:width .3s}',
+    '.alice-enx-loop-hud-active-story{margin-top:6px;font-size:11.5px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-loop-pane{display:flex;flex-direction:column;gap:12px;padding:12px;height:100%;overflow-y:auto}',
+    '.alice-enx-loop-modes{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}',
+    '.alice-enx-loop-mode-btn{padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#161622;color:#94a3b8;font:600 11.5px/1 inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}',
+    '.alice-enx-loop-mode-btn.active{background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff;border-color:transparent}',
+    '.alice-enx-loop-board{background:#12121b;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px}',
+    '.alice-enx-loop-story-item{display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:6px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;color:#e2e8f0}',
+    '.alice-enx-loop-story-item:last-child{border-bottom:none}',
+    '.alice-enx-loop-story-item.passed .alice-enx-loop-story-title{text-decoration:line-through;color:#64748b}',
+    '.alice-enx-loop-story-item.active{background:rgba(108,76,240,.15);border-color:rgba(108,76,240,.3)}',
     '.alice-enx-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:none;background:transparent;cursor:pointer;',
       'font:500 12.5px/1 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#454551;white-space:nowrap;transition:background .15s,color .15s}',
     '.alice-enx-pill:hover{background:rgba(108,76,240,.08);color:#2b2b33}',
@@ -834,6 +854,7 @@
     code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
     git: '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/>',
     play: '<polygon points="5 3 19 12 5 21 5 3"/>',
+    loop: '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
     folder: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'
   };
 
@@ -1768,6 +1789,637 @@
     setTimeout(function () { topicTa.focus(); }, 100);
   }
 
+  /* ---------------- Autonomous Loop Agent Engine (Looper, Ralph, ZCode) ---------------- */
+  var LOOP_MODES = {
+    code: {
+      id: 'code',
+      name: 'Coding & Worker Loop',
+      badge: 'Code Loop',
+      desc: 'TDD implementation loop: plans stories, writes modular code, runs tests, fixes failures.',
+      directive: 'Focus on implementing code and running tests via bash blocks. Iterate until tests pass and acceptance criteria are verified.'
+    },
+    research: {
+      id: 'research',
+      name: 'Deep Research Loop',
+      badge: 'Research Loop',
+      desc: 'Multi-angle inquiry: inspects codebase architecture, reads documentation, gathers facts, synthesizes dossiers.',
+      directive: 'Explore files, trace dependencies, inspect implementations, and synthesize evidence-backed technical documentation.'
+    },
+    qa: {
+      id: 'qa',
+      name: 'QA & Self-Healing Sentinel',
+      badge: 'QA Sentinel',
+      desc: 'Autonomous QA tester: runs automated test suites, uncovers defects, generates regression probes, verifies fixes.',
+      directive: 'Run test suites, inspect failure logs, probe edge cases, create reproduction tests, and verify patches.'
+    },
+    review: {
+      id: 'review',
+      name: 'Code Review & AST Audit',
+      badge: 'Review Loop',
+      desc: 'Autonomous code review: scans for security bugs, cyclomatic complexity, code smells, generates unified diffs.',
+      directive: 'Perform static and AST code review, identify security issues and antipatterns, and propose minimal patch diffs.'
+    },
+    design: {
+      id: 'design',
+      name: 'System Design & Architect',
+      badge: 'Design Loop',
+      desc: 'Architecture and spec design: defines component boundaries, creates PRDs, sequence diagrams, ADRs.',
+      directive: 'Define system architecture, interfaces, data models, sequence flows, and break down requirements into actionable stories.'
+    },
+    general: {
+      id: 'general',
+      name: 'General Long-Horizon Loop',
+      badge: 'Long-Horizon',
+      desc: 'Autonomous multi-turn execution with persistent PRD tracking, progressive milestones, self-direction.',
+      directive: 'Execute multi-step long-horizon objectives sequentially with verification at each step.'
+    }
+  };
+
+  var loopState = {
+    active: false,
+    paused: false,
+    stopped: false,
+    mode: 'code',
+    goal: '',
+    iteration: 0,
+    maxIterations: 10,
+    pollTimer: null,
+    stories: [],
+    recentProgress: ''
+  };
+
+  var loopHudEl = null;
+
+  var LoopManager = {
+    start: function (config) {
+      if (!config || !config.goal) return;
+      loopState.active = true;
+      loopState.paused = false;
+      loopState.stopped = false;
+      loopState.mode = config.mode || 'code';
+      loopState.goal = config.goal.trim();
+      loopState.maxIterations = parseInt(config.maxIterations, 10) || 10;
+      loopState.iteration = 0;
+      loopState.recentProgress = '';
+
+      if (Array.isArray(config.stories) && config.stories.length > 0) {
+        loopState.stories = config.stories;
+      } else {
+        loopState.stories = LoopManager.generateDefaultStories(loopState.mode, loopState.goal);
+      }
+
+      LoopManager.savePersistence();
+      LoopManager.renderHUD();
+      LoopManager.updateHUD('Starting iteration 1...', 0);
+      logTerm('info', '[LoopManager] Started ' + LOOP_MODES[loopState.mode].badge + ': "' + loopState.goal.slice(0, 60) + '..." (' + loopState.stories.length + ' stories)');
+
+      LoopManager.step();
+    },
+
+    generateDefaultStories: function (mode, goal) {
+      var shortGoal = goal.length > 40 ? goal.slice(0, 40) + '...' : goal;
+      if (mode === 'code') {
+        return [
+          { id: 'STORY-1', title: 'Plan and inspect requirements: ' + shortGoal, status: 'pending', criteria: 'Inspect relevant files and plan implementation steps' },
+          { id: 'STORY-2', title: 'Implement core functionality: ' + shortGoal, status: 'pending', criteria: 'Code written and verified locally via bash' },
+          { id: 'STORY-3', title: 'Write tests and verify edge cases', status: 'pending', criteria: 'Tests run with exit code 0' },
+          { id: 'STORY-4', title: 'Refactor and finalize changes', status: 'pending', criteria: 'Clean working tree and syntax check passed' }
+        ];
+      } else if (mode === 'qa') {
+        return [
+          { id: 'QA-1', title: 'Audit test suites and reproduce failures', status: 'pending', criteria: 'Existing tests run and defects cataloged' },
+          { id: 'QA-2', title: 'Create reproduction probe and fix bug', status: 'pending', criteria: 'Fix applied and probe passes' },
+          { id: 'QA-3', title: 'Run full regression check', status: 'pending', criteria: 'Zero regressions detected across all test suites' }
+        ];
+      } else if (mode === 'review') {
+        return [
+          { id: 'REV-1', title: 'Scan codebase for security and complexity', status: 'pending', criteria: 'Static analysis and AST review completed' },
+          { id: 'REV-2', title: 'Generate unified refactoring diffs', status: 'pending', criteria: 'Diffs produced and validated for correctness' }
+        ];
+      } else if (mode === 'research') {
+        return [
+          { id: 'RES-1', title: 'Collect relevant files, configs, and facts', status: 'pending', criteria: 'All relevant file contents inspected' },
+          { id: 'RES-2', title: 'Analyze architecture and trade-offs', status: 'pending', criteria: 'Comparative analysis completed' },
+          { id: 'RES-3', title: 'Synthesize comprehensive research dossier', status: 'pending', criteria: 'Structured dossier with actionable findings produced' }
+        ];
+      } else if (mode === 'design') {
+        return [
+          { id: 'DES-1', title: 'Extract requirements and constraints', status: 'pending', criteria: 'Functional and non-functional requirements cataloged' },
+          { id: 'DES-2', title: 'Design component architecture and data contracts', status: 'pending', criteria: 'Interfaces, schemas, and sequence flows documented' },
+          { id: 'DES-3', title: 'Draft implementation roadmap and PRD breakdown', status: 'pending', criteria: 'Numbered user stories and verification criteria ready' }
+        ];
+      } else {
+        return [
+          { id: 'STEP-1', title: 'Analyze objectives and baseline state', status: 'pending', criteria: 'Baseline verified via shell inspection' },
+          { id: 'STEP-2', title: 'Execute primary milestone tasks', status: 'pending', criteria: 'Milestone criteria satisfied' },
+          { id: 'STEP-3', title: 'Validate end-to-end outcome', status: 'pending', criteria: 'Verification checks pass' }
+        ];
+      }
+    },
+
+    getActiveStory: function () {
+      for (var i = 0; i < loopState.stories.length; i++) {
+        if (loopState.stories[i].status === 'active') return loopState.stories[i];
+      }
+      for (var j = 0; j < loopState.stories.length; j++) {
+        if (loopState.stories[j].status === 'pending') {
+          loopState.stories[j].status = 'active';
+          return loopState.stories[j];
+        }
+      }
+      return null;
+    },
+
+    step: function () {
+      if (loopState.stopped || loopState.paused) return;
+
+      loopState.iteration++;
+      if (loopState.iteration > loopState.maxIterations) {
+        loopState.paused = true;
+        LoopManager.updateHUD('Reached iteration limit (' + loopState.maxIterations + '). Paused.', LoopManager.getProgressPct(), true);
+        logTerm('info', '[LoopManager] Paused: reached iteration limit (' + loopState.maxIterations + '). Click Resume to continue.');
+        return;
+      }
+
+      var activeStory = LoopManager.getActiveStory();
+      if (!activeStory) {
+        LoopManager.complete();
+        return;
+      }
+
+      var modeDef = LOOP_MODES[loopState.mode] || LOOP_MODES.code;
+      var prompt = LoopManager.buildPrompt(modeDef, activeStory);
+
+      LoopManager.updateHUD('Iter ' + loopState.iteration + '/' + loopState.maxIterations + ': Working on [' + activeStory.id + ']...', LoopManager.getProgressPct());
+      LoopManager.renderBoard();
+
+      sendAliceMessage(prompt);
+
+      LoopManager.waitForTurn(function (resText) {
+        if (loopState.stopped) return;
+
+        var allDone = resText.indexOf('[LOOP_ALL_COMPLETE]') > -1;
+        var storyDoneRegex = new RegExp('\\[LOOP_STORY_DONE:\\s*' + activeStory.id + '\\]', 'i');
+        var storyDone = storyDoneRegex.test(resText) || allDone;
+
+        if (allDone) {
+          for (var k = 0; k < loopState.stories.length; k++) {
+            loopState.stories[k].status = 'passed';
+          }
+          LoopManager.logProgress('Iteration ' + loopState.iteration + ': All stories completed successfully.');
+          LoopManager.savePersistence();
+          LoopManager.complete();
+          return;
+        }
+
+        if (storyDone) {
+          activeStory.status = 'passed';
+          LoopManager.logProgress('Iteration ' + loopState.iteration + ': Completed [' + activeStory.id + '] ' + activeStory.title);
+          logTerm('info', '[LoopManager] Story passed: ' + activeStory.id);
+        } else {
+          LoopManager.logProgress('Iteration ' + loopState.iteration + ': Continued work on [' + activeStory.id + ']');
+        }
+
+        LoopManager.savePersistence();
+        LoopManager.renderBoard();
+
+        var remaining = loopState.stories.filter(function (s) { return s.status !== 'passed'; });
+        if (remaining.length === 0) {
+          LoopManager.complete();
+          return;
+        }
+
+        if (loopState.paused || loopState.stopped) return;
+
+        LoopManager.updateHUD('Iteration ' + loopState.iteration + ' done. Next turn in 2.5s...', LoopManager.getProgressPct());
+        setTimeout(function () {
+          if (!loopState.stopped && !loopState.paused && loopState.active) {
+            LoopManager.step();
+          }
+        }, 2500);
+      });
+    },
+
+    buildPrompt: function (modeDef, story) {
+      var lines = [
+        '[Autonomous Loop Agent: ' + modeDef.badge + ']',
+        'Goal: ' + loopState.goal,
+        'Iteration: ' + loopState.iteration + ' of ' + loopState.maxIterations,
+        '',
+        'Current Active Story: [' + story.id + '] ' + story.title,
+        'Acceptance Criteria: ' + story.criteria,
+        ''
+      ];
+
+      if (loopState.recentProgress) {
+        lines.push('Recent Progress & Learnings:');
+        lines.push(loopState.recentProgress.trim());
+        lines.push('');
+      }
+
+      lines.push('Directives:');
+      lines.push('1. ' + modeDef.directive);
+      lines.push('2. Use bash tool blocks to inspect code, run tests, or execute commands locally on macOS.');
+      lines.push('3. Verify your work against the acceptance criteria.');
+      lines.push('4. When this story is fully complete and verified, include this marker on its own line:');
+      lines.push('   [LOOP_STORY_DONE:' + story.id + ']');
+      lines.push('5. If all stories for the entire goal are finished, include:');
+      lines.push('   [LOOP_ALL_COMPLETE]');
+
+      return lines.join('\n');
+    },
+
+    waitForTurn: function (onDone) {
+      if (loopState.pollTimer) clearInterval(loopState.pollTimer);
+      var t0 = Date.now();
+      var responseStarted = false;
+      var stableCount = 0;
+      var lastText = '';
+
+      loopState.pollTimer = setInterval(function () {
+        if (loopState.stopped) {
+          clearInterval(loopState.pollTimer);
+          loopState.pollTimer = null;
+          return;
+        }
+
+        dismissThinkingModal();
+        var busy = isAliceGenerating();
+        var msgs = document.querySelectorAll('.Message:not(.Message_from_user), [data-testid="alice-chat-message"]');
+        var lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
+        var curText = lastMsg ? (lastMsg.textContent || '').trim() : '';
+
+        if (!responseStarted) {
+          if (busy || (curText && curText.length > 10)) {
+            responseStarted = true;
+          } else if (Date.now() - t0 > 14000) {
+            responseStarted = true;
+          }
+          return;
+        }
+
+        if (busy) {
+          stableCount = 0;
+          lastText = curText;
+          LoopManager.updateHUD('Iter ' + loopState.iteration + ': Alice is executing...', LoopManager.getProgressPct());
+          return;
+        }
+
+        if (curText && curText === lastText && curText.length > 20) {
+          stableCount++;
+          if (stableCount >= 4) {
+            clearInterval(loopState.pollTimer);
+            loopState.pollTimer = null;
+            onDone(curText);
+          }
+        } else {
+          stableCount = 0;
+          lastText = curText;
+        }
+      }, 800);
+    },
+
+    pause: function () {
+      loopState.paused = true;
+      LoopManager.updateHUD('Paused at iteration ' + loopState.iteration, LoopManager.getProgressPct(), true);
+      logTerm('info', '[LoopManager] Loop paused.');
+    },
+
+    resume: function () {
+      if (!loopState.active) return;
+      loopState.paused = false;
+      LoopManager.updateHUD('Resuming iteration ' + loopState.iteration + '...', LoopManager.getProgressPct());
+      logTerm('info', '[LoopManager] Loop resumed.');
+      LoopManager.step();
+    },
+
+    stop: function () {
+      loopState.active = false;
+      loopState.stopped = true;
+      loopState.paused = false;
+      if (loopState.pollTimer) clearInterval(loopState.pollTimer);
+      loopState.pollTimer = null;
+      if (loopHudEl && loopHudEl.isConnected) loopHudEl.remove();
+      logTerm('info', '[LoopManager] Loop stopped by user.');
+    },
+
+    complete: function () {
+      loopState.active = false;
+      if (loopState.pollTimer) clearInterval(loopState.pollTimer);
+      loopState.pollTimer = null;
+      LoopManager.updateHUD('Goal completed successfully in ' + loopState.iteration + ' iterations!', 100, false, true);
+      logTerm('info', '[LoopManager] Mission complete! All ' + loopState.stories.length + ' stories passed.');
+      if (window.__aliceComputerUse) {
+        window.__aliceComputerUse('notify', {
+          title: 'Alice Autonomous Loop Complete',
+          message: 'All stories verified for: ' + loopState.goal.slice(0, 50)
+        }, function () {});
+      }
+    },
+
+    getProgressPct: function () {
+      if (!loopState.stories.length) return 0;
+      var passed = loopState.stories.filter(function (s) { return s.status === 'passed'; }).length;
+      return Math.round((passed / loopState.stories.length) * 100);
+    },
+
+    savePersistence: function () {
+      var prdData = {
+        title: loopState.goal,
+        mode: loopState.mode,
+        stories: loopState.stories,
+        updatedAt: new Date().toISOString()
+      };
+      var stateData = {
+        active: loopState.active,
+        paused: loopState.paused,
+        mode: loopState.mode,
+        goal: loopState.goal,
+        iteration: loopState.iteration,
+        maxIterations: loopState.maxIterations,
+        updatedAt: new Date().toISOString()
+      };
+
+      if (window.__aliceHarness && window.__aliceHarness.savePRD) {
+        window.__aliceHarness.savePRD(prdData, function () {});
+        window.__aliceHarness.saveLoopState(stateData, function () {});
+      } else if (window.__aliceComputerUse) {
+        window.__aliceComputerUse('savePRD', { prd: JSON.stringify(prdData, null, 2) }, function () {});
+        window.__aliceComputerUse('saveLoopState', { state: JSON.stringify(stateData, null, 2) }, function () {});
+      }
+    },
+
+    logProgress: function (entry) {
+      var ts = new Date().toLocaleTimeString();
+      var logLine = '[' + ts + '] ' + entry + '\n';
+      loopState.recentProgress = (loopState.recentProgress + '\n' + logLine).slice(-600);
+
+      if (window.__aliceHarness && window.__aliceHarness.appendProgress) {
+        window.__aliceHarness.appendProgress(logLine, function () {});
+      } else if (window.__aliceComputerUse) {
+        window.__aliceComputerUse('appendProgress', { text: logLine }, function () {});
+      }
+      LoopManager.refreshProgressViewer();
+    },
+
+    renderHUD: function () {
+      if (loopHudEl && loopHudEl.isConnected) loopHudEl.remove();
+
+      loopHudEl = A.mark(document.createElement('div'));
+      loopHudEl.className = 'alice-enx-loop-hud';
+
+      var top = document.createElement('div');
+      top.className = 'alice-enx-loop-hud-top';
+
+      var badge = document.createElement('span');
+      badge.className = 'alice-enx-loop-badge';
+      var m = LOOP_MODES[loopState.mode] || LOOP_MODES.code;
+      badge.textContent = '🔁 ' + m.badge;
+      top.appendChild(badge);
+
+      var title = document.createElement('span');
+      title.className = 'alice-enx-loop-hud-title';
+      title.textContent = loopState.goal;
+      title.title = loopState.goal;
+      top.appendChild(title);
+
+      var controls = document.createElement('div');
+      controls.className = 'alice-enx-loop-controls';
+
+      var pauseBtn = document.createElement('button');
+      pauseBtn.className = 'alice-enx-loop-ctrl-btn pause';
+      pauseBtn.textContent = loopState.paused ? '▶ Resume' : '⏸ Pause';
+      pauseBtn.addEventListener('click', function () {
+        if (loopState.paused) LoopManager.resume();
+        else LoopManager.pause();
+        pauseBtn.textContent = loopState.paused ? '▶ Resume' : '⏸ Pause';
+      });
+      controls.appendChild(pauseBtn);
+
+      var studioBtn = document.createElement('button');
+      studioBtn.className = 'alice-enx-loop-ctrl-btn';
+      studioBtn.textContent = 'Studio';
+      studioBtn.title = 'Open Loop Studio in Workbench';
+      studioBtn.addEventListener('click', function () {
+        toggleWorkbench('loop');
+      });
+      controls.appendChild(studioBtn);
+
+      var stopBtn = document.createElement('button');
+      stopBtn.className = 'alice-enx-loop-ctrl-btn stop';
+      stopBtn.textContent = '⏹ Stop';
+      stopBtn.addEventListener('click', function () {
+        LoopManager.stop();
+      });
+      controls.appendChild(stopBtn);
+
+      top.appendChild(controls);
+      loopHudEl.appendChild(top);
+
+      var barWrap = document.createElement('div');
+      barWrap.className = 'alice-enx-loop-hud-progress';
+      var bar = document.createElement('div');
+      bar.className = 'alice-enx-loop-bar';
+      bar.style.width = '0%';
+      barWrap.appendChild(bar);
+      loopHudEl.appendChild(barWrap);
+
+      var activeStoryEl = document.createElement('div');
+      activeStoryEl.className = 'alice-enx-loop-hud-active-story';
+      activeStoryEl.textContent = 'Initializing autonomous loop...';
+      loopHudEl.appendChild(activeStoryEl);
+
+      var chatHost = document.querySelector('.AliceChat, [class*="Chat_root"], main') || document.body;
+      chatHost.insertBefore(loopHudEl, chatHost.firstChild);
+    },
+
+    updateHUD: function (text, pct, isPaused, isComplete) {
+      if (!loopHudEl || !loopHudEl.isConnected) return;
+      var activeStoryEl = loopHudEl.querySelector('.alice-enx-loop-hud-active-story');
+      if (activeStoryEl) activeStoryEl.textContent = text;
+      var bar = loopHudEl.querySelector('.alice-enx-loop-bar');
+      if (bar) bar.style.width = (pct || 0) + '%';
+      var pauseBtn = loopHudEl.querySelector('.alice-enx-loop-ctrl-btn.pause');
+      if (pauseBtn) {
+        if (isComplete) pauseBtn.style.display = 'none';
+        else {
+          pauseBtn.style.display = 'inline-block';
+          pauseBtn.textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+        }
+      }
+    },
+
+    renderBoard: function () {
+      var board = document.getElementById('alice-enx-loop-stories');
+      if (!board) return;
+      board.innerHTML = '';
+      loopState.stories.forEach(function (story) {
+        var item = document.createElement('div');
+        item.className = 'alice-enx-loop-story-item ' + story.status;
+        var icon = story.status === 'passed' ? '✓' : (story.status === 'active' ? '▶' : '○');
+        var color = story.status === 'passed' ? '#4ade80' : (story.status === 'active' ? '#a78bfa' : '#64748b');
+        item.innerHTML = '<span style="color:' + color + ';font-weight:700;width:16px">' + icon + '</span>' +
+          '<div style="flex:1">' +
+            '<div class="alice-enx-loop-story-title" style="font-weight:600">' + story.id + ': ' + story.title + '</div>' +
+            '<div style="font-size:11px;color:#94a3b8">' + story.criteria + '</div>' +
+          '</div>';
+        board.appendChild(item);
+      });
+    },
+
+    refreshProgressViewer: function () {
+      var pView = document.getElementById('alice-enx-loop-progress-log');
+      if (!pView) return;
+      if (window.__aliceHarness && window.__aliceHarness.readProgress) {
+        window.__aliceHarness.readProgress(function (res) {
+          if (res && res.data && res.data.progress) {
+            pView.textContent = res.data.progress;
+            pView.scrollTop = pView.scrollHeight;
+          }
+        });
+      } else {
+        pView.textContent = loopState.recentProgress || '(No progress recorded yet)';
+        pView.scrollTop = pView.scrollHeight;
+      }
+    }
+  };
+
+  function openLoopModal(initialMode) {
+    var existing = document.querySelector('.alice-enx-modal-backdrop');
+    if (existing) existing.remove();
+
+    var backdrop = A.mark(document.createElement('div'));
+    backdrop.className = 'alice-enx-modal-backdrop';
+
+    var modal = document.createElement('div');
+    modal.className = 'alice-enx-modal';
+    modal.style.maxWidth = '580px';
+
+    var h2 = document.createElement('h2');
+    h2.innerHTML = '🔁 Autonomous Loop Agent Studio';
+    modal.appendChild(h2);
+
+    var sub = document.createElement('p');
+    sub.className = 'alice-enx-modal-sub';
+    sub.textContent = 'Multi-turn autonomous execution with persistent PRD checklist, test-driven iteration, and native macOS harness.';
+    modal.appendChild(sub);
+
+    var modeLabel = document.createElement('label');
+    modeLabel.style.cssText = 'font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:6px;display:block';
+    modeLabel.textContent = 'Select Autonomous Loop Mode';
+    modal.appendChild(modeLabel);
+
+    var modeGrid = document.createElement('div');
+    modeGrid.className = 'alice-enx-role-grid';
+    var selectedMode = initialMode && LOOP_MODES[initialMode] ? initialMode : 'code';
+
+    var modeCards = {};
+    Object.keys(LOOP_MODES).forEach(function (key) {
+      var m = LOOP_MODES[key];
+      var card = document.createElement('div');
+      card.className = 'alice-enx-role-card' + (key === selectedMode ? ' active' : '');
+      var cTitle = document.createElement('div');
+      cTitle.className = 'alice-enx-role-title';
+      cTitle.textContent = (key === 'code' ? '💻 ' : (key === 'research' ? '🔍 ' : (key === 'qa' ? '🛡️ ' : (key === 'review' ? '⚡ ' : (key === 'design' ? '📐 ' : '🔁 '))))) + m.name;
+      var cDesc = document.createElement('div');
+      cDesc.className = 'alice-enx-role-desc';
+      cDesc.textContent = m.desc;
+      card.appendChild(cTitle);
+      card.appendChild(cDesc);
+
+      card.addEventListener('click', function () {
+        Object.keys(modeCards).forEach(function (k) { modeCards[k].classList.remove('active'); });
+        card.classList.add('active');
+        selectedMode = key;
+      });
+
+      modeCards[key] = card;
+      modeGrid.appendChild(card);
+    });
+    modal.appendChild(modeGrid);
+
+    var goalField = document.createElement('div');
+    goalField.className = 'alice-enx-field';
+    var goalLbl = document.createElement('label');
+    goalLbl.textContent = 'Mission Objective / Goal';
+    var goalTa = document.createElement('textarea');
+    goalTa.className = 'alice-enx-textarea';
+    goalTa.rows = 2;
+    goalTa.placeholder = 'e.g. Implement user login auth middleware with JWT tokens and unit tests, or Audit project for memory leaks';
+    goalField.appendChild(goalLbl);
+    goalField.appendChild(goalTa);
+    modal.appendChild(goalField);
+
+    var roundsRow = document.createElement('div');
+    roundsRow.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:14px';
+
+    var roundsLbl = document.createElement('label');
+    roundsLbl.style.cssText = 'font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;margin:0';
+    roundsLbl.textContent = 'Max Iterations:';
+    roundsRow.appendChild(roundsLbl);
+
+    var roundsSel = document.createElement('select');
+    roundsSel.className = 'alice-enx-select';
+    roundsSel.style.width = '120px';
+    [['5', '5 turns'], ['10', '10 turns'], ['20', '20 turns'], ['50', '50 turns']].forEach(function (opt) {
+      var o = document.createElement('option');
+      o.value = opt[0];
+      o.textContent = opt[1];
+      if (opt[0] === '10') o.selected = true;
+      roundsSel.appendChild(o);
+    });
+    roundsRow.appendChild(roundsSel);
+
+    modal.appendChild(roundsRow);
+
+    var actions = document.createElement('div');
+    actions.className = 'alice-enx-modal-actions';
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.className = 'alice-enx-btn-secondary';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', function () { backdrop.remove(); });
+
+    var launchBtn = document.createElement('button');
+    launchBtn.className = 'alice-enx-btn-primary';
+    launchBtn.textContent = '🚀 Launch Autonomous Loop';
+    launchBtn.addEventListener('click', function () {
+      var g = goalTa.value.trim();
+      if (!g) {
+        goalTa.style.borderColor = '#ef4444';
+        goalTa.focus();
+        return;
+      }
+      backdrop.remove();
+      LoopManager.start({
+        mode: selectedMode,
+        goal: g,
+        maxIterations: parseInt(roundsSel.value, 10) || 10
+      });
+    });
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(launchBtn);
+    modal.appendChild(actions);
+
+    backdrop.appendChild(modal);
+    document.body.appendChild(backdrop);
+
+    backdrop.addEventListener('click', function (e) {
+      if (e.target === backdrop) backdrop.remove();
+    });
+    document.addEventListener('keydown', function onEsc(e) {
+      if (e.key === 'Escape' && backdrop.isConnected) {
+        backdrop.remove();
+        document.removeEventListener('keydown', onEsc);
+      }
+    });
+
+    setTimeout(function () { goalTa.focus(); }, 100);
+  }
+  window.__aliceOpenLoopModal = openLoopModal;
+  window.__aliceLoopManager = LoopManager;
+
   /* ---------------- ZCode & DeepSeek Harness Workbench ---------------- */
   var workbenchEl = null;
   var termHistory = [];
@@ -1865,6 +2517,10 @@
     if (tab === 'git') {
       refreshGitStatus();
     }
+    if (tab === 'loop') {
+      LoopManager.renderBoard();
+      LoopManager.refreshProgressViewer();
+    }
   }
 
   function refreshGitStatus() {
@@ -1916,6 +2572,7 @@
     tabs.className = 'alice-enx-wb-tabs';
 
     var tabDefs = [
+      ['loop', '🔁 Loop Studio', 'loop'],
       ['terminal', '>_ Terminal', 'terminal'],
       ['vibe', '⚡ Vibe Coder & Harness', 'code'],
       ['skills', '🛠 Agent Skills', 'spark'],
@@ -1980,6 +2637,104 @@
 
     var body = document.createElement('div');
     body.className = 'alice-enx-wb-body';
+
+    // 0. Loop Studio Pane
+    var loopPane = document.createElement('div');
+    loopPane.className = 'alice-enx-loop-pane';
+    loopPane.setAttribute('data-wb-pane', 'loop');
+    loopPane.style.display = activeWbTab === 'loop' ? 'flex' : 'none';
+
+    var loopModesRow = document.createElement('div');
+    loopModesRow.className = 'alice-enx-loop-modes';
+    Object.keys(LOOP_MODES).forEach(function (mKey) {
+      var m = LOOP_MODES[mKey];
+      var mb = document.createElement('button');
+      mb.className = 'alice-enx-loop-mode-btn' + (loopState.mode === mKey ? ' active' : '');
+      mb.textContent = m.badge;
+      mb.addEventListener('click', function () {
+        var allMb = loopModesRow.querySelectorAll('.alice-enx-loop-mode-btn');
+        for (var k = 0; k < allMb.length; k++) allMb[k].classList.remove('active');
+        mb.classList.add('active');
+        loopState.mode = mKey;
+      });
+      loopModesRow.appendChild(mb);
+    });
+    loopPane.appendChild(loopModesRow);
+
+    var loopInputCard = document.createElement('div');
+    loopInputCard.style.cssText = 'background:#181824;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px';
+
+    var loopGoalInput = document.createElement('input');
+    loopGoalInput.className = 'alice-enx-input';
+    loopGoalInput.placeholder = 'Enter mission goal or objective to loop over...';
+    loopGoalInput.value = loopState.goal || '';
+    loopInputCard.appendChild(loopGoalInput);
+
+    var loopActionRow = document.createElement('div');
+    loopActionRow.style.cssText = 'display:flex;gap:8px;align-items:center';
+
+    var startLoopBtn = document.createElement('button');
+    startLoopBtn.className = 'alice-enx-btn-primary';
+    startLoopBtn.textContent = '🚀 Start Loop';
+    startLoopBtn.addEventListener('click', function () {
+      var g = (loopGoalInput.value || '').trim();
+      if (!g) { loopGoalInput.focus(); return; }
+      LoopManager.start({ mode: loopState.mode, goal: g, maxIterations: 10 });
+    });
+    loopActionRow.appendChild(startLoopBtn);
+
+    var pauseResumeBtn = document.createElement('button');
+    pauseResumeBtn.className = 'alice-enx-wb-btn';
+    pauseResumeBtn.style.padding = '6px 12px';
+    pauseResumeBtn.textContent = loopState.paused ? '▶ Resume' : '⏸ Pause';
+    pauseResumeBtn.addEventListener('click', function () {
+      if (loopState.paused) LoopManager.resume();
+      else LoopManager.pause();
+      pauseResumeBtn.textContent = loopState.paused ? '▶ Resume' : '⏸ Pause';
+    });
+    loopActionRow.appendChild(pauseResumeBtn);
+
+    var stopLoopBtn = document.createElement('button');
+    stopLoopBtn.className = 'alice-enx-wb-btn';
+    stopLoopBtn.style.cssText = 'padding:6px 12px;color:#fca5a5;border-color:rgba(239,68,68,.3)';
+    stopLoopBtn.textContent = '⏹ Stop';
+    stopLoopBtn.addEventListener('click', function () {
+      LoopManager.stop();
+      LoopManager.renderBoard();
+    });
+    loopActionRow.appendChild(stopLoopBtn);
+
+    loopInputCard.appendChild(loopActionRow);
+    loopPane.appendChild(loopInputCard);
+
+    var storySection = document.createElement('div');
+    storySection.style.cssText = 'display:flex;flex-direction:column;gap:6px';
+    var storyHead = document.createElement('div');
+    storyHead.style.cssText = 'font:700 12px/1.2 inherit;color:#c4b5fd;display:flex;align-items:center;justify-content:space-between';
+    storyHead.innerHTML = '<span>PRD Story Checklist (.alice/prd.json)</span><span style="font-size:10.5px;color:#94a3b8">Active: 1 story per turn</span>';
+    storySection.appendChild(storyHead);
+
+    var storyList = document.createElement('div');
+    storyList.id = 'alice-enx-loop-stories';
+    storyList.className = 'alice-enx-loop-board';
+    storySection.appendChild(storyList);
+    loopPane.appendChild(storySection);
+
+    var logSection = document.createElement('div');
+    logSection.style.cssText = 'display:flex;flex-direction:column;gap:6px;flex:1;min-height:90px';
+    var logHead = document.createElement('div');
+    logHead.style.cssText = 'font:700 12px/1.2 inherit;color:#a5b4fc';
+    logHead.textContent = 'Progress & Learnings (.alice/progress.txt)';
+    logSection.appendChild(logHead);
+
+    var progressViewer = document.createElement('pre');
+    progressViewer.id = 'alice-enx-loop-progress-log';
+    progressViewer.style.cssText = 'background:#0d0d14;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;font:400 11px/1.4 ui-monospace,Menlo,monospace;color:#93c5fd;flex:1;overflow-y:auto;white-space:pre-wrap;margin:0';
+    progressViewer.textContent = '(No progress recorded yet)';
+    logSection.appendChild(progressViewer);
+    loopPane.appendChild(logSection);
+
+    body.appendChild(loopPane);
 
     // 1. Terminal Pane
     var termPane = document.createElement('div');
@@ -2486,9 +3241,9 @@
     modeBar.className = 'alice-enx-modebar';
     modeBar.appendChild(pill('new', 'New', 'plus', newChat, 'Start a new chat'));
     modeBar.appendChild(sep());
-    modeBar.appendChild(pill('auto', 'Auto', 'spark', function () { switchIntelligence('auto'); }, 'Auto intelligence — Alice picks the level'));
-    modeBar.appendChild(pill('expert', 'Expert', 'brain', function () { switchIntelligence('expert'); }, 'Expert intelligence — deeper reasoning'));
-    modeBar.appendChild(pill('code', 'Code', 'code', function () { toggleWorkbench('vibe'); }, 'ZCode & DeepSeek vibe coding harness'));
+    modeBar.appendChild(pill('auto', 'Auto', 'spark', function () { switchIntelligence('auto'); }, 'Auto intelligence (Alice picks the level)'));
+    modeBar.appendChild(pill('expert', 'Expert', 'brain', function () { switchIntelligence('expert'); }, 'Expert intelligence (deeper reasoning)'));
+    modeBar.appendChild(pill('code', 'Code', 'code', function () { toggleWorkbench('vibe'); }, 'ZCode and DeepSeek vibe coding harness'));
     modeBar.appendChild(pill('terminal', 'Terminal', 'terminal', function () { toggleWorkbench('terminal'); }, 'In-app local terminal'));
     var agentBtn = pill('agent', S.harnessAutoRun ? 'Agent: ON' : 'Agent: OFF', 'spark', function () {
       var nextVal = !S.harnessAutoRun;
@@ -2499,9 +3254,10 @@
       t.textContent = nextVal ? 'Agent: ON' : 'Agent: OFF';
       agentBtn.appendChild(t);
       agentBtn.classList.toggle('alice-enx-active', nextVal);
-    }, 'Toggle autonomous computer & terminal agent loop');
+    }, 'Toggle autonomous computer and terminal agent loop');
     if (S.harnessAutoRun) agentBtn.classList.add('alice-enx-active');
     modeBar.appendChild(agentBtn);
+    modeBar.appendChild(pill('loop', 'Loop', 'loop', function () { openLoopModal(); }, 'Autonomous Loop Agent Studio'));
     modeBar.appendChild(pill('brainstorm', 'Brainstorm', 'users', function () { openBrainstormModal(); }, 'Autonomous brainstorm and role-play studio'));
     modeBar.appendChild(pill('draw', 'Draw', 'palette', function () { toolMode('draw'); }, 'Image generation mode'));
     modeBar.appendChild(pill('deals', 'Deals', 'tag', function () { toolMode('deals'); }, 'Shopping — find a better price'));
@@ -2516,19 +3272,12 @@
   function sep() { var s = document.createElement('div'); s.className = 'alice-enx-sep'; s.setAttribute('data-alice-enx', '1'); return s; }
 
   function hasVisibleModal() {
-    var dialogs = document.querySelectorAll('[role="dialog"], .Modal, [class*="Modal-Content"], [class*="Popup-Content"], [class*="SettingsContent"], [class*="ContentFiltering"], [class*="Modal_visible"]');
+    var dialogs = document.querySelectorAll('.Modal_visible, [class*="SettingsContent"], [class*="ContentFiltering"], .Modal-Content, [class*="ModalContent"]');
     for (var i = 0; i < dialogs.length; i++) {
       var d = dialogs[i];
       if (d.closest('[data-alice-enx]')) continue;
-      if (d.offsetParent !== null && getComputedStyle(d).display !== 'none' && getComputedStyle(d).visibility !== 'hidden') {
-        return true;
-      }
-    }
-    var backdrops = document.querySelectorAll('.Modal-Backdrop, [class*="Backdrop"], [class*="backdrop"], [class*="Overlay"], [class*="overlay"]');
-    for (var b = 0; b < backdrops.length; b++) {
-      var bd = backdrops[b];
-      if (bd.closest('[data-alice-enx]')) continue;
-      if (bd.offsetParent !== null && getComputedStyle(bd).display !== 'none' && getComputedStyle(bd).visibility !== 'hidden') {
+      var rect = d.getBoundingClientRect();
+      if (rect.width > 200 && rect.height > 150 && getComputedStyle(d).display !== 'none' && getComputedStyle(d).visibility !== 'hidden' && getComputedStyle(d).opacity !== '0') {
         return true;
       }
     }
@@ -2734,6 +3483,68 @@
     if (!v.trim()) return;
 
     // Direct slash commands
+    if (/^\/loop\b/i.test(v)) {
+      if (/^\/loop\s+stop\b/i.test(v)) {
+        LoopManager.stop();
+        ta.value = '';
+        return false;
+      }
+      if (/^\/loop\s+pause\b/i.test(v)) {
+        LoopManager.pause();
+        ta.value = '';
+        return false;
+      }
+      if (/^\/loop\s+resume\b/i.test(v)) {
+        LoopManager.resume();
+        ta.value = '';
+        return false;
+      }
+      if (/^\/loop\s+status\b/i.test(v)) {
+        toggleWorkbench('loop');
+        ta.value = '';
+        return false;
+      }
+      var loopMatch = v.match(/^\/loop\s+(.+)/i);
+      var loopGoal = loopMatch ? loopMatch[1].trim() : '';
+      if (loopGoal) {
+        LoopManager.start({ mode: 'general', goal: loopGoal, maxIterations: 10 });
+        ta.value = '';
+        return false;
+      }
+      openLoopModal();
+      ta.value = '';
+      return false;
+    }
+    if (/^\/code\s+(.+)/i.test(v)) {
+      var codeGoal = v.match(/^\/code\s+(.+)/i)[1].trim();
+      LoopManager.start({ mode: 'code', goal: codeGoal, maxIterations: 10 });
+      ta.value = '';
+      return false;
+    }
+    if (/^\/research\s+(.+)/i.test(v)) {
+      var resGoal = v.match(/^\/research\s+(.+)/i)[1].trim();
+      LoopManager.start({ mode: 'research', goal: resGoal, maxIterations: 10 });
+      ta.value = '';
+      return false;
+    }
+    if (/^\/qa\s+(.+)/i.test(v) || /^\/test\s+(.+)/i.test(v)) {
+      var qaGoal = v.match(/^\/(?:qa|test)\s+(.+)/i)[1].trim();
+      LoopManager.start({ mode: 'qa', goal: qaGoal, maxIterations: 10 });
+      ta.value = '';
+      return false;
+    }
+    if (/^\/review\s+(.+)/i.test(v)) {
+      var revGoal = v.match(/^\/review\s+(.+)/i)[1].trim();
+      LoopManager.start({ mode: 'review', goal: revGoal, maxIterations: 10 });
+      ta.value = '';
+      return false;
+    }
+    if (/^\/design\s+(.+)/i.test(v)) {
+      var desGoal = v.match(/^\/design\s+(.+)/i)[1].trim();
+      LoopManager.start({ mode: 'design', goal: desGoal, maxIterations: 10 });
+      ta.value = '';
+      return false;
+    }
     if (/^\/open\b/i.test(v)) {
       if (window.__aliceComputerUse) window.__aliceComputerUse('openFolder', {}, function () {});
       ta.value = '';
@@ -2821,6 +3632,7 @@
 
   /* ---------------- prompt chips ---------------- */
   var STARTERS = [
+    ['🔁 Autonomous loop agent', 'Launch an autonomous multi-step loop for coding, research, QA, or design.'],
     ['⚡ Check Mac specs', 'Check my exact Mac hardware specs (RAM, CPU, model, macOS) using your terminal harness.'],
     ['🛠 Run code & test', 'Create a small Python script to benchmark CPU arithmetic and run it with your harness.'],
     ['Explain something simply', 'Explain how neural networks learn, in simple words'],

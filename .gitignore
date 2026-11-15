@@ -14,3 +14,4 @@ Alice.app/
 # Local logs and temporary files
 *.log
 *.tmp
+.alice/
