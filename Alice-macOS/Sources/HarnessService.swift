@@ -44,14 +44,31 @@ final class HarnessService {
 
             do {
                 try process.run()
-                let group = DispatchGroup()
-                group.enter()
+
+                var outData = Data()
+                var errData = Data()
+                let readGroup = DispatchGroup()
+
+                readGroup.enter()
                 DispatchQueue.global().async {
-                    process.waitUntilExit()
-                    group.leave()
+                    outData = outPipe.fileHandleForReading.readDataToEndOfFile()
+                    readGroup.leave()
                 }
 
-                let result = group.wait(timeout: .now() + 60.0)
+                readGroup.enter()
+                DispatchQueue.global().async {
+                    errData = errPipe.fileHandleForReading.readDataToEndOfFile()
+                    readGroup.leave()
+                }
+
+                let procGroup = DispatchGroup()
+                procGroup.enter()
+                DispatchQueue.global().async {
+                    process.waitUntilExit()
+                    procGroup.leave()
+                }
+
+                let result = procGroup.wait(timeout: .now() + 60.0)
                 if result == .timedOut {
                     process.terminate()
                     DispatchQueue.main.async {
@@ -60,8 +77,7 @@ final class HarnessService {
                     return
                 }
 
-                let outData = outPipe.fileHandleForReading.readDataToEndOfFile()
-                let errData = errPipe.fileHandleForReading.readDataToEndOfFile()
+                _ = readGroup.wait(timeout: .now() + 5.0)
                 let stdout = String(data: outData, encoding: .utf8) ?? ""
                 let stderr = String(data: errData, encoding: .utf8) ?? ""
                 let exitCode = process.terminationStatus
