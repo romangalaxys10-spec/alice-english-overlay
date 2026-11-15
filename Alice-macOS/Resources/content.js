@@ -131,6 +131,12 @@
     'Готовые команды': 'Ready prompts', 'Мои работы': 'My works', 'Выполненные': 'Completed',
     'ЕГЭ по математике': 'Exam prep: math', 'Математика — разбор по фото': 'Math — solve from a photo',
     'Репетитор': 'Tutor', 'История': 'History',
+    'Ответ в режиме интеллекта «Эксперт»': 'Expert Mode Reply',
+    'Ответ в режиме интеллекта «Авто»': 'Auto Mode Reply',
+    'Развернуть': 'Expand', 'Свернуть': 'Collapse',
+    'Переносить': 'Wrap', 'Копировать': 'Copy', 'Скопировать': 'Copy',
+    'Копировать код': 'Copy code', 'Скопировано': 'Copied',
+    'Свернуть код': 'Collapse code', 'Развернуть код': 'Expand code',
     // main screen
     'Привет!': 'Hi there!', 'Чем помочь сегодня?': 'How can I help today?',
     'Создадим шедевр вместе?': 'Shall we create a masterpiece together?',
@@ -563,9 +569,40 @@
   var CSS = [
     '.alice-enx-root{all:initial}',
     '*[data-alice-enx]{font-family:-apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;box-sizing:border-box}',
+    /* chat.z.ai Obsidian Theme Core */
+    'html, body, .AliceChat, .AliceLayout, [class*="Chat_root"], [class*="Layout_root"], [class*="MainPage"], main, [class*="Page_root"] { background: radial-gradient(1200px 600px at 50% -120px, rgba(124,58,237,.10), transparent 60%), #0a0b10 !important; color: #f1f5f9 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important; -webkit-font-smoothing: antialiased !important; }',
+    'aside, nav, [class*="Sidebar"], [class*="sidebar"], [class*="Navigation"], [class*="SidePanel"] { background: #07080c !important; border-right: 1px solid rgba(255,255,255,.06) !important; }',
+    'aside *, nav *, [class*="Sidebar"] *, [class*="sidebar"] * { border-color: rgba(255,255,255,.06) !important; }',
+    'aside button, aside a, nav button, nav a, [class*="Sidebar"] button, [class*="Sidebar"] a { color: #94a3b8 !important; transition: all .15s ease !important; }',
+    'aside button:hover, aside a:hover, nav button:hover, nav a:hover, [class*="Sidebar"] button:hover, [class*="Sidebar"] a:hover { background: rgba(255,255,255,.05) !important; color: #f8fafc !important; border-radius: 8px !important; }',
+    'header, [class*="Header"], [class*="header"] { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,.05) !important; }',
+    'button[aria-label="Войти"], button[class*="Login"], a[class*="Login"], [class*="HeaderAuth"], [class*="AuthButton"] { background: rgba(255,255,255,.06) !important; border: 1px solid rgba(255,255,255,.12) !important; color: #e2e8f0 !important; border-radius: 999px !important; font-size: 13px !important; padding: 5px 16px !important; font-weight: 500 !important; box-shadow: 0 2px 8px rgba(0,0,0,.2) !important; transition: all .15s ease !important; }',
+    'button[aria-label="Войти"]:hover, button[class*="Login"]:hover, a[class*="Login"]:hover { background: rgba(255,255,255,.12) !important; color: #fff !important; border-color: rgba(255,255,255,.22) !important; }',
+    '.Message_from_user, [data-message-role="user"], .alice-enx-user-msg { background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(99,102,241,.16)) !important; border: 1px solid rgba(139,92,246,.35) !important; border-radius: 18px 18px 4px 18px !important; color: #f8fafc !important; box-shadow: 0 4px 16px rgba(0,0,0,.25) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; padding: 12px 18px !important; }',
+    '.Message:not(.Message_from_user), [data-message-role="assistant"], .alice-enx-alice-msg { background: transparent !important; color: #e2e8f0 !important; font-size: 14.5px !important; line-height: 1.65 !important; letter-spacing: -0.005em !important; }',
+    '.Message:not(.Message_from_user) p, [data-message-role="assistant"] p { color: #e2e8f0 !important; }',
+    '.Message:not(.Message_from_user) strong, .Message:not(.Message_from_user) b { color: #f8fafc !important; }',
+    '.Message:not(.Message_from_user) li { color: #e2e8f0 !important; line-height: 1.65 !important; }',
+    '[class*="StatusMessage"], [class*="HeaderIndicator"], [class*="ModeIndicator"], [class*="Status_root"] { display: inline-flex !important; align-items: center !important; gap: 5px !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.05em !important; text-transform: uppercase !important; color: #a78bfa !important; background: rgba(139,92,246,.12) !important; border: 1px solid rgba(139,92,246,.25) !important; border-radius: 999px !important; padding: 3px 10px !important; margin-bottom: 8px !important; }',
+    'pre { background: #08090e !important; border: 1px solid rgba(255,255,255,.09) !important; border-radius: 12px !important; box-shadow: 0 8px 24px rgba(0,0,0,.45) !important; overflow: hidden !important; }',
+    'pre code { color: #e2e8f0 !important; font-family: ui-monospace, Menlo, Monaco, "SF Mono", monospace !important; font-size: 12.5px !important; line-height: 1.55 !important; }',
+    ':not(pre) > code { background: rgba(255,255,255,.08) !important; color: #c4b5fd !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 5px !important; padding: 2px 6px !important; font-family: ui-monospace, Menlo, monospace !important; font-size: 12.5px !important; }',
+    '.StandaloneInput-Container, .AliceInput, [class*="Input_container"], [class*="inputContainer"], form { background: rgba(16,17,26,.85) !important; backdrop-filter: blur(24px) !important; -webkit-backdrop-filter: blur(24px) !important; border: 1px solid rgba(255,255,255,.1) !important; border-radius: 20px !important; box-shadow: 0 16px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04) !important; transition: border-color .2s, box-shadow .2s !important; }',
+    '.StandaloneInput-Container:focus-within, .AliceInput:focus-within, form:focus-within { border-color: rgba(139,92,246,.6) !important; box-shadow: 0 16px 48px rgba(0,0,0,.65), 0 0 0 3px rgba(139,92,246,.2) !important; }',
+    'textarea { color: #f8fafc !important; background: transparent !important; caret-color: #a855f7 !important; }',
+    'textarea::placeholder { color: #64748b !important; }',
+    'button[aria-label="Отправить"], button[aria-label="Send"], [data-testid="oknyx"] { background: linear-gradient(135deg, #7c3aed, #6366f1) !important; border: none !important; border-radius: 50% !important; box-shadow: 0 2px 10px rgba(124,58,237,.45) !important; transition: all .15s ease !important; }',
+    'button[aria-label="Отправить"]:hover, button[aria-label="Send"]:hover, [data-testid="oknyx"]:hover { transform: scale(1.05) !important; box-shadow: 0 4px 16px rgba(124,58,237,.65) !important; }',
+    '::-webkit-scrollbar { width: 6px; height: 6px; }',
+    '::-webkit-scrollbar-track { background: transparent; }',
+    '::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }',
+    '::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }',
+    '::selection { background: rgba(139,92,246,.35); color: #fff; }',
+    /* Mode bar: chat.z.ai capsule */
     '.alice-enx-modebar{position:fixed;z-index:200;display:flex;align-items:center;gap:2px;padding:4px 6px;border-radius:999px;',
-      'background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);',
-      'border:1px solid rgba(20,20,30,.09);box-shadow:0 10px 30px rgba(10,10,30,.13);max-width:calc(100vw - 24px);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;box-sizing:border-box}',
+      'background:rgba(13,14,22,.88) !important;backdrop-filter:blur(24px) !important;-webkit-backdrop-filter:blur(24px) !important;',
+      'border:1px solid rgba(255,255,255,.1) !important;box-shadow:0 12px 36px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04) !important;',
+      'max-width:calc(100vw - 24px);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;box-sizing:border-box}',
     'iframe[src*="passport.yandex"], [class*="PassportModal"], [class*="LoginModal"], .AuthPopup {display:none !important;pointer-events:none !important;visibility:hidden !important}',
     '.alice-enx-cmd-result{margin:6px 0 10px;padding:8px 12px;background:#0d0d14;border:1px solid rgba(74,222,128,.35);border-radius:8px;font:400 12px/1.4 ui-monospace,Menlo,monospace;color:#4ade80;white-space:pre-wrap;word-break:break-all}',
     '.alice-enx-auto-harness-card{margin:8px 0 12px;padding:10px 14px;border-radius:10px;background:#13131c;border:1px solid rgba(108,76,240,.35);font-family:ui-monospace,Menlo,monospace;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:all .2s}',
@@ -613,18 +650,13 @@
     '.alice-enx-loop-story-item.passed .alice-enx-loop-story-title{text-decoration:line-through;color:#64748b}',
     '.alice-enx-loop-story-item.active{background:rgba(108,76,240,.15);border-color:rgba(108,76,240,.3)}',
     '.alice-enx-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:none;background:transparent;cursor:pointer;',
-      'font:500 12.5px/1 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#454551;white-space:nowrap;transition:background .15s,color .15s}',
-    '.alice-enx-pill:hover{background:rgba(108,76,240,.08);color:#2b2b33}',
-    '.alice-enx-pill.alice-enx-active{background:rgba(108,76,240,.13);color:#5b3fd6;font-weight:600}',
+      'font:500 12px/1 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#94a3b8;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}',
+    '.alice-enx-pill:hover{background:rgba(255,255,255,.07);color:#f8fafc}',
+    '.alice-enx-pill.alice-enx-active{background:linear-gradient(135deg,rgba(124,58,237,.32),rgba(99,102,241,.28)) !important;border:1px solid rgba(139,92,246,.5) !important;color:#ede9fe !important;font-weight:600;box-shadow:0 0 12px rgba(139,92,246,.25)}',
     '.alice-enx-pill svg{width:14px;height:14px;flex:0 0 auto}',
     '.alice-enx-pill.alice-enx-busy{opacity:.55;pointer-events:none}',
-    '.alice-enx-sep{width:1px;height:16px;background:rgba(20,20,30,.12);margin:0 3px}',
-    '.alice-enx-gear{color:#8a8a95}',
-    '@media (prefers-color-scheme:dark){',
-      '.alice-enx-modebar{background:rgba(26,26,32,.86);border-color:rgba(255,255,255,.10);box-shadow:0 10px 30px rgba(0,0,0,.45)}',
-      '.alice-enx-pill{color:#c9c9d2}.alice-enx-pill:hover{background:rgba(139,109,255,.14);color:#e8e8ee}',
-      '.alice-enx-pill.alice-enx-active{background:rgba(139,109,255,.20);color:#c0b2ff}',
-      '.alice-enx-sep{background:rgba(255,255,255,.14)}.alice-enx-gear{color:#8f8f9c}}',
+    '.alice-enx-sep{width:1px;height:16px;background:rgba(255,255,255,.12);margin:0 3px}',
+    '.alice-enx-gear{color:#94a3b8}',
     '@media (max-width:860px){',
       '.alice-enx-modebar{padding:3px 5px;gap:2px}',
       '.alice-enx-pill{padding:5px 8px;font-size:11.5px;gap:3px}',
@@ -653,15 +685,15 @@
       '.alice-enx-loop-controls{margin-left:auto}',
       '.alice-enx-loop-ctrl-btn{padding:2px 7px;font-size:10.5px}',
     '}',
-    /* Collapsible prompt starters */
+    /* Collapsible prompt starters: chat.z.ai obsidian glass aesthetic */
     '.alice-enx-chips-wrapper{max-width:720px;width:100%;margin:10px auto 18px;padding:0 12px;box-sizing:border-box;transition:all .2s ease}',
-    '.alice-enx-chips-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 6px}',
-    '.alice-enx-chips-title{font:600 11px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#8a8a98;letter-spacing:.04em;text-transform:uppercase}',
-    '.alice-enx-chips-toggle{background:rgba(20,20,30,.06);border:1px solid rgba(20,20,30,.12);border-radius:6px;padding:3px 9px;font:500 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#6b7280;cursor:pointer;transition:all .15s}',
-    '.alice-enx-chips-toggle:hover{background:rgba(108,76,240,.12);border-color:rgba(108,76,240,.3);color:#6c4cf0}',
+    '.alice-enx-chips-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 8px}',
+    '.alice-enx-chips-title{font:600 11px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#64748b;letter-spacing:.05em;text-transform:uppercase}',
+    '.alice-enx-chips-toggle{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 9px;font:500 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;cursor:pointer;transition:all .15s}',
+    '.alice-enx-chips-toggle:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff}',
     '.alice-enx-chips-mini-row{display:none;align-items:center;gap:6px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}',
-    '.alice-enx-chip-mini{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid rgba(20,20,30,.1);color:#374151;font:500 11.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s}',
-    '.alice-enx-chip-mini:hover{background:rgba(108,76,240,.12);border-color:rgba(108,76,240,.4);color:#5b3fd6}',
+    '.alice-enx-chip-mini{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:rgba(18,19,28,.8);border:1px solid rgba(255,255,255,.08);color:#cbd5e1;font:500 11.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}',
+    '.alice-enx-chip-mini:hover{background:rgba(28,29,42,.9);border-color:rgba(139,92,246,.45);color:#fff;box-shadow:0 0 12px rgba(124,58,237,.25)}',
     '.alice-enx-chips-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}',
     '.alice-enx-chips-wrapper.collapsed .alice-enx-chips-grid{display:none !important}',
     '.alice-enx-chips-wrapper.collapsed .alice-enx-chips-mini-row{display:flex !important}',
@@ -669,20 +701,12 @@
     '.AliceChat-Messages,[class*="MessagesList"]{padding-bottom:56px !important}',
     '[data-testid="alice-chat-message"]:last-child,.AliceChat-Message:last-child{margin-bottom:52px !important}',
     '.alice-enx-chip{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;cursor:pointer;text-align:left;',
-      'background:rgba(255,255,255,.75);border:1px solid rgba(20,20,30,.08);',
-      'font:400 13px/1.45 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#3c3c46;',
-      'transition:border-color .15s,box-shadow .15s,transform .15s}',
-    '.alice-enx-chip:hover{border-color:rgba(108,76,240,.45);box-shadow:0 6px 18px rgba(108,76,240,.12);transform:translateY(-1px)}',
-    '.alice-enx-chip b{display:block;font-weight:600;font-size:13px;color:#26262e}',
-    '.alice-enx-chip span{display:block;font-weight:400;font-size:11.5px;color:#8b8b96;margin-top:2px}',
-    '@media (prefers-color-scheme:dark){',
-      '.alice-enx-chips-toggle{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#cbd5e1}',
-      '.alice-enx-chips-toggle:hover{background:rgba(139,92,246,.25);border-color:rgba(139,92,246,.5);color:#fff}',
-      '.alice-enx-chip-mini{background:rgba(28,28,38,.8);border-color:rgba(255,255,255,.12);color:#cbd5e1}',
-      '.alice-enx-chip-mini:hover{background:rgba(139,92,246,.25);border-color:rgba(139,92,246,.5);color:#fff}',
-      '.alice-enx-chip{background:rgba(32,32,40,.72);border-color:rgba(255,255,255,.09);color:#c6c6cf}',
-      '.alice-enx-chip b{color:#e9e9f0}.alice-enx-chip span{color:#96969f}',
-      '.alice-enx-chip:hover{border-color:rgba(139,109,255,.55)}}',
+      'background:rgba(16,17,26,.75);border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 16px rgba(0,0,0,.3);',
+      'font:400 13px/1.45 -apple-system,BlinkMacSystemFont,"YS Text","Segoe UI",Roboto,sans-serif;color:#cbd5e1;',
+      'backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .15s ease}',
+    '.alice-enx-chip:hover{background:rgba(24,25,38,.85);border-color:rgba(139,92,246,.45);box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(124,58,237,.18);transform:translateY(-2px);color:#fff}',
+    '.alice-enx-chip b{display:block;font-weight:600;font-size:13px;color:#f1f5f9}',
+    '.alice-enx-chip span{display:block;font-weight:400;font-size:11.5px;color:#94a3b8;margin-top:2px}',
     /* reply tool buttons */
     '.alice-enx-toolsbar{display:flex;align-items:center;gap:4px;margin-top:6px}',
     '.alice-enx-rbtn{display:inline-flex;align-items:center;gap:5px;border:none;background:transparent;cursor:pointer;padding:5px 8px;border-radius:8px;',
@@ -718,40 +742,40 @@
     'html.alice-enx-hide-upsell .alice-enx-upsell,.alice-enx-upsell{display:none !important}',
     'html.alice-enx-suggests-off .MainPageSuggests-Item{display:none !important}',
     '.alice-enx-hidden{display:none !important}',
-    /* brainstorm modal & HUD */
-    '.alice-enx-modal-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,20,.58);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:2147483500;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}',
-    '.alice-enx-modal{width:min(600px,96vw);max-height:90vh;overflow-y:auto;background:rgba(255,255,255,.98);border-radius:20px;box-shadow:0 24px 64px rgba(10,10,30,.28);border:1px solid rgba(20,20,30,.1);padding:24px 26px;box-sizing:border-box;color:#222}',
-    '.alice-enx-modal h2{margin:0 0 6px;font:700 18px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28;display:flex;align-items:center;gap:8px}',
-    '.alice-enx-modal p.alice-enx-modal-sub{margin:0 0 16px;font:400 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#747482}',
+    /* brainstorm modal & HUD: chat.z.ai obsidian aesthetic */
+    '.alice-enx-modal-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(5,5,10,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:2147483500;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}',
+    '.alice-enx-modal{width:min(600px,96vw);max-height:90vh;overflow-y:auto;background:#0f1017;border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.1);padding:24px 26px;box-sizing:border-box;color:#f1f5f9}',
+    '.alice-enx-modal h2{margin:0 0 6px;font:700 18px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;display:flex;align-items:center;gap:8px}',
+    '.alice-enx-modal p.alice-enx-modal-sub{margin:0 0 16px;font:400 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8}',
     '.alice-enx-field{margin-bottom:14px}',
-    '.alice-enx-field label{display:block;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#3e3e4a;margin-bottom:6px}',
-    '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(20,20,30,.18);padding:8px 12px;font:400 13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28 !important;background:#fff !important;-webkit-text-fill-color:#1e1e28 !important;transition:border-color .15s}',
-    '.alice-enx-input:focus, .alice-enx-textarea:focus, .alice-enx-select:focus{border-color:#6C4CF0 !important;outline:none;box-shadow:0 0 0 3px rgba(108,76,240,.12)}',
-    '.alice-enx-select option{background:#fff !important;color:#1e1e28 !important}',
+    '.alice-enx-field label{display:block;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;margin-bottom:6px}',
+    '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(255,255,255,.12);padding:8px 12px;font:400 13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#f8fafc !important;background:#141520 !important;-webkit-text-fill-color:#f8fafc !important;transition:border-color .15s}',
+    '.alice-enx-input:focus, .alice-enx-textarea:focus, .alice-enx-select:focus{border-color:#8b5cf6 !important;outline:none;box-shadow:0 0 0 3px rgba(139,92,246,.25)}',
+    '.alice-enx-select option{background:#141520 !important;color:#f8fafc !important}',
     '.alice-enx-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}',
     '@media (max-width:540px){.alice-enx-role-grid{grid-template-columns:1fr}}',
-    '.alice-enx-role-card{position:relative;border:1.5px solid rgba(20,20,30,.12);border-radius:12px;padding:10px 12px 10px 32px;cursor:pointer;background:#fff;transition:all .15s;text-align:left;user-select:none}',
-    '.alice-enx-role-card::before{content:"";position:absolute;left:10px;top:12px;width:15px;height:15px;border-radius:4px;border:1.5px solid rgba(20,20,30,.25);background:#fff;transition:all .15s;box-sizing:border-box}',
-    '.alice-enx-role-card:hover{border-color:rgba(108,76,240,.4);background:rgba(108,76,240,.02)}',
-    '.alice-enx-role-card.active{border-color:#6C4CF0;background:rgba(108,76,240,.08);box-shadow:0 4px 12px rgba(108,76,240,.12)}',
-    '.alice-enx-role-card.active::before{content:"✓";background:#6C4CF0;border-color:#6C4CF0;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:12px;text-align:center}',
-    '.alice-enx-role-title{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#222;display:flex;align-items:center;gap:6px}',
-    '.alice-enx-role-desc{font:400 11px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#787886;margin-top:4px}',
+    '.alice-enx-role-card{position:relative;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 12px 10px 32px;cursor:pointer;background:#141520;transition:all .15s;text-align:left;user-select:none}',
+    '.alice-enx-role-card::before{content:"";position:absolute;left:10px;top:12px;width:15px;height:15px;border-radius:4px;border:1px solid rgba(255,255,255,.25);background:#0a0b10;transition:all .15s;box-sizing:border-box}',
+    '.alice-enx-role-card:hover{border-color:rgba(139,92,246,.5);background:rgba(139,92,246,.08)}',
+    '.alice-enx-role-card.active{border-color:#8b5cf6;background:rgba(139,92,246,.18);box-shadow:0 4px 16px rgba(124,58,237,.25)}',
+    '.alice-enx-role-card.active::before{content:"✓";background:#7c3aed;border-color:#7c3aed;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:12px;text-align:center}',
+    '.alice-enx-role-title{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#f8fafc;display:flex;align-items:center;gap:6px}',
+    '.alice-enx-role-desc{font:400 11px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:4px}',
     '.alice-enx-rpills{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}',
-    '.alice-enx-rpill{border:1px solid rgba(20,20,30,.15);border-radius:8px;padding:6px 12px;background:#fff;font:500 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#444;cursor:pointer;transition:all .15s}',
-    '.alice-enx-rpill:hover{border-color:rgba(108,76,240,.4);color:#6C4CF0}',
-    '.alice-enx-rpill.active{border-color:#6C4CF0;background:rgba(108,76,240,.12);color:#6C4CF0;font-weight:600}',
-    '.alice-enx-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid rgba(20,20,30,.08)}',
-    '.alice-enx-btn-primary{border:none;border-radius:10px;background:#6C4CF0;color:#fff;font:600 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:10px 18px;cursor:pointer;transition:background .15s}',
-    '.alice-enx-btn-primary:hover{background:#583ac9}',
-    '.alice-enx-btn-secondary{border:1px solid rgba(20,20,30,.15);border-radius:10px;background:transparent;color:#555;font:500 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:9px 16px;cursor:pointer}',
-    '.alice-enx-btn-secondary:hover{background:rgba(20,20,30,.04)}',
+    '.alice-enx-rpill{border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;background:#141520;font:500 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;cursor:pointer;transition:all .15s}',
+    '.alice-enx-rpill:hover{border-color:rgba(139,92,246,.5);color:#c4b5fd}',
+    '.alice-enx-rpill.active{border-color:#8b5cf6;background:rgba(139,92,246,.25);color:#ede9fe;font-weight:600}',
+    '.alice-enx-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}',
+    '.alice-enx-btn-primary{border:none;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;font:600 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:10px 18px;cursor:pointer;transition:opacity .15s;box-shadow:0 2px 10px rgba(124,58,237,.4)}',
+    '.alice-enx-btn-primary:hover{opacity:.9}',
+    '.alice-enx-btn-secondary{border:1px solid rgba(255,255,255,.14);border-radius:10px;background:transparent;color:#94a3b8;font:500 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:9px 16px;cursor:pointer}',
+    '.alice-enx-btn-secondary:hover{background:rgba(255,255,255,.06);color:#f1f5f9}',
     /* brainstorm HUD */
-    '.alice-enx-bhud{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483200;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(26,24,42,.95);color:#ede9fe;border:1px solid rgba(139,109,255,.35);box-shadow:0 12px 34px rgba(10,10,30,.4);font:500 12px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);max-width:min(96vw,760px);box-sizing:border-box}',
+    '.alice-enx-bhud{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:2147483200;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(15,16,23,.95);color:#ede9fe;border:1px solid rgba(139,92,246,.35);box-shadow:0 12px 34px rgba(0,0,0,.6);font:500 12px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);max-width:min(96vw,760px);box-sizing:border-box}',
     '.alice-enx-bhud-title{font-weight:700;color:#c0b2ff;display:flex;align-items:center;gap:5px;white-space:nowrap}',
     '.alice-enx-bhud-status{font-weight:400;color:#d8d2f6;font-size:11.5px;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
     '.alice-enx-bhud-btn{border:none;border-radius:999px;cursor:pointer;padding:5px 10px;font:600 11px/1 inherit;transition:all .15s;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}',
-    '.alice-enx-bhud-conclude{background:linear-gradient(135deg,#6C4CF0,#9B6CFF);color:#fff}',
+    '.alice-enx-bhud-conclude{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff}',
     '.alice-enx-bhud-conclude:hover{opacity:.9}',
     '.alice-enx-bhud-stop{background:rgba(240,68,68,.18);color:#fca5a5;border:1px solid rgba(240,68,68,.3)}',
     '.alice-enx-bhud-stop:hover{background:rgba(240,68,68,.3)}',
@@ -761,40 +785,13 @@
     '.alice-enx-bhud-pulse.busy{background:#f59e0b;box-shadow:0 0 8px #f59e0b;animation:aliceEnxPulse 1.2s infinite}',
     '@keyframes aliceEnxPulse{0%,100%{opacity:1}50%{opacity:.35}}',
     /* settings panel */
-    '.alice-enx-panel{position:fixed;z-index:2147483100;min-width:280px;max-width:340px;max-height:85vh;overflow-y:auto;padding:16px;border-radius:18px;background:rgba(255,255,255,.98);box-shadow:0 18px 48px rgba(10,10,30,.25);border:1px solid rgba(20,20,30,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-sizing:border-box;color:#222}',
-    '.alice-enx-panel h3{font:700 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e1e28;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between}',
-    '.alice-enx-panel label{display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551;margin-bottom:4px}',
-    '.alice-enx-panel .alice-enx-select, .alice-enx-panel .alice-enx-textarea{width:100%;box-sizing:border-box;border-radius:8px;border:1px solid rgba(20,20,30,.18);padding:7px 10px;font:500 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;background:#fff !important;color:#1e1e28 !important;-webkit-text-fill-color:#1e1e28 !important}',
-    '.alice-enx-panel .alice-enx-select option{background:#fff !important;color:#1e1e28 !important}',
-    '.alice-enx-panel .alice-enx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px;cursor:pointer;font:400 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#454551}',
-    '.alice-enx-panel .alice-enx-foot{margin-top:10px;font:400 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#a0a0aa;text-align:center}',
-    /* dark mode */
-    '@media (prefers-color-scheme:dark){',
-      '.alice-enx-modal{background:rgba(28,28,38,.98);border-color:rgba(255,255,255,.14);color:#ede9fe;box-shadow:0 24px 64px rgba(0,0,0,.6)}',
-      '.alice-enx-modal h2{color:#f0effa}',
-      '.alice-enx-modal p.alice-enx-modal-sub{color:#9e9ea8}',
-      '.alice-enx-field label{color:#c4c4d0}',
-      '.alice-enx-input, .alice-enx-textarea, .alice-enx-select{background:rgba(42,42,56,.95) !important;border-color:rgba(255,255,255,.18) !important;color:#f0f0f5 !important;-webkit-text-fill-color:#f0f0f5 !important}',
-      '.alice-enx-select option{background:#282838 !important;color:#f0f0f5 !important}',
-      '.alice-enx-role-card{background:rgba(36,36,48,.8);border-color:rgba(255,255,255,.12)}',
-      '.alice-enx-role-card::before{background:rgba(26,26,36,.9);border-color:rgba(255,255,255,.3)}',
-      '.alice-enx-role-card:hover{background:rgba(139,109,255,.12);border-color:rgba(139,109,255,.4)}',
-      '.alice-enx-role-card.active{background:rgba(139,109,255,.2);border-color:#8b6ff0}',
-      '.alice-enx-role-card.active::before{background:#8b6ff0;border-color:#8b6ff0;color:#fff}',
-      '.alice-enx-role-title{color:#e8e8f2}',
-      '.alice-enx-role-desc{color:#a4a4b2}',
-      '.alice-enx-rpill{background:rgba(36,36,48,.8);border-color:rgba(255,255,255,.15);color:#ccc}',
-      '.alice-enx-rpill.active{background:rgba(139,109,255,.25);border-color:#8b6ff0;color:#c0b2ff}',
-      '.alice-enx-btn-secondary{border-color:rgba(255,255,255,.16);color:#ccc}',
-      '.alice-enx-btn-secondary:hover{background:rgba(255,255,255,.06)}',
-      '.alice-enx-panel{background:rgba(28,28,38,.98);border-color:rgba(255,255,255,.16);box-shadow:0 20px 54px rgba(0,0,0,.65);color:#ede9fe}',
-      '.alice-enx-panel h3{color:#f0effa}',
-      '.alice-enx-panel label{color:#c4c4d2}',
-      '.alice-enx-panel .alice-enx-select, .alice-enx-panel .alice-enx-textarea{background:rgba(42,42,56,.95) !important;border-color:rgba(255,255,255,.18) !important;color:#f5f4fb !important;-webkit-text-fill-color:#f5f4fb !important}',
-      '.alice-enx-panel .alice-enx-select option{background:#282838 !important;color:#f5f4fb !important}',
-      '.alice-enx-panel .alice-enx-row{color:#d4d4e0}',
-      '.alice-enx-panel .alice-enx-foot{color:#888898}',
-    '}',
+    '.alice-enx-panel{position:fixed;z-index:2147483100;min-width:280px;max-width:340px;max-height:85vh;overflow-y:auto;padding:16px;border-radius:18px;background:rgba(15,16,23,.96);box-shadow:0 18px 48px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-sizing:border-box;color:#f1f5f9}',
+    '.alice-enx-panel h3{font:700 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between}',
+    '.alice-enx-panel label{display:block;font:600 11.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1;margin-bottom:4px}',
+    '.alice-enx-panel .alice-enx-select, .alice-enx-panel .alice-enx-textarea{width:100%;box-sizing:border-box;border-radius:8px;border:1px solid rgba(255,255,255,.12);padding:7px 10px;font:500 12.5px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;background:#141520 !important;color:#f8fafc !important;-webkit-text-fill-color:#f8fafc !important}',
+    '.alice-enx-panel .alice-enx-select option{background:#141520 !important;color:#f8fafc !important}',
+    '.alice-enx-panel .alice-enx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px;cursor:pointer;font:400 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#cbd5e1}',
+    '.alice-enx-panel .alice-enx-foot{margin-top:10px;font:400 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;color:#64748b;text-align:center}',
     /* in-app terminal & harness workbench */
     '.alice-enx-workbench{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(1100px,calc(100vw - 16px));height:min(370px,46vh);background:rgba(18,18,26,.97);border-radius:16px 16px 0 0;box-shadow:0 -16px 48px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);border-bottom:none;z-index:2147483400;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#eee;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .2s ease,height .2s ease}',
     '.alice-enx-workbench.minimized{height:42px}',
@@ -860,36 +857,42 @@
     '.alice-enx-session-title{font:600 13px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.alice-enx-session-meta{font:400 11.5px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:4px}',
     '.alice-enx-session-actions{display:flex;align-items:center;gap:6px}',
-    /* Code block action buttons and badges */
+    /* Code block action buttons and headers: chat.z.ai aesthetic */
+    '.alice-enx-code-header-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:#0d0e15;border:1px solid rgba(255,255,255,.09);border-bottom:none;border-radius:12px 12px 0 0;margin-top:10px;box-sizing:border-box}',
+    '.alice-enx-code-header-bar + pre{margin-top:0 !important;border-top-left-radius:0 !important;border-top-right-radius:0 !important}',
+    '.alice-enx-code-lang-tag{font:600 11.5px/1 ui-monospace,Menlo,monospace;color:#94a3b8;text-transform:lowercase;letter-spacing:0.02em}',
+    '[class*="CodeBlock_header"], [class*="codeBlockHeader"], [class*="Snippet_header"]{background:#0d0e15 !important;border-bottom:1px solid rgba(255,255,255,.08) !important;color:#94a3b8 !important;padding:6px 12px !important;display:flex !important;align-items:center !important}',
+    '[class*="CodeBlock_header"] button, [class*="codeBlockHeader"] button{color:#94a3b8 !important;background:transparent !important;border:none !important;font-size:11.5px !important;transition:color .15s !important;cursor:pointer !important}',
+    '[class*="CodeBlock_header"] button:hover, [class*="codeBlockHeader"] button:hover{color:#f1f5f9 !important}',
     '.alice-enx-code-actions{display:inline-flex;align-items:center;gap:6px;margin:0 8px 0 0;vertical-align:middle}',
-    '.alice-enx-code-actions-floating{position:absolute;top:6px;left:70px;z-index:10}',
+    '.alice-enx-code-actions-floating{position:absolute;top:6px;right:12px;z-index:10}',
     '.alice-enx-code-btn{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:6px;font:600 11.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s ease;user-select:none;box-sizing:border-box;text-decoration:none}',
     '.alice-enx-code-btn-icon{font-size:10px;line-height:1}',
-    '.alice-enx-code-btn-run{background:#181824;color:#f1f5f9;border:1px solid rgba(255,255,255,.18);box-shadow:0 1px 3px rgba(0,0,0,.3)}',
-    '.alice-enx-code-btn-run:hover{background:#262638;border-color:rgba(255,255,255,.35);color:#fff}',
+    '.alice-enx-code-btn-run{background:rgba(255,255,255,.08);color:#f1f5f9;border:1px solid rgba(255,255,255,.14);box-shadow:0 1px 3px rgba(0,0,0,.3)}',
+    '.alice-enx-code-btn-run:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.28);color:#fff}',
     '.alice-enx-code-btn-run:active{transform:translateY(1px)}',
-    '.alice-enx-code-btn-answer{background:linear-gradient(135deg,#6C4CF0,#8B5CF6);color:#fff !important;border:1px solid rgba(167,139,250,.5);box-shadow:0 2px 6px rgba(108,76,240,.35);font-weight:700}',
-    '.alice-enx-code-btn-answer:hover{background:linear-gradient(135deg,#5b3ce0,#7c3aed);border-color:rgba(196,181,253,.8);box-shadow:0 3px 10px rgba(108,76,240,.5);color:#fff !important}',
+    '.alice-enx-code-btn-answer{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff !important;border:1px solid rgba(167,139,250,.4);box-shadow:0 2px 6px rgba(124,58,237,.35);font-weight:600}',
+    '.alice-enx-code-btn-answer:hover{background:linear-gradient(135deg,#6d28d9,#4f46e5);border-color:rgba(196,181,253,.7);box-shadow:0 3px 10px rgba(124,58,237,.5);color:#fff !important}',
     '.alice-enx-code-btn-answer:active{transform:translateY(1px)}',
-    '.alice-enx-code-btn-save{background:#132018;color:#86efac;border:1px solid rgba(74,222,128,.35);box-shadow:0 1px 3px rgba(0,0,0,.25)}',
-    '.alice-enx-code-btn-save:hover{background:#1a2c20;border-color:rgba(74,222,128,.6);color:#bbf7d0}',
+    '.alice-enx-code-btn-save{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.35);box-shadow:0 1px 3px rgba(0,0,0,.25)}',
+    '.alice-enx-code-btn-save:hover{background:rgba(16,185,129,.25);border-color:rgba(16,185,129,.55);color:#a7f3d0}',
     '.alice-enx-code-btn-save:active{transform:translateY(1px)}',
     /* Refusal Override Card */
     '.alice-enx-refusal-card{margin-top:10px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);display:flex;align-items:center;gap:8px}',
-    /* Sidebar Active Chats (Zero Login Multi-Chat) */
-    '.alice-enx-sidebar-chats{display:flex;flex-direction:column;margin:12px 8px 8px 8px;padding-top:12px;border-top:1px solid rgba(0,0,0,.08);max-height:calc(100vh - 270px);overflow-y:auto}',
+    /* Sidebar Active Chats (Zero Login Multi-Chat): dark obsidian */
+    '.alice-enx-sidebar-chats{display:flex;flex-direction:column;margin:12px 8px 8px 8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);max-height:calc(100vh - 270px);overflow-y:auto}',
     '.alice-enx-sidebar-chats-head{display:flex;align-items:center;justify-content:space-between;padding:0 6px 8px 6px}',
-    '.alice-enx-sidebar-chats-title{font:700 11px/1 -apple-system,BlinkMacSystemFont,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:flex;align-items:center;gap:6px}',
-    '.alice-enx-sidebar-chats-badge{font:600 9.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:2px 5px;border-radius:4px;background:rgba(108,76,240,.12);color:#6C4CF0;border:1px solid rgba(108,76,240,.25);text-transform:none;letter-spacing:0}',
-    '.alice-enx-sidebar-new-btn{background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.12);border-radius:6px;color:#334155;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;transition:all .15s}',
-    '.alice-enx-sidebar-new-btn:hover{background:rgba(108,76,240,.4);color:#fff;border-color:rgba(108,76,240,.6)}',
-    '.alice-enx-sidebar-chat-item{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:8px;margin-bottom:3px;cursor:pointer;background:transparent;border:1px solid transparent;transition:all .12s;color:#334155;text-decoration:none;user-select:none}',
-    '.alice-enx-sidebar-chat-item:hover{background:rgba(0,0,0,.05);color:#0f172a}',
-    '.alice-enx-sidebar-chat-item.active{background:linear-gradient(135deg,#6C4CF0,#7c3aed);border-color:#6C4CF0;color:#fff !important;box-shadow:0 2px 8px rgba(108,76,240,.3)}',
+    '.alice-enx-sidebar-chats-title{font:700 11px/1 -apple-system,BlinkMacSystemFont,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;display:flex;align-items:center;gap:6px}',
+    '.alice-enx-sidebar-chats-badge{font:600 9.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:2px 5px;border-radius:4px;background:rgba(124,58,237,.2);color:#c4b5fd;border:1px solid rgba(124,58,237,.35);text-transform:none;letter-spacing:0}',
+    '.alice-enx-sidebar-new-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:#cbd5e1;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;transition:all .15s}',
+    '.alice-enx-sidebar-new-btn:hover{background:rgba(124,58,237,.35);color:#fff;border-color:rgba(139,92,246,.5)}',
+    '.alice-enx-sidebar-chat-item{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:8px;margin-bottom:3px;cursor:pointer;background:transparent;border:1px solid transparent;transition:all .12s;color:#cbd5e1;text-decoration:none;user-select:none}',
+    '.alice-enx-sidebar-chat-item:hover{background:rgba(255,255,255,.06);color:#f8fafc}',
+    '.alice-enx-sidebar-chat-item.active{background:linear-gradient(135deg,#7c3aed,#6366f1);border-color:#8b5cf6;color:#fff !important;box-shadow:0 2px 8px rgba(124,58,237,.3)}',
     '.alice-enx-sidebar-chat-info{flex:1;min-width:0;margin-right:6px}',
-    '.alice-enx-sidebar-chat-name{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-sidebar-chat-name{font:600 12.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-name{color:#fff !important}',
-    '.alice-enx-sidebar-chat-sub{font:400 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#64748b;margin-top:2px}',
+    '.alice-enx-sidebar-chat-sub{font:400 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:2px}',
     '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-sub{color:rgba(255,255,255,.85) !important}',
     '.alice-enx-sidebar-chat-del{opacity:0;background:transparent;border:none;color:#94a3b8;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;line-height:1;transition:opacity .15s,color .15s}',
     '.alice-enx-sidebar-chat-item.active .alice-enx-sidebar-chat-del{color:rgba(255,255,255,.85) !important}',
@@ -4642,8 +4645,9 @@
       // Never process an inner pre that is already inside another pre
       if (pre.parentElement && pre.parentElement.closest('pre')) continue;
 
-      // Skip if already enhanced
-      if (pre.querySelector('.alice-enx-code-actions') || (pre.parentElement && pre.parentElement.querySelector('.alice-enx-code-actions'))) continue;
+      var codeContainer = pre.closest('[class*="CodeBlock"], [class*="codeBlock"], [class*="Snippet"], [class*="snippet"], [class*="Code_root"], [class*="code_root"]') || pre.parentElement || pre;
+      if (codeContainer.querySelector('.alice-enx-code-actions') || pre.querySelector('.alice-enx-code-actions') || pre.getAttribute('data-alice-enx-enhanced')) continue;
+      pre.setAttribute('data-alice-enx-enhanced', '1');
 
       var codeTxt = extractCleanCode(pre);
       if (!codeTxt || !codeTxt.trim()) continue;
@@ -4788,26 +4792,28 @@
         bar.appendChild(saveBtn);
       }
 
-      // Smart placement: insert into existing header before native buttons, or fallback to floating
-      var inserted = false;
-      var headerBtn = pre.querySelector('button:not([data-alice-enx]):not(.alice-enx-code-btn)') ||
-                      (pre.parentElement && pre.parentElement.querySelector('button:not([data-alice-enx]):not(.alice-enx-code-btn)'));
-      if (headerBtn && headerBtn.parentNode) {
-        headerBtn.parentNode.insertBefore(bar, headerBtn);
-        inserted = true;
-      }
-      if (!inserted) {
-        var headerEl = pre.querySelector('[class*="Header"], [class*="header"]') ||
-                       (pre.parentElement && pre.parentElement.querySelector('[class*="Header"], [class*="header"]'));
-        if (headerEl) {
+      // Smart placement: insert into code block header before native buttons, or create clean header bar
+      if (!bar.children.length) continue;
+      var headerEl = codeContainer.querySelector('[class*="Header"], [class*="header"]');
+      if (headerEl) {
+        var firstBtn = headerEl.querySelector('button');
+        if (firstBtn && firstBtn.parentNode) {
+          firstBtn.parentNode.insertBefore(bar, firstBtn);
+        } else {
           headerEl.appendChild(bar);
-          inserted = true;
         }
-      }
-      if (!inserted) {
-        pre.style.position = 'relative';
-        bar.classList.add('alice-enx-code-actions-floating');
-        pre.appendChild(bar);
+      } else {
+        var standaloneHeader = document.createElement('div');
+        standaloneHeader.className = 'alice-enx-code-header-bar';
+        standaloneHeader.setAttribute('data-alice-enx', '1');
+        var langPill = document.createElement('span');
+        langPill.className = 'alice-enx-code-lang-tag';
+        langPill.textContent = lang || 'code';
+        standaloneHeader.appendChild(langPill);
+        standaloneHeader.appendChild(bar);
+        if (pre.parentNode) {
+          pre.parentNode.insertBefore(standaloneHeader, pre);
+        }
       }
     }
   }

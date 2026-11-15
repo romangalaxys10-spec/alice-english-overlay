@@ -24,6 +24,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         window.collectionBehavior = [.fullScreenPrimary]
         window.title = "Alice AI"
         window.titleVisibility = .visible
+        window.appearance = NSAppearance(named: .darkAqua)
+        window.backgroundColor = NSColor(calibratedRed: 0.04, green: 0.04, blue: 0.06, alpha: 1.0)
         window.setFrameAutosaveName("AliceMainWindowFrame_v4")
         window.isReleasedWhenClosed = false
 
