@@ -68,6 +68,9 @@
   window.__aliceComputerUse = function (action, params, callback) {
     sendNative('computerUse', { action: action, params: params }, callback);
   };
+  window.__aliceResetSession = function (callback) {
+    sendNative('resetSession', {}, callback);
+  };
 
   window.__aliceGetSystemInfo = function (callback) {
     sendNative('computerUse', { action: 'getSystemInfo' }, callback);
@@ -86,6 +89,7 @@
     write: window.__aliceWriteFile,
     gitSync: window.__aliceGitSync,
     computer: window.__aliceComputerUse,
+    resetSession: window.__aliceResetSession,
     getSystemInfo: window.__aliceGetSystemInfo,
     runAppleScript: function (script, cb) { window.__aliceComputerUse('runAppleScript', { script: script }, cb); },
     openApp: function (name, cb) { window.__aliceComputerUse('openApp', { name: name }, cb); },

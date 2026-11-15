@@ -204,6 +204,10 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
             HarnessService.shared.computerUse(action: action, params: params) { [weak self] ok, data, err in
                 self?.sendCallback(id: reqId, ok: ok, data: data, error: err)
             }
+        } else if type == "resetSession",
+                  let reqId = body["id"] as? String {
+            self.resetAnonymousSession()
+            self.sendCallback(id: reqId, ok: true, data: ["status": "reset"], error: nil)
         }
     }
 
@@ -240,9 +244,10 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         let urlStr = url.absoluteString.lowercased()
 
         // 1. Block any redirection to Yandex Passport / Auth / Phone login page
-        if host.contains("passport.yandex") || host.contains("passport.") || path.contains("/auth") || urlStr.contains("passport.yandex") {
+        let isAuthOrPassport = host.contains("passport.") || host.contains("id.yandex.") || host.contains("auth.yandex.") || host.contains("oauth.yandex.") || path.contains("/auth") || path.contains("/login") || urlStr.contains("passport.yandex") || urlStr.contains("id.yandex.ru") || urlStr.contains("retpath=")
+        if isAuthOrPassport {
             decisionHandler(.cancel)
-            if self.webView.url?.host?.contains("passport.") == true || self.webView.url == nil {
+            if self.webView.url?.host?.contains("passport.") == true || self.webView.url?.host?.contains("id.yandex.") == true || self.webView.url == nil {
                 self.loadInitialPage()
             }
             return
@@ -265,7 +270,7 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         if let currentURL = webView.url {
             let host = currentURL.host?.lowercased() ?? ""
             let urlStr = currentURL.absoluteString.lowercased()
-            if host.contains("passport.") || urlStr.contains("passport.yandex") {
+            if host.contains("passport.") || host.contains("id.yandex.") || urlStr.contains("passport.yandex") || urlStr.contains("id.yandex.ru") {
                 self.loadInitialPage()
                 return
             }
@@ -277,7 +282,7 @@ final class WebViewController: NSViewController, WKNavigationDelegate, WKUIDeleg
         if let url = navigationAction.request.url {
             let host = url.host?.lowercased() ?? ""
             let urlStr = url.absoluteString.lowercased()
-            if host.contains("passport.") || urlStr.contains("passport.yandex") {
+            if host.contains("passport.") || host.contains("id.yandex.") || host.contains("auth.yandex.") || urlStr.contains("passport.yandex") || urlStr.contains("id.yandex.ru") {
                 return nil
             }
             if host.contains("yandex.") || host.contains("ya.ru") {

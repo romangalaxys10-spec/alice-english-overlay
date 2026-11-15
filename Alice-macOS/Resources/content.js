@@ -807,10 +807,29 @@
     '.alice-enx-skill-btn{align-self:flex-start;padding:4px 10px;border-radius:6px;background:rgba(108,76,240,.2);border:1px solid rgba(108,76,240,.4);color:#c4b5fd;font:600 11px/1 inherit}',
     /* Git Sync Tab */
     '.alice-enx-git-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}',
-    /* Code block action buttons */
-    '.alice-enx-code-actions{position:absolute;top:6px;right:6px;display:flex;align-items:center;gap:6px;z-index:10}',
-    '.alice-enx-code-btn{background:rgba(20,20,30,.85);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#cbd5e1;padding:4px 8px;font:600 11px/1 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}',
-    '.alice-enx-code-btn:hover{background:#6C4CF0;color:#fff;border-color:#6C4CF0}',
+    /* Sessions Tab */
+    '.alice-enx-sessions-pane{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}',
+    '.alice-enx-session-card{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.04);transition:all .15s;display:flex;align-items:center;justify-content:space-between;gap:12px}',
+    '.alice-enx-session-card:hover{border-color:rgba(108,76,240,.4);background:rgba(108,76,240,.06)}',
+    '.alice-enx-session-card.active{border-color:rgba(108,76,240,.7);background:rgba(108,76,240,.15)}',
+    '.alice-enx-session-info{flex:1;min-width:0}',
+    '.alice-enx-session-title{font:600 13px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.alice-enx-session-meta{font:400 11.5px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:#94a3b8;margin-top:4px}',
+    '.alice-enx-session-actions{display:flex;align-items:center;gap:6px}',
+    /* Code block action buttons and badges */
+    '.alice-enx-code-actions{display:inline-flex;align-items:center;gap:6px;margin:0 8px 0 0;vertical-align:middle}',
+    '.alice-enx-code-actions-floating{position:absolute;top:8px;right:8px;z-index:10}',
+    '.alice-enx-code-btn{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:6px;font:600 11.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s ease;user-select:none;box-sizing:border-box;text-decoration:none}',
+    '.alice-enx-code-btn-icon{font-size:10px;line-height:1}',
+    '.alice-enx-code-btn-run{background:#181824;color:#f1f5f9;border:1px solid rgba(255,255,255,.18);box-shadow:0 1px 3px rgba(0,0,0,.3)}',
+    '.alice-enx-code-btn-run:hover{background:#262638;border-color:rgba(255,255,255,.35);color:#fff}',
+    '.alice-enx-code-btn-run:active{transform:translateY(1px)}',
+    '.alice-enx-code-btn-answer{background:linear-gradient(135deg,#6C4CF0,#8B5CF6);color:#fff !important;border:1px solid rgba(167,139,250,.5);box-shadow:0 2px 6px rgba(108,76,240,.35);font-weight:700}',
+    '.alice-enx-code-btn-answer:hover{background:linear-gradient(135deg,#5b3ce0,#7c3aed);border-color:rgba(196,181,253,.8);box-shadow:0 3px 10px rgba(108,76,240,.5);color:#fff !important}',
+    '.alice-enx-code-btn-answer:active{transform:translateY(1px)}',
+    '.alice-enx-code-btn-save{background:#132018;color:#86efac;border:1px solid rgba(74,222,128,.35);box-shadow:0 1px 3px rgba(0,0,0,.25)}',
+    '.alice-enx-code-btn-save:hover{background:#1a2c20;border-color:rgba(74,222,128,.6);color:#bbf7d0}',
+    '.alice-enx-code-btn-save:active{transform:translateY(1px)}',
     /* Auto-fallback Toast */
     '.alice-enx-fallback-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:2147483600;background:rgba(30,24,10,.95);border:1px solid rgba(245,158,11,.4);color:#fef3c7;padding:8px 16px;border-radius:999px;font:600 12px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:aliceEnxSlideDown .25s ease-out}',
     '@keyframes aliceEnxSlideDown{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}'
@@ -925,10 +944,6 @@
     return !!document.querySelector('[data-testid="chat-list-login-button"], .ChatListLoginPanel');
   }
   function toolMode(mode) { // 'draw' | 'deals' | 'math' | 'attach'
-    if (isAnonymous()) {
-      showNotice('This mode needs a free Yandex login (agents, drawing and file tools are account-gated). Chat, Auto and Expert modes below work without any account.');
-      return;
-    }
     var trig = findMoreTrigger();
     if (!trig) return;
     var map = {
@@ -973,19 +988,133 @@
     if (!lines.length) return null;
     return lines.join('\n');
   }
+
+  /* ---------------- Multi-Session / Multi-Chat Manager (Zero Login) ---------------- */
+  var SessionManager = {
+    STORAGE_KEY: 'alice_enx_sessions',
+    ACTIVE_KEY: 'alice_enx_active_session',
+
+    getSessions: function () {
+      try {
+        var raw = localStorage.getItem(this.STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    },
+
+    saveSessions: function (list) {
+      try {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+      } catch (e) {}
+    },
+
+    getActiveId: function () {
+      try {
+        return localStorage.getItem(this.ACTIVE_KEY) || 'session_default';
+      } catch (e) {
+        return 'session_default';
+      }
+    },
+
+    setActiveId: function (id) {
+      try {
+        localStorage.setItem(this.ACTIVE_KEY, id);
+      } catch (e) {}
+    },
+
+    snapshotCurrent: function () {
+      var id = this.getActiveId();
+      var recap = harvestRecap();
+      var msgs = [];
+      var msgEls = document.querySelectorAll('.Message:not([data-alice-enx])');
+      for (var i = 0; i < msgEls.length; i++) {
+        var el = msgEls[i];
+        var isUser = !!(el.querySelector('.Message_from_user, [data-message-role="user"]') || el.classList.contains('Message_from_user'));
+        var txt = (el.innerText || '').trim();
+        if (txt) msgs.push({ role: isUser ? 'user' : 'alice', text: txt.slice(0, 800) });
+      }
+      var title = 'Chat Session';
+      if (msgs.length > 0) {
+        var firstUser = msgs.find(function (m) { return m.role === 'user'; });
+        if (firstUser) {
+          title = firstUser.text.replace(/\n.*/g, '').slice(0, 36);
+        }
+      }
+      var list = this.getSessions();
+      var idx = list.findIndex(function (s) { return s.id === id; });
+      var item = {
+        id: id,
+        title: title,
+        updated: Date.now(),
+        messageCount: msgs.length,
+        recap: recap || ''
+      };
+      if (idx >= 0) {
+        list[idx] = Object.assign(list[idx], item);
+      } else {
+        list.unshift(item);
+      }
+      this.saveSessions(list);
+    },
+
+    createSession: function () {
+      this.snapshotCurrent();
+      var newId = 'session_' + Date.now();
+      var list = this.getSessions();
+      list.unshift({
+        id: newId,
+        title: 'New Chat ' + (list.length + 1),
+        updated: Date.now(),
+        messageCount: 0,
+        recap: ''
+      });
+      this.saveSessions(list);
+      this.setActiveId(newId);
+      clearRecap();
+
+      var btn = document.querySelector('[data-testid="new-chat-button"]');
+      if (btn) {
+        try { btn.click(); } catch (e) {}
+      } else if (window.__aliceResetSession) {
+        window.__aliceResetSession();
+      } else {
+        window.location.reload();
+      }
+    },
+
+    switchSession: function (targetId) {
+      if (targetId === this.getActiveId()) return;
+      this.snapshotCurrent();
+      this.setActiveId(targetId);
+      var list = this.getSessions();
+      var target = list.find(function (s) { return s.id === targetId; });
+      if (target && target.recap) {
+        state.pendingRecap = target.recap;
+        try { sessionStorage.setItem('aliceEnxRecap', target.recap); } catch (e) {}
+      }
+      if (window.__aliceResetSession) {
+        window.__aliceResetSession();
+      } else {
+        window.location.reload();
+      }
+    },
+
+    deleteSession: function (targetId) {
+      var list = this.getSessions().filter(function (s) { return s.id !== targetId; });
+      this.saveSessions(list);
+      if (this.getActiveId() === targetId) {
+        if (list.length > 0) {
+          this.switchSession(list[0].id);
+        } else {
+          this.createSession();
+        }
+      }
+    }
+  };
+
   function newChat() {
-    if (isAnonymous()) {
-      showNotice('Anonymous free mode keeps ONE ongoing chat. Log in with a free Yandex ID to start new chats and save history — meanwhile, switching modes below keeps your context.');
-      return;
-    }
-    var recap = null;
-    if (S.carryContext) recap = harvestRecap();
-    var btn = document.querySelector('[data-testid="new-chat-button"]');
-    if (btn) {
-      if (recap) { try { sessionStorage.setItem('aliceEnxRecap', recap); } catch (e) {} state.pendingRecap = recap; }
-      btn.click();
-      setTimeout(function () { maybeShowCtxBar(); }, 600);
-    }
+    SessionManager.createSession();
   }
   function stashToPending() {
     try { var r = sessionStorage.getItem('aliceEnxRecap'); if (r) state.pendingRecap = r; } catch (e) {}
@@ -1324,7 +1453,6 @@
     if (sendBtn) {
       var aria = (sendBtn.getAttribute('aria-label') || '').toLowerCase();
       if (/остановить|stop/.test(aria)) return true;
-      if (sendBtn.disabled) return true;
     }
     var loaders = document.querySelectorAll('.Message_status_loading, [class*="typing"], [class*="Cursor"], [class*="cursor"], [class*="Thinking"], [class*="Progress"]');
     if (loaders.length > 0) return true;
@@ -2450,30 +2578,32 @@
           var out = (res.data && res.data.stdout) || (typeof res.text === 'string' ? res.text : '');
           if (out) logTerm('stdout', out);
           else logTerm('stdout', 'Command completed successfully (exit code 0).');
-          if (onDone) onDone(true, out, '');
+          var code = (res.data && typeof res.data.exitCode === 'number') ? res.data.exitCode : 0;
+          if (onDone) onDone(true, out, '', code);
         } else {
           var err = (res.data && res.data.stderr) || res.error || 'Execution failed';
           logTerm('err', err);
-          if (onDone) onDone(false, (res.data && res.data.stdout) || '', err);
+          var code = (res.data && typeof res.data.exitCode === 'number') ? res.data.exitCode : 1;
+          if (onDone) onDone(false, (res.data && res.data.stdout) || '', err, code);
         }
       });
     } else {
       setTimeout(function () {
         if (cmd === 'pwd') {
           logTerm('stdout', currentWorkspace);
-          if (onDone) onDone(true, currentWorkspace, '');
+          if (onDone) onDone(true, currentWorkspace, '', 0);
         } else if (cmd === 'clear') {
           var out = document.getElementById('alice-enx-term-output');
           if (out) out.innerHTML = '';
-          if (onDone) onDone(true, '', '');
+          if (onDone) onDone(true, '', '', 0);
         } else if (/^git status/i.test(cmd)) {
           var gs = 'On branch main\nYour branch is up to date with origin/main.\n\nnothing to commit, working tree clean';
           logTerm('stdout', gs);
-          if (onDone) onDone(true, gs, '');
+          if (onDone) onDone(true, gs, '', 0);
         } else {
           var msg = '[Extension Mode] Local shell is active in native Alice.app. Ran simulated: ' + cmd;
           logTerm('info', msg);
-          if (onDone) onDone(true, msg, '');
+          if (onDone) onDone(true, msg, '', 0);
         }
       }, 150);
     }
@@ -2517,6 +2647,9 @@
     if (tab === 'git') {
       refreshGitStatus();
     }
+    if (tab === 'sessions') {
+      window.__aliceRefreshSessions && window.__aliceRefreshSessions();
+    }
     if (tab === 'loop') {
       LoopManager.renderBoard();
       LoopManager.refreshProgressViewer();
@@ -2558,6 +2691,7 @@
       logTerm('info', '[VibeCoder] Dispatched task: ' + taskPrompt.slice(0, 80) + '...');
     }
   }
+  window.__aliceTriggerVibeTask = triggerVibeTask;
 
   function buildWorkbench() {
     if (workbenchEl && workbenchEl.isConnected) return;
@@ -2574,6 +2708,7 @@
     var tabDefs = [
       ['loop', '🔁 Loop Studio', 'loop'],
       ['terminal', '>_ Terminal', 'terminal'],
+      ['sessions', '💬 Sessions', 'chat'],
       ['vibe', '⚡ Vibe Coder & Harness', 'code'],
       ['skills', '🛠 Agent Skills', 'spark'],
       ['git', '🔄 Git Sync', 'git']
@@ -2616,7 +2751,7 @@
 
     var minBtn = document.createElement('button');
     minBtn.className = 'alice-enx-wb-btn';
-    minBtn.textContent = '—';
+    minBtn.textContent = '–';
     minBtn.title = 'Minimize';
     minBtn.addEventListener('click', function () {
       workbenchEl.classList.toggle('minimized');
@@ -2994,6 +3129,100 @@
     gitPane.appendChild(gitCard);
     body.appendChild(gitPane);
 
+    // 5. Sessions Pane (Multi-Session / Multi-Chat Manager)
+    var sessionsPane = document.createElement('div');
+    sessionsPane.className = 'alice-enx-sessions-pane';
+    sessionsPane.setAttribute('data-wb-pane', 'sessions');
+    sessionsPane.style.display = activeWbTab === 'sessions' ? 'flex' : 'none';
+
+    function refreshSessionsPane() {
+      sessionsPane.innerHTML = '';
+      var headRow = document.createElement('div');
+      headRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:8px';
+
+      var hTitle = document.createElement('div');
+      hTitle.style.cssText = 'font:600 13px -apple-system,BlinkMacSystemFont,sans-serif;color:#f1f5f9';
+      hTitle.textContent = 'Multi-Session Manager (Zero Login Required)';
+      headRow.appendChild(hTitle);
+
+      var newChatBtn = document.createElement('button');
+      newChatBtn.className = 'alice-enx-btn-primary';
+      newChatBtn.textContent = '+ New Chat Session';
+      newChatBtn.addEventListener('click', function () {
+        SessionManager.createSession();
+      });
+      headRow.appendChild(newChatBtn);
+      sessionsPane.appendChild(headRow);
+
+      var sessions = SessionManager.getSessions();
+      var activeId = SessionManager.getActiveId();
+
+      if (!sessions.length) {
+        var emptyMsg = document.createElement('div');
+        emptyMsg.style.cssText = 'padding:16px;text-align:center;color:#94a3b8;font-size:12px';
+        emptyMsg.textContent = 'No saved sessions yet. Type a query or click + New Chat Session above.';
+        sessionsPane.appendChild(emptyMsg);
+        return;
+      }
+
+      sessions.forEach(function (s) {
+        var card = document.createElement('div');
+        card.className = 'alice-enx-session-card' + (s.id === activeId ? ' active' : '');
+
+        var info = document.createElement('div');
+        info.className = 'alice-enx-session-info';
+
+        var title = document.createElement('div');
+        title.className = 'alice-enx-session-title';
+        title.textContent = s.title || 'Untitled Session';
+        info.appendChild(title);
+
+        var meta = document.createElement('div');
+        meta.className = 'alice-enx-session-meta';
+        var dateStr = s.updated ? new Date(s.updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+        meta.textContent = (s.messageCount || 0) + ' messages, updated ' + dateStr + (s.id === activeId ? ' (Active)' : '');
+        info.appendChild(meta);
+
+        card.appendChild(info);
+
+        var actions = document.createElement('div');
+        actions.className = 'alice-enx-session-actions';
+
+        if (s.id !== activeId) {
+          var switchBtn = document.createElement('button');
+          switchBtn.className = 'alice-enx-wb-btn';
+          switchBtn.textContent = 'Switch';
+          switchBtn.addEventListener('click', function () {
+            SessionManager.switchSession(s.id);
+          });
+          actions.appendChild(switchBtn);
+
+          var delBtn = document.createElement('button');
+          delBtn.className = 'alice-enx-wb-btn';
+          delBtn.textContent = '✕';
+          delBtn.title = 'Delete session';
+          delBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            SessionManager.deleteSession(s.id);
+            refreshSessionsPane();
+          });
+          actions.appendChild(delBtn);
+        } else {
+          var activeBadge = document.createElement('span');
+          activeBadge.style.cssText = 'font:600 11px -apple-system,sans-serif;color:#86efac;padding:3px 8px;border-radius:4px;background:rgba(34,197,94,.15)';
+          activeBadge.textContent = 'Active';
+          actions.appendChild(activeBadge);
+        }
+
+        card.appendChild(actions);
+        sessionsPane.appendChild(card);
+      });
+    }
+
+    refreshSessionsPane();
+    window.__aliceRefreshSessions = refreshSessionsPane;
+    body.appendChild(sessionsPane);
+
     workbenchEl.appendChild(body);
     document.body.appendChild(workbenchEl);
   }
@@ -3138,20 +3367,28 @@
     var pres = msgRoot.querySelectorAll('pre');
     for (var i = 0; i < pres.length; i++) {
       var pre = pres[i];
-      if (pre.querySelector('.alice-enx-code-actions')) continue;
-      pre.style.position = 'relative';
+
+      // Never process an inner pre that is already inside another pre
+      if (pre.parentElement && pre.parentElement.closest('pre')) continue;
+
+      // Skip if already enhanced
+      if (pre.querySelector('.alice-enx-code-actions') || (pre.parentElement && pre.parentElement.querySelector('.alice-enx-code-actions'))) continue;
+
+      var codeTxt = extractCleanCode(pre);
+      if (!codeTxt || !codeTxt.trim()) continue;
 
       var bar = document.createElement('div');
       bar.className = 'alice-enx-code-actions';
+      bar.setAttribute('data-alice-enx', '1');
 
-      var codeTxt = extractCleanCode(pre);
       var isShell = isShellCommand(codeTxt) ||
         pre.className.indexOf('bash') > -1 || pre.className.indexOf('shell') > -1 || pre.className.indexOf('sh') > -1;
 
       if (isShell) {
         var runBtn = document.createElement('button');
-        runBtn.className = 'alice-enx-code-btn';
-        runBtn.innerHTML = '▶ Run in Terminal';
+        runBtn.className = 'alice-enx-code-btn alice-enx-code-btn-run';
+        runBtn.innerHTML = '<span class="alice-enx-code-btn-icon">▶</span><span>Run in Terminal</span>';
+        runBtn.title = 'Run shell command in Alice local terminal';
         (function (cmd, targetPre) {
           runBtn.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -3160,7 +3397,7 @@
             runBtn.textContent = 'Running...';
             runTerminalCommand(cmd, function (ok, stdout, stderr) {
               runBtn.disabled = false;
-              runBtn.innerHTML = '▶ Run in Terminal';
+              runBtn.innerHTML = '<span class="alice-enx-code-btn-icon">▶</span><span>Run in Terminal</span>';
               var resText = (stdout || stderr || '').trim();
               if (resText) {
                 var outBadge = targetPre.nextElementSibling && targetPre.nextElementSibling.classList.contains('alice-enx-cmd-result')
@@ -3178,9 +3415,9 @@
         bar.appendChild(runBtn);
 
         var answerBtn = document.createElement('button');
-        answerBtn.className = 'alice-enx-code-btn';
-        answerBtn.style.cssText = 'background:rgba(108,76,240,.3);border-color:#6C4CF0;color:#e0d7ff';
-        answerBtn.innerHTML = '⚡ Run & Answer';
+        answerBtn.className = 'alice-enx-code-btn alice-enx-code-btn-answer';
+        answerBtn.innerHTML = '<span class="alice-enx-code-btn-icon">⚡</span><span>Run & Answer</span>';
+        answerBtn.title = 'Run locally and feed live observation back to Alice';
         (function (cmd, targetPre) {
           answerBtn.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -3189,7 +3426,7 @@
             answerBtn.textContent = 'Executing...';
             runTerminalCommand(cmd, function (ok, stdout, stderr) {
               answerBtn.disabled = false;
-              answerBtn.innerHTML = '⚡ Run & Answer';
+              answerBtn.innerHTML = '<span class="alice-enx-code-btn-icon">⚡</span><span>Run & Answer</span>';
               var resText = (stdout || stderr || '').trim();
               if (resText) {
                 var outBadge = targetPre.nextElementSibling && targetPre.nextElementSibling.classList.contains('alice-enx-cmd-result')
@@ -3208,8 +3445,9 @@
         bar.appendChild(answerBtn);
       } else if (/(?:file:|filename:|path:|\/\/\s*|#\s*)[\w./-]+\.\w+/i.test(codeTxt) || codeTxt.split('\n').length > 2) {
         var saveBtn = document.createElement('button');
-        saveBtn.className = 'alice-enx-code-btn';
-        saveBtn.innerHTML = '💾 Save to Disk';
+        saveBtn.className = 'alice-enx-code-btn alice-enx-code-btn-save';
+        saveBtn.innerHTML = '<span class="alice-enx-code-btn-icon">💾</span><span>Save to Disk</span>';
+        saveBtn.title = 'Save snippet to local project workspace';
         (function (c) {
           saveBtn.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -3219,7 +3457,7 @@
               window.__aliceWriteFile(filePath, c, function (res) {
                 if (res.ok) {
                   saveBtn.textContent = '✓ Saved ' + filePath;
-                  setTimeout(function () { saveBtn.innerHTML = '💾 Save to Disk'; }, 2500);
+                  setTimeout(function () { saveBtn.innerHTML = '<span class="alice-enx-code-btn-icon">💾</span><span>Save to Disk</span>'; }, 2500);
                 } else {
                   alert('Save failed: ' + (res.error || 'Unknown error'));
                 }
@@ -3232,7 +3470,27 @@
         bar.appendChild(saveBtn);
       }
 
-      pre.appendChild(bar);
+      // Smart placement: insert into existing header before native buttons, or fallback to floating
+      var inserted = false;
+      var headerBtn = pre.querySelector('button:not([data-alice-enx]):not(.alice-enx-code-btn)') ||
+                      (pre.parentElement && pre.parentElement.querySelector('button:not([data-alice-enx]):not(.alice-enx-code-btn)'));
+      if (headerBtn && headerBtn.parentNode) {
+        headerBtn.parentNode.insertBefore(bar, headerBtn);
+        inserted = true;
+      }
+      if (!inserted) {
+        var headerEl = pre.querySelector('[class*="Header"], [class*="header"]') ||
+                       (pre.parentElement && pre.parentElement.querySelector('[class*="Header"], [class*="header"]'));
+        if (headerEl) {
+          headerEl.appendChild(bar);
+          inserted = true;
+        }
+      }
+      if (!inserted) {
+        pre.style.position = 'relative';
+        bar.classList.add('alice-enx-code-actions-floating');
+        pre.appendChild(bar);
+      }
     }
   }
 
@@ -3258,9 +3516,10 @@
     if (S.harnessAutoRun) agentBtn.classList.add('alice-enx-active');
     modeBar.appendChild(agentBtn);
     modeBar.appendChild(pill('loop', 'Loop', 'loop', function () { openLoopModal(); }, 'Autonomous Loop Agent Studio'));
+    modeBar.appendChild(pill('sessions', 'Sessions', 'chat', function () { toggleWorkbench('sessions'); }, 'Switch or create anonymous chat sessions'));
     modeBar.appendChild(pill('brainstorm', 'Brainstorm', 'users', function () { openBrainstormModal(); }, 'Autonomous brainstorm and role-play studio'));
     modeBar.appendChild(pill('draw', 'Draw', 'palette', function () { toolMode('draw'); }, 'Image generation mode'));
-    modeBar.appendChild(pill('deals', 'Deals', 'tag', function () { toolMode('deals'); }, 'Shopping — find a better price'));
+    modeBar.appendChild(pill('deals', 'Deals', 'tag', function () { toolMode('deals'); }, 'Shopping: find a better price'));
     modeBar.appendChild(pill('math', 'Math', 'sigma', function () { toolMode('math'); }, 'Math tutor mode'));
     var gear = pill('gear', '', 'gear', function (b) { toggleSettingsPanel(b); }, 'Overlay settings');
     gear.className += ' alice-enx-gear';
@@ -3475,7 +3734,7 @@
 
   /* ---------------- Multi-language & Custom Instructions (send interception) ---------------- */
   function toolBlocksInjection() {
-    return state.lastTool === 'draw' || state.lastTool === 'deals';
+    return false;
   }
   function beforeSend(ta) {
     if (!ta) return;
@@ -3579,22 +3838,9 @@
     if (S.enReplies && !toolBlocksInjection() && langPrompt && v.indexOf(langPrompt) === -1) {
       parts.push(langPrompt);
     }
-    var isObservation = v.indexOf('[Harness Tool Observation') > -1 || v.indexOf('[Harness Tool Error') > -1;
-    if (S.vibeCoding && !toolBlocksInjection() && !isObservation && v.indexOf('[Autonomous Agent & Tooling Power]') === -1) {
-      var sys = window.__ALICE_SYSTEM_INFO;
-      var sysSpec = sys
-        ? 'Apple Silicon Mac (' + (sys.model || 'Mac14,5') + ', ' + (sys.cores || '12') + ' CPU cores, ' + (sys.ramGB || '32') + ' GB unified RAM, OS: ' + (sys.osVersion || 'macOS') + ')'
-        : 'Apple Silicon Mac (12 CPU cores, 32 GB RAM, macOS)';
-      var agentPrompt = '[Autonomous Agent & Tooling Power]\n' +
-        'You are an autonomous AI coding and system agent running locally in Alice.app on macOS.\n' +
-        'Host: ' + sysSpec + ' | Workspace: ' + currentWorkspace + '\n' +
-        'Capabilities: Full zsh shell terminal, file system read/write, macOS computer use (Finder, clipboard, apps, notifications), git repo sync.\n\n' +
-        'Autonomous Tool Execution Protocol:\n' +
-        '1. When the user asks for hardware specs, files, system diagnostics, git info, running code, or terminal commands: DO NOT instruct the user to run commands manually. Execute directly by outputting a single executable ```bash code block.\n' +
-        '2. The native Alice harness runs the command on this Mac and supplies the real live output as an observation before you complete your response.\n' +
-        '3. To create or edit files, use ```file:path/to/filename. To reveal in Finder use `open .`, to copy to clipboard pipe into `pbcopy`.\n' +
-        '4. Base your answers strictly on observed output, not hypothetical values.';
-      parts.push(agentPrompt);
+    var isObservation = v.indexOf('[Harness Tool Observation') > -1 || v.indexOf('[Harness Tool Error') > -1 || v.indexOf('[Harness Self-Correction') > -1;
+    if (S.vibeCoding && !toolBlocksInjection() && !isObservation && v.indexOf('```bash') === -1) {
+      parts.push('When providing shell commands or file modifications, format them in standard ```bash or ```file:path/to/file code blocks.');
     }
     if (S.customInstructions && typeof S.customInstructions === 'string' && S.customInstructions.trim()) {
       var ci = S.customInstructions.trim();
@@ -3914,8 +4160,64 @@
     setTimeout(function () { if (noticeEl && noticeEl.isConnected) noticeEl.remove(); }, 12000);
   }
 
+  /* ---------------- Hermes Diagnostic & Self-Correction Engine (NousResearch/hermes-agent) ---------------- */
+  var HermesEngine = {
+    diagnose: function (command, exitCode, output) {
+      if (exitCode === 0) return null;
+      var out = output || '';
+      var scan = out.slice(0, 4000);
+
+      var cmdNotFound = scan.match(/(?:bash: line \d+: |bash: |sh: \d*:? ?)?([\w.+-]+): command not found/i);
+      if (cmdNotFound) {
+        var missing = cmdNotFound[1];
+        if (missing === 'python') return 'This system has no bare python. Use python3 or activate your project venv.';
+        if (missing === 'pip') return 'This system has no bare pip. Use pip3, python3 -m pip, or the project venv.';
+        return 'Command ' + missing + ' is not on PATH. Check installation or use an absolute path.';
+      }
+
+      var modErr = scan.match(/(?:ModuleNotFoundError|ImportError): No module named '?([\w.]+)'?/i);
+      if (modErr) {
+        return 'Python missing module ' + modErr[1] + '. Run pip3 install ' + modErr[1] + ' or activate the project venv.';
+      }
+
+      var nodeErr = scan.match(/Cannot find module '?([\w.@/-]+)'?/i);
+      if (nodeErr) {
+        return 'Node missing module ' + nodeErr[1] + '. Run npm install ' + nodeErr[1] + ' in project workspace.';
+      }
+
+      if (/Permission denied|EACCES/i.test(scan)) {
+        return 'Permission denied. Check file permissions with ls -la and prefer user-writable locations.';
+      }
+
+      if (/CONFLICT|Automatic merge failed|needs merge/i.test(scan)) {
+        return 'Git merge conflict. Resolve conflicted files before continuing or run git merge --abort.';
+      }
+
+      var existsErr = scan.match(/(?:fatal|error):.*?'([^']+)' already exists/i);
+      if (existsErr) {
+        return 'Target ' + existsErr[1] + ' already exists. Reuse it or choose another name.';
+      }
+
+      if (exitCode === 126) return 'Exit 126: File is not executable. Add executable permission with chmod +x.';
+      if (exitCode === 127) return 'Exit 127: Command not found on PATH.';
+      if (exitCode === 137) return 'Exit 137: Process terminated by SIGKILL (memory limit or external kill).';
+      if (exitCode === 124) return 'Exit 124: Command timed out. Break it down or execute asynchronously.';
+
+      return 'Process returned exit code ' + exitCode + '. Review the error log and adjust script logic.';
+    },
+
+    detectMaskedFailure: function (command, output) {
+      if (!command) return false;
+      var hasPipeline = /\|\s*(?:tail|head|cat|tee|less|more|wc|sort|uniq)\b/i.test(command) || /\|\|\s*(?:echo|printf|true)\b/i.test(command);
+      if (!hasPipeline) return false;
+      var hasFailureText = /error|fatal|exception|failed|compilation terminated|npm ERR!/i.test(output || '');
+      return hasFailureText;
+    }
+  };
+
   /* ---------------- Autonomous Harness Agent Loop ---------------- */
   var autoHarnessTurnCount = 0;
+  var autoHarnessFailCount = 0;
   var autoHarnessHalted = false;
 
   function executeAutoTool(cmd, isFile, filePath, fileContent, targetPre, msgRoot) {
@@ -4000,8 +4302,31 @@
         outPre.style.display = outPre.style.display === 'none' ? 'block' : 'none';
       });
 
-      var obsText = '[Harness Tool Observation for: `' + cmd + '` (exit code ' + code + ')]:\n```\n' + (outText || '(no output, process completed successfully)') + '\n```\nPlease synthesize the final factual answer for the user based on this live output.';
-      sendAliceMessage(obsText);
+      if (code === 0) {
+        autoHarnessFailCount = 0;
+        var isMasked = HermesEngine.detectMaskedFailure(cmd, outText);
+        if (isMasked) {
+          var maskMsg = '[Harness Pipeline Warning]: Command returned exit 0 but output indicates error conditions:\n```\n' + outText + '\n```\nPlease verify and adjust without pipeline swallow.';
+          sendAliceMessage(maskMsg);
+          return;
+        }
+        var obsText = '[Harness Tool Observation for: `' + cmd + '` (exit code 0)]:\n```\n' + (outText || '(no output, process completed successfully)') + '\n```\nPlease synthesize the final factual answer for the user based on this live output.';
+        sendAliceMessage(obsText);
+      } else {
+        autoHarnessFailCount++;
+        var hint = HermesEngine.diagnose(cmd, code, outText);
+        if (autoHarnessFailCount <= 3) {
+          var retryMsg = '[Harness Self-Correction - Exit Code ' + code + ']:\n' +
+            'Command: `' + cmd + '`\n' +
+            'Error Output:\n```\n' + (outText || '(no output)') + '\n```\n' +
+            'Diagnostic Hint: ' + hint + '\n' +
+            'Self-Correction Instruction: Diagnose root cause, adjust the command or script to fix the error, and provide the corrected executable ```bash block now.';
+          sendAliceMessage(retryMsg);
+        } else {
+          var haltMsg = '[Harness Loop Halted]: Tool execution failed 3 times with exit ' + code + '.\nFinal error: ' + (outText || 'Command failed') + '\nPlease explain the blocker to the user.';
+          sendAliceMessage(haltMsg);
+        }
+      }
     });
   }
 
@@ -4015,6 +4340,7 @@
     var pres = lastMsg.querySelectorAll('pre');
     for (var p = 0; p < pres.length; p++) {
       var pre = pres[p];
+      if (pre.parentElement && pre.parentElement.closest('pre')) continue;
       var clean = extractCleanCode(pre);
       if (!clean) continue;
 

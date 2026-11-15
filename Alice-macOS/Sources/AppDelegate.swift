@@ -5,13 +5,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupMainMenu()
         MainWindowController.shared.ensureOptimalSize()
         MainWindowController.shared.showWindow(nil)
+        MainWindowController.shared.window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if !flag {
-            MainWindowController.shared.showWindow(nil)
-        }
+        MainWindowController.shared.showWindow(nil)
+        MainWindowController.shared.window?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
         return true
     }
 
@@ -131,6 +132,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let gitItem = NSMenuItem(title: "GitHub Real-Time Sync", action: #selector(openGitSyncTab), keyEquivalent: "g")
         gitItem.keyEquivalentModifierMask = [.command, .control]
         harnessMenu.addItem(gitItem)
+
+        let testItem = NSMenuItem(title: "Dispatch Code Block Query", action: #selector(dispatchCodeQuery), keyEquivalent: "b")
+        testItem.keyEquivalentModifierMask = [.command, .control]
+        harnessMenu.addItem(testItem)
 
         harnessMenu.addItem(NSMenuItem.separator())
         let finderItem = NSMenuItem(title: "Open Workspace in Finder", action: #selector(openWorkspaceFinder), keyEquivalent: "o")
@@ -283,6 +288,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openGitSyncTab() {
         MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceToggleWorkbench && window.__aliceToggleWorkbench('git');", completionHandler: nil)
+    }
+
+    @objc private func dispatchCodeQuery() {
+        MainWindowController.shared.webViewController.webView.evaluateJavaScript("window.__aliceTriggerVibeTask && window.__aliceTriggerVibeTask('Show a short bash code snippet to check disk space');", completionHandler: nil)
     }
 
     @objc private func openWorkspaceFinder() {
